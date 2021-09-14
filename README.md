@@ -220,6 +220,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/Khonzoda"><img src="https://avatars.githubusercontent.com/u/26072772?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Khonzoda Umarova</b></sub></a><br /><a href="#data-Khonzoda" title="Data">🔣</a> <a href="#maintenance-Khonzoda" title="Maintenance">🚧</a></td>
     <td align="center"><a href="https://github.com/mwilbz"><img src="https://avatars.githubusercontent.com/u/14115641?v=4?s=100" width="100px;" alt=""/><br /><sub><b>mwilbz</b></sub></a><br /><a href="https://github.com/CornellNLP/Cornell-Conversational-Analysis-Toolkit/commits?author=mwilbz" title="Tests">⚠️</a></td>
     <td align="center"><a href="https://www.alexkoen.com"><img src="https://avatars.githubusercontent.com/u/43913902?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Alex Koen</b></sub></a><br /><a href="https://github.com/CornellNLP/Cornell-Conversational-Analysis-Toolkit/issues?q=author%3Aakoen" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="http://emtseng.me"><img src="https://avatars.githubusercontent.com/u/5270852?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Emily Tseng</b></sub></a><br /><a href="https://github.com/CornellNLP/Cornell-Conversational-Analysis-Toolkit/issues?q=author%3Aemtseng" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 
