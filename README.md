@@ -1,6 +1,6 @@
 # Cornell Conversational Analysis Toolkit ([ConvoKit](http://convokit.cornell.edu/))
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-20-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-21-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 <p>
@@ -240,6 +240,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="http://rujzhao.com"><img src="https://avatars.githubusercontent.com/u/31158748?v=4?s=100" width="100px;" alt=""/><br /><sub><b>rjz46</b></sub></a><br /><a href="#data-rjz46" title="Data">🔣</a></td>
     <td align="center"><a href="https://github.com/KatyBlumer"><img src="https://avatars.githubusercontent.com/u/3669069?v=4?s=100" width="100px;" alt=""/><br /><sub><b>KatyBlumer</b></sub></a><br /><a href="#data-KatyBlumer" title="Data">🔣</a></td>
     <td align="center"><a href="https://github.com/als452"><img src="https://avatars.githubusercontent.com/u/15838258?v=4?s=100" width="100px;" alt=""/><br /><sub><b>als452</b></sub></a><br /><a href="#data-als452" title="Data">🔣</a></td>
+    <td align="center"><a href="https://github.com/KaminskyJ"><img src="https://avatars.githubusercontent.com/u/26395772?v=4?s=100" width="100px;" alt=""/><br /><sub><b>KaminskyJ</b></sub></a><br /><a href="https://github.com/CornellNLP/Cornell-Conversational-Analysis-Toolkit/commits?author=KaminskyJ" title="Code">💻</a></td>
   </tr>
 </table>
 
