@@ -23,6 +23,15 @@
         "data",
         "maintenance"
       ]
+    },
+    {
+      "login": "mwilbz",
+      "name": "mwilbz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14115641?v=4",
+      "profile": "https://github.com/mwilbz",
+      "contributions": [
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
