@@ -114,6 +114,15 @@
       "contributions": [
         "data"
       ]
+    },
+    {
+      "login": "lucasvanbramer",
+      "name": "Lucas Van Bramer",
+      "avatar_url": "https://avatars.githubusercontent.com/u/32553676?v=4",
+      "profile": "https://github.com/lucasvanbramer",
+      "contributions": [
+        "data"
+      ]
     }
   ],
   "contributorsPerLine": 7,
