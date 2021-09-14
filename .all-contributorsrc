@@ -86,6 +86,15 @@
       "contributions": [
         "data"
       ]
+    },
+    {
+      "login": "noameshed",
+      "name": "Noam Eshed",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40632766?v=4",
+      "profile": "https://github.com/noameshed",
+      "contributions": [
+        "data"
+      ]
     }
   ],
   "contributorsPerLine": 7,
