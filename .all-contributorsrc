@@ -1,0 +1,25 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "calebchiam",
+      "name": "calebchiam",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14286996?v=4",
+      "profile": "https://github.com/calebchiam",
+      "contributions": [
+        "test",
+        "infra"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "Cornell-Conversational-Analysis-Toolkit",
+  "projectOwner": "CornellNLP",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
