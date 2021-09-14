@@ -32,6 +32,15 @@
       "contributions": [
         "test"
       ]
+    },
+    {
+      "login": "emtseng",
+      "name": "Emily Tseng",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5270852?v=4",
+      "profile": "http://emtseng.me",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
