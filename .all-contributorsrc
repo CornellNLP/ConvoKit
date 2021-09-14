@@ -59,6 +59,15 @@
       "contributions": [
         "data"
       ]
+    },
+    {
+      "login": "jschluger",
+      "name": "Jack Schluger",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14956008?v=4",
+      "profile": "https://jschluger.github.io/",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
