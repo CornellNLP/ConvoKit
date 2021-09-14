@@ -1,6 +1,6 @@
 # Cornell Conversational Analysis Toolkit ([ConvoKit](http://convokit.cornell.edu/))
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-14-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-15-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 <p>
@@ -232,6 +232,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/kcsadow"><img src="https://avatars.githubusercontent.com/u/34074151?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Katharine Sadowski</b></sub></a><br /><a href="#data-kcsadow" title="Data">🔣</a></td>
     <td align="center"><a href="https://github.com/lucasvanbramer"><img src="https://avatars.githubusercontent.com/u/32553676?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Lucas Van Bramer</b></sub></a><br /><a href="#data-lucasvanbramer" title="Data">🔣</a></td>
     <td align="center"><a href="http://mariannealq.com"><img src="https://avatars.githubusercontent.com/u/16949591?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Marianne Aubin</b></sub></a><br /><a href="#data-maubinle" title="Data">🔣</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/dn273"><img src="https://avatars.githubusercontent.com/u/27926662?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Di Ni</b></sub></a><br /><a href="#data-dn273" title="Data">🔣</a></td>
   </tr>
 </table>
 
