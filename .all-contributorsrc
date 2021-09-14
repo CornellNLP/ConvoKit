@@ -32,6 +32,15 @@
       "contributions": [
         "test"
       ]
+    },
+    {
+      "login": "ZiggyFloat",
+      "name": "Uliyana Kubasova",
+      "avatar_url": "https://avatars.githubusercontent.com/u/41927607?v=4",
+      "profile": "https://github.com/ZiggyFloat",
+      "contributions": [
+        "data"
+      ]
     }
   ],
   "contributorsPerLine": 7,
