@@ -1,6 +1,6 @@
 # Cornell Conversational Analysis Toolkit ([ConvoKit](http://convokit.cornell.edu/))
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 <p>
@@ -222,6 +222,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://www.alexkoen.com"><img src="https://avatars.githubusercontent.com/u/43913902?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Alex Koen</b></sub></a><br /><a href="https://github.com/CornellNLP/Cornell-Conversational-Analysis-Toolkit/issues?q=author%3Aakoen" title="Bug reports">🐛</a></td>
     <td align="center"><a href="http://emtseng.me"><img src="https://avatars.githubusercontent.com/u/5270852?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Emily Tseng</b></sub></a><br /><a href="https://github.com/CornellNLP/Cornell-Conversational-Analysis-Toolkit/issues?q=author%3Aemtseng" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/ZiggyFloat"><img src="https://avatars.githubusercontent.com/u/41927607?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Uliyana Kubasova</b></sub></a><br /><a href="#data-ZiggyFloat" title="Data">🔣</a></td>
+    <td align="center"><a href="https://jschluger.github.io/"><img src="https://avatars.githubusercontent.com/u/14956008?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jack Schluger</b></sub></a><br /><a href="https://github.com/CornellNLP/Cornell-Conversational-Analysis-Toolkit/issues?q=author%3Ajschluger" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 
