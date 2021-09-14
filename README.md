@@ -1,6 +1,6 @@
 # Cornell Conversational Analysis Toolkit ([ConvoKit](http://convokit.cornell.edu/))
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-15-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 <p>
@@ -235,6 +235,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/dn273"><img src="https://avatars.githubusercontent.com/u/27926662?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Di Ni</b></sub></a><br /><a href="#data-dn273" title="Data">🔣</a></td>
+    <td align="center"><a href="https://github.com/gdeng96"><img src="https://avatars.githubusercontent.com/u/8600751?v=4?s=100" width="100px;" alt=""/><br /><sub><b>gdeng96</b></sub></a><br /><a href="#data-gdeng96" title="Data">🔣</a></td>
   </tr>
 </table>
 
