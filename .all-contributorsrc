@@ -209,6 +209,20 @@
         "doc",
         "review"
       ]
+    },
+    {
+      "login": "qema",
+      "name": "Andrew Wang",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4683423?v=4",
+      "profile": "http://wanganzhou.com",
+      "contributions": [
+        "code",
+        "data",
+        "ideas",
+        "maintenance",
+        "doc",
+        "review"
+      ]
     }
   ],
   "contributorsPerLine": 7,
