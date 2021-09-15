@@ -251,6 +251,20 @@
         "doc",
         "review"
       ]
+    },
+    {
+      "login": "liye",
+      "name": "Liye Fu",
+      "avatar_url": "https://avatars.githubusercontent.com/u/12224673?v=4",
+      "profile": "http://www.cs.cornell.edu/~liye/",
+      "contributions": [
+        "code",
+        "data",
+        "ideas",
+        "maintenance",
+        "doc",
+        "review"
+      ]
     }
   ],
   "contributorsPerLine": 7,
