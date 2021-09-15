@@ -223,6 +223,20 @@
         "doc",
         "review"
       ]
+    },
+    {
+      "login": "tisjune",
+      "name": "Justine Zhang",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8534072?v=4",
+      "profile": "http://tisjune.github.io",
+      "contributions": [
+        "code",
+        "data",
+        "ideas",
+        "maintenance",
+        "doc",
+        "review"
+      ]
     }
   ],
   "contributorsPerLine": 7,
