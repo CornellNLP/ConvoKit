@@ -216,7 +216,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="https://github.com/calebchiam"><img src="https://avatars.githubusercontent.com/u/14286996?v=4?s=100" width="100px;" alt=""/><br /><sub><b>calebchiam</b></sub></a><br /><a href="https://github.com/CornellNLP/Cornell-Conversational-Analysis-Toolkit/commits?author=calebchiam" title="Tests">⚠️</a> <a href="#infra-calebchiam" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
+    <td align="center"><a href="https://github.com/calebchiam"><img src="https://avatars.githubusercontent.com/u/14286996?v=4?s=100" width="100px;" alt=""/><br /><sub><b>calebchiam</b></sub></a><br /><a href="https://github.com/CornellNLP/Cornell-Conversational-Analysis-Toolkit/commits?author=calebchiam" title="Tests">⚠️</a> <a href="#infra-calebchiam" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/CornellNLP/Cornell-Conversational-Analysis-Toolkit/commits?author=calebchiam" title="Code">💻</a> <a href="#data-calebchiam" title="Data">🔣</a> <a href="#ideas-calebchiam" title="Ideas, Planning, & Feedback">🤔</a> <a href="#maintenance-calebchiam" title="Maintenance">🚧</a> <a href="https://github.com/CornellNLP/Cornell-Conversational-Analysis-Toolkit/commits?author=calebchiam" title="Documentation">📖</a> <a href="https://github.com/CornellNLP/Cornell-Conversational-Analysis-Toolkit/pulls?q=is%3Apr+reviewed-by%3Acalebchiam" title="Reviewed Pull Requests">👀</a></td>
   </tr>
 </table>
 
