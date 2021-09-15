@@ -12,7 +12,13 @@
       "profile": "https://github.com/calebchiam",
       "contributions": [
         "test",
-        "infra"
+        "infra",
+        "code",
+        "data",
+        "ideas",
+        "maintenance",
+        "doc",
+        "review"
       ]
     }
   ],
