@@ -265,6 +265,20 @@
         "doc",
         "review"
       ]
+    },
+    {
+      "login": "calebchiam",
+      "name": "calebchiam",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14286996?v=4",
+      "profile": "https://github.com/calebchiam",
+      "contributions": [
+        "code",
+        "data",
+        "ideas",
+        "maintenance",
+        "doc",
+        "review"
+      ]
     }
   ],
   "contributorsPerLine": 7,
