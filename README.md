@@ -1,6 +1,6 @@
 # Cornell Conversational Analysis Toolkit ([ConvoKit](http://convokit.cornell.edu/))
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-22-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-23-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 <p>
@@ -244,6 +244,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/cristiandnm"><img src="https://avatars.githubusercontent.com/u/8700563?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Cristian Danescu-Niculescu-Mizil</b></sub></a><br /><a href="https://github.com/CornellNLP/Cornell-Conversational-Analysis-Toolkit/commits?author=cristiandnm" title="Code">💻</a> <a href="#data-cristiandnm" title="Data">🔣</a> <a href="#ideas-cristiandnm" title="Ideas, Planning, & Feedback">🤔</a> <a href="#maintenance-cristiandnm" title="Maintenance">🚧</a> <a href="https://github.com/CornellNLP/Cornell-Conversational-Analysis-Toolkit/commits?author=cristiandnm" title="Documentation">📖</a> <a href="https://github.com/CornellNLP/Cornell-Conversational-Analysis-Toolkit/pulls?q=is%3Apr+reviewed-by%3Acristiandnm" title="Reviewed Pull Requests">👀</a></td>
+    <td align="center"><a href="http://wanganzhou.com"><img src="https://avatars.githubusercontent.com/u/4683423?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Andrew Wang</b></sub></a><br /><a href="https://github.com/CornellNLP/Cornell-Conversational-Analysis-Toolkit/commits?author=qema" title="Code">💻</a> <a href="#data-qema" title="Data">🔣</a> <a href="#ideas-qema" title="Ideas, Planning, & Feedback">🤔</a> <a href="#maintenance-qema" title="Maintenance">🚧</a> <a href="https://github.com/CornellNLP/Cornell-Conversational-Analysis-Toolkit/commits?author=qema" title="Documentation">📖</a> <a href="https://github.com/CornellNLP/Cornell-Conversational-Analysis-Toolkit/pulls?q=is%3Apr+reviewed-by%3Aqema" title="Reviewed Pull Requests">👀</a></td>
   </tr>
 </table>
 
