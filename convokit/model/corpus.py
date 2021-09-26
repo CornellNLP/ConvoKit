@@ -348,11 +348,11 @@ class Corpus:
         Get a DataFrame of the utterances with fields and metadata attributes, with an optional selector that filters
         utterances that should be included. Edits to the DataFrame do not change the corpus in any way.
 
-		:param exclude_meta: whether to exclude metadata
-		:param selector: a (lambda) function that takes a Utterance and returns True or False (i.e. include / exclude).
-			By default, the selector includes all Utterances in the Corpus.
-		:return: a pandas DataFrame
-		"""
+        :param exclude_meta: whether to exclude metadata
+        :param selector: a (lambda) function that takes a Utterance and returns True or False (i.e. include / exclude).
+            By default, the selector includes all Utterances in the Corpus.
+        :return: a pandas DataFrame
+        """
         return get_utterances_dataframe(self, selector, exclude_meta)
 
     def iter_conversations(self, selector: Optional[Callable[[Conversation], bool]] = lambda convo: True) -> Generator[
@@ -372,19 +372,19 @@ class Corpus:
                                     exclude_meta: bool = False):
         """
         Get a DataFrame of the conversations with fields and metadata attributes, with an optional selector that filters
-		for conversations that should be included. Edits to the DataFrame do not change the corpus in any way.
+        for conversations that should be included. Edits to the DataFrame do not change the corpus in any way.
 
-		:param exclude_meta: whether to exclude metadata
-		:param selector: a (lambda) function that takes a Conversation and returns True or False (i.e. include / exclude).
-			By default, the selector includes all Conversations in the Corpus.
-		:return: a pandas DataFrame
-		"""
+        :param exclude_meta: whether to exclude metadata
+        :param selector: a (lambda) function that takes a Conversation and returns True or False (i.e. include / exclude).
+            By default, the selector includes all Conversations in the Corpus.
+        :return: a pandas DataFrame
+        """
         return get_conversations_dataframe(self, selector, exclude_meta)
 
     def iter_speakers(self, selector: Optional[Callable[[Speaker], bool]] = lambda speaker: True) -> \
             Generator[Speaker, None, None]:
         """
-		Get Speakers in the Corpus, with an optional selector that filters for Speakers that should be included
+        Get Speakers in the Corpus, with an optional selector that filters for Speakers that should be included
 
         :param selector: a (lambda) function that takes a Speaker and returns True or False (i.e. include / exclude).
             By default, the selector includes all Speakers in the Corpus.
@@ -399,13 +399,13 @@ class Corpus:
                                exclude_meta: bool = False):
         """
         Get a DataFrame of the Speakers with fields and metadata attributes, with an optional selector that filters
-		Speakers that should be included. Edits to the DataFrame do not change the corpus in any way.
+        Speakers that should be included. Edits to the DataFrame do not change the corpus in any way.
 
-		:param exclude_meta: whether to exclude metadata
-		:param selector: selector: a (lambda) function that takes a Speaker and returns True or False
-			(i.e. include / exclude). By default, the selector includes all Speakers in the Corpus.
-		:return: a pandas DataFrame
-		"""
+        :param exclude_meta: whether to exclude metadata
+        :param selector: selector: a (lambda) function that takes a Speaker and returns True or False
+            (i.e. include / exclude). By default, the selector includes all Speakers in the Corpus.
+        :return: a pandas DataFrame
+        """
         return get_speakers_dataframe(self, selector, exclude_meta)
 
     def iter_users(self, selector=lambda speaker: True):
@@ -494,11 +494,11 @@ class Corpus:
 
     def filter_conversations_by(self, selector: Callable[[Conversation], bool]):
         """
-		Mutate the corpus by filtering for a subset of Conversations within the Corpus.
+        Mutate the corpus by filtering for a subset of Conversations within the Corpus.
 
-		:param selector: function for selecting which Conversations to keep
-		:return: the mutated Corpus
-		"""
+        :param selector: function for selecting which Conversations to keep
+        :return: the mutated Corpus
+        """
 
         self.conversations = {convo_id: convo for convo_id, convo in self.conversations.items() if selector(convo)}
         utt_ids = set([utt for convo in self.conversations.values() for utt in convo.get_utterance_ids()])
@@ -1268,6 +1268,62 @@ class Corpus:
         c_df = self.get_attribute_table('conversation', convo_attrs)
         c_df.columns = [x + convo_suffix for x in c_df.columns]
         return uc_df.join(u_df, on='speaker').join(c_df, on='convo_id')
+
+    @staticmethod
+    def from_pandas(speakers_df: DataFrame, utterances_df: DataFrame, conversations_df: DataFrame) -> Corpus:
+        
+        """ Helper function to combine speakers, utterances and conversations data into Corpus format
+         
+        Arguments:
+            speakers_df {DataFrame} -- speakers data, in a pandas Dataframe."id" column expected, with metadata (optional)
+            utterances_df {DataFrame} -- utterances data, in a pandas Dataframe. All primary utterance fields expected, with metadata (optional)
+            conversations_df {DataFrame} -- conversations data, in a pandas Dataframe. "id" column expected, with metadata (optional)
+        
+        Returns:
+            Corpus -- the combined corpus (with metadata)
+        """
+        #dict containing all primary fields expected in utterance dataframe
+        primary_utt_cols : {"speaker_col" : "speaker"
+                            ,"id_col" : "id"
+                            ,"time_col" : "timestamp"
+                            ,"conv_id_col" : 'conversation_id'
+                            ,"reply_to_col" : "reply_to"
+                            ,"utterance_col" : "text"}
+        
+        #checking if dataframes contain their respective required columns
+        assert pd.Series(list(primary_utt_cols.values())).isin(utterances_df.columns).all(), "Utterances dataframe must contain all primary keys"
+        assert pd.Series(["id"]).isin(speakers_df.columns).all(), "Speakers dataframe must contain 'id' column"
+        assert pd.Series(["id"]).isin(conversations_df.columns).all(), "Conversations dataframe must contain 'id' column"
+        
+        utterance_meta_cols = extract_meta_from_df(utterances_df)
+        speaker_meta_cols = extract_meta_from_df(speakers_df)
+
+        utterance_list = []
+        for index, row in tqdm(utterances_df.iterrows()):
+            
+            # extracting utterance metadata
+            if utterance_meta_cols:
+                metadata = {}
+                for meta_col in utterance_meta_cols:
+                    metadata[meta_col] = row[meta_col]
+            else: 
+                metadata = None
+            
+            # extracting speaker metadata from speakers_df
+            speaker_meta = speakers_df[speakers_df['id'] == row[primary_utt_cols["speaker_col"]]][speaker_meta_cols].to_dict(orient='records')[0] if speaker_meta_cols else None
+            
+            # adding utterance in utterance list
+            utterance_list.append(Utterance(id=str(row[primary_utt_cols["id_col"]]), speaker=Speaker(row[primary_utt_cols["speaker_col"]], speaker_meta), \
+                                            conversation_id=row[primary_utt_cols["conv_id_col"]], reply_to=row[primary_utt_cols["reply_to_col"]], \
+                                            timestamp=row[primary_utt_cols["time_col"]], text=row[primary_utt_cols["utterance_col"]], \
+                                            meta=metadata))
+        # initializing corpus using utterance_list
+        corpus_from_pandas = Corpus(utterances = utterance_list)
+        
+        # updating conversation metadata in corpus
+        corpus_from_pandas = add_conv_meta_df(conversations_df, corpus_from_pandas)
+        
+        return corpus_from_pandas
 
 # def __repr__(self):
 # def __eq__(self, other):

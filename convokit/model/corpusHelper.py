@@ -359,3 +359,18 @@ def dump_jsonlist_from_dict(entries, filename, index_key='id', value_key='value'
         for k, v in entries.items():
             json.dump({index_key: k, value_key: v}, f)
             f.write('\n')
+
+def extract_meta_from_df(df):
+    meta_cols = [col for col in df if col.startswith('meta')]
+    return meta_cols
+
+def add_conv_meta_df(conversations_df, corpus):
+    conv_meta_cols = extract_meta_from_df(conversations_df)
+    for convo in corpus.iter_conversations():
+        # get the conv_id for the conversation by checking from utterance info
+        convo_id = convo.get_id()
+        conversation_meta = conversations_df[conversations_df['id'] == convo_id][conv_meta_cols].to_dict(orient='records')[0] if conv_meta_cols else None
+
+        convo.meta.update(conversation_meta)
+    
+    return corpus
