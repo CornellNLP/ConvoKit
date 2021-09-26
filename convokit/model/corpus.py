@@ -1,3 +1,5 @@
+from pandas import DataFrame
+from tqdm import tqdm
 from typing import List, Collection, Callable, Set, Generator, Tuple, Optional, ValuesView, Union
 from .corpusHelper import *
 from convokit.util import deprecation, warn
@@ -1270,31 +1272,32 @@ class Corpus:
         return uc_df.join(u_df, on='speaker').join(c_df, on='convo_id')
 
     @staticmethod
-    def from_pandas(speakers_df: DataFrame, utterances_df: DataFrame, conversations_df: DataFrame) -> Corpus:
+    def from_pandas(speakers_df: DataFrame, utterances_df: DataFrame, conversations_df: DataFrame) -> 'Corpus':
         
-        """ Helper function to combine speakers, utterances and conversations data into Corpus format
+        """
+        Generates a Corpus from speakers, utterances and conversations dataframes.
+        If the 'id' column is absent, the dataframe index will be used as the id.
          
         Arguments:
-            speakers_df {DataFrame} -- speakers data, in a pandas Dataframe."id" column expected, with metadata (optional)
-            utterances_df {DataFrame} -- utterances data, in a pandas Dataframe. All primary utterance fields expected, with metadata (optional)
-            conversations_df {DataFrame} -- conversations data, in a pandas Dataframe. "id" column expected, with metadata (optional)
+            speakers_df {DataFrame} -- speakers data, in a pandas Dataframe, with metadata optional
+            utterances_df {DataFrame} -- utterances data, in a pandas Dataframe. All primary data fields expected, with metadata optional
+            conversations_df {DataFrame} -- conversations data, in a pandas Dataframe, with metadata optional
         
         Returns:
-            Corpus -- the combined corpus (with metadata)
+            Corpus -- the generated corpus
         """
         #dict containing all primary fields expected in utterance dataframe
-        primary_utt_cols : {"speaker_col" : "speaker"
-                            ,"id_col" : "id"
-                            ,"time_col" : "timestamp"
-                            ,"conv_id_col" : 'conversation_id'
-                            ,"reply_to_col" : "reply_to"
-                            ,"utterance_col" : "text"}
-        
+        columns = ['speaker', 'id', 'timestamp', 'conversation_id', 'reply_to', 'text']
+
+        for (df_type, df) in [('utterances', utterances_df), ('conversations', conversations_df),
+                              ('speakers', speakers_df)]:
+            if 'id' not in df.columns:
+                print(f'ID column is not present in {df_type} dataframe, generated ID column from dataframe index...')
+            df['id'] = df.index
+
         #checking if dataframes contain their respective required columns
-        assert pd.Series(list(primary_utt_cols.values())).isin(utterances_df.columns).all(), "Utterances dataframe must contain all primary keys"
-        assert pd.Series(["id"]).isin(speakers_df.columns).all(), "Speakers dataframe must contain 'id' column"
-        assert pd.Series(["id"]).isin(conversations_df.columns).all(), "Conversations dataframe must contain 'id' column"
-        
+        assert pd.Series(columns).isin(utterances_df.columns).all(), "Utterances dataframe must contain all primary data fields"
+
         utterance_meta_cols = extract_meta_from_df(utterances_df)
         speaker_meta_cols = extract_meta_from_df(speakers_df)
 
@@ -1310,15 +1313,15 @@ class Corpus:
                 metadata = None
             
             # extracting speaker metadata from speakers_df
-            speaker_meta = speakers_df[speakers_df['id'] == row[primary_utt_cols["speaker_col"]]][speaker_meta_cols].to_dict(orient='records')[0] if speaker_meta_cols else None
+            speaker_meta = speakers_df[speakers_df['id'] == row['speaker']][speaker_meta_cols].to_dict(orient='records')[0] if speaker_meta_cols else None
             
             # adding utterance in utterance list
-            utterance_list.append(Utterance(id=str(row[primary_utt_cols["id_col"]]), speaker=Speaker(row[primary_utt_cols["speaker_col"]], speaker_meta), \
-                                            conversation_id=row[primary_utt_cols["conv_id_col"]], reply_to=row[primary_utt_cols["reply_to_col"]], \
-                                            timestamp=row[primary_utt_cols["time_col"]], text=row[primary_utt_cols["utterance_col"]], \
+            utterance_list.append(Utterance(id=str(row['id']), speaker=Speaker(row['speaker'], speaker_meta),
+                                            conversation_id=row['conversation_id'], reply_to=row['reply_to'],
+                                            timestamp=row['timestamp'], text=row['text'],
                                             meta=metadata))
         # initializing corpus using utterance_list
-        corpus_from_pandas = Corpus(utterances = utterance_list)
+        corpus_from_pandas = Corpus(utterances=utterance_list)
         
         # updating conversation metadata in corpus
         corpus_from_pandas = add_conv_meta_df(conversations_df, corpus_from_pandas)
