@@ -1309,7 +1309,7 @@ class Corpus:
             if utterance_meta_cols:
                 metadata = {}
                 for meta_col in utterance_meta_cols:
-                    metadata[meta_col] = row[meta_col]
+                    metadata[meta_col] = row['meta.' + meta_col]
             else: 
                 metadata = None
             
@@ -1317,7 +1317,7 @@ class Corpus:
             speaker_meta = speakers_df[speakers_df['id'] == row['speaker']][speaker_meta_cols].to_dict(orient='records')[0] if speaker_meta_cols else None
             
             # adding utterance in utterance list
-            utterance_list.append(Utterance(id=str(row['id']), speaker=Speaker(row['speaker'], speaker_meta),
+            utterance_list.append(Utterance(id=str(row['id']), speaker=Speaker(id=row['speaker'], meta=speaker_meta),
                                             conversation_id=row['conversation_id'], reply_to=row['reply_to'],
                                             timestamp=row['timestamp'], text=row['text'],
                                             meta=metadata))
