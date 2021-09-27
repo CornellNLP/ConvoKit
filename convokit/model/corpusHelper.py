@@ -366,6 +366,7 @@ def extract_meta_from_df(df):
 
 def add_conv_meta_df(conversations_df, corpus):
     conv_meta_cols = extract_meta_from_df(conversations_df)
+    conversations_df.columns = [col.replace('meta.', '') for col in conversations_df.columns]
     for convo in corpus.iter_conversations():
         # get the conv_id for the conversation by checking from utterance info
         convo_id = convo.get_id()

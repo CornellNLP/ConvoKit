@@ -1313,6 +1313,7 @@ class Corpus:
                 metadata = None
             
             # extracting speaker metadata from speakers_df
+            speakers_df.columns = [col.replace('meta.', '') for col in speakers_df.columns]
             speaker_meta = speakers_df[speakers_df['id'] == row['speaker']][speaker_meta_cols].to_dict(orient='records')[0] if speaker_meta_cols else None
             
             # adding utterance in utterance list
