@@ -1,6 +1,7 @@
 import multiprocessing
 from collections import defaultdict
 from itertools import chain
+from typing import Callable, List, Tuple, Dict, Any, Optional, Union, Set
 
 import numpy as np
 from joblib import Parallel, delayed
@@ -8,7 +9,7 @@ from nltk.tokenize import word_tokenize
 from tqdm import tqdm
 
 from convokit import Transformer
-from convokit.model import Corpus
+from convokit.model import Corpus, Utterance, CorpusComponent
 from .cross_entropy import CrossEntropy
 from .utils import random_sampler
 
@@ -33,9 +34,11 @@ class Surprise(Transformer):
     :param n_jobs:
     """
 
-    def __init__(self, model_key_selector, tokenizer=word_tokenize, surprise_attr_name='surprise',
-                 target_sample_size=100, context_sample_size=100, n_samples=50, sampling_fn=random_sampler,
-                 n_jobs=None):
+    def __init__(self, model_key_selector: Callable[[Utterance], str],
+                 tokenizer: Callable[[str], List[str]] = word_tokenize, surprise_attr_name: str = 'surprise',
+                 target_sample_size: int = 100, context_sample_size: int = 100, n_samples: int = 50,
+                 sampling_fn: Callable[[List[Union[np.ndarray, List[str]]], int, int], np.ndarray] = random_sampler,
+                 n_jobs: int = multiprocessing.cpu_count()):
         self._model_key_selector = model_key_selector
         self._tokenizer = tokenizer
         self._surprise_attr_name = surprise_attr_name
@@ -43,10 +46,11 @@ class Surprise(Transformer):
         self._context_sample_size = context_sample_size
         self._n_samples = n_samples
         self._sampling_fn = sampling_fn
-        self._n_jobs = n_jobs if n_jobs is not None else multiprocessing.cpu_count()
+        self._n_jobs = n_jobs
         self._model_groups = None
 
-    def fit(self, corpus: Corpus, text_func=None, selector=lambda utt: True):
+    def fit(self, corpus: Corpus, text_func: Callable[[Utterance], List[str]] = None,
+            selector: Callable[[Utterance], bool] = lambda utt: True) -> Transformer:
         """
 
         :param corpus:
@@ -73,7 +77,10 @@ class Surprise(Transformer):
 
         return self
 
-    def _compute_surprise(self, target, context, perplexity_fn, **kwargs):
+    def _compute_surprise(self, target: List[str], context: List[List[str]],
+                          perplexity_fn: Callable[[Union[List[str], np.ndarray], Union[List[str], np.ndarray],
+                                                   Optional[Any]], np.ndarray],
+                          **kwargs: Optional[Any]) -> np.ndarray:
         """
 
         :param target:
@@ -91,8 +98,11 @@ class Surprise(Transformer):
             return np.nan
         return perplexity_fn(target_samples, context_samples, **kwargs)
 
-    def _transform(self, corpus, obj_type, group_and_models=None, target_text_func=None, selector=lambda _: True,
-                   group_model_attr_key=None, **kwargs):
+    def _transform(self, corpus: Corpus, obj_type: str,
+                   group_and_models: Callable[[Utterance], Tuple[str, List[str]]] = None,
+                   target_text_func: Callable[[Utterance], List[str]] = None,
+                   selector: Callable[[CorpusComponent], bool] = lambda _: True,
+                   group_model_attr_key: Callable[[str, str], str] = None, **kwargs: Optional[Any]) -> Corpus:
         """
 
         :param corpus:
@@ -105,7 +115,8 @@ class Surprise(Transformer):
         :return:
         """
 
-        def _update_groups_models(utt_, utt_groups_, group_models_):
+        def _update_groups_models(utt_: Utterance, utt_groups_: Dict[str, List[List[str]]],
+                                  group_models_: Dict[str, Set[str]]):
             """
 
             :param utt_:
@@ -122,7 +133,7 @@ class Surprise(Transformer):
                 utt_groups_[group_name].append(self._tokenizer(utt_.text))
             group_models_[group_name].update(models)
 
-        def _format_attr_key(group_name, model_key, format_fn=None):
+        def _format_attr_key(group_name: str, model_key: str, format_fn: Callable[[str, str], str] = None) -> str:
             """
 
             :param group_name:
@@ -136,7 +147,9 @@ class Surprise(Transformer):
                 return model_key
             return f'GROUP_{group_name}__MODEL_{model_key}'
 
-        def __surprise_score_helper(group_name, utt_group, group_models_, surprise_scores_, perplexity_fn):
+        def __surprise_score_helper(group_name: str, utt_group, group_models_, surprise_scores_: Dict,
+                                    perplexity_fn: Callable[[Union[List[str], np.ndarray], Union[List[str], np.ndarray],
+                                                             Optional[Any]], np.ndarray]):
             """
 
             :param group_name:
@@ -153,7 +166,10 @@ class Surprise(Transformer):
                 target = list(chain(*utt_group))
                 surprise_scores_[surprise_key] = self._compute_surprise(target, context, perplexity_fn, **kwargs)
 
-        def _get_surprise_scores(utt_groups_, group_models_, surprise_scores_, perplexity_fn):
+        def _update_surprise_scores(utt_groups_: Dict[str, List[List[str]]], group_models_: Dict[str, Set[str]],
+                                    surprise_scores_: Dict[str, float],
+                                    perplexity_fn: Callable[[Union[List[str], np.ndarray], Union[List[str], np.ndarray],
+                                                             Optional[Any]], np.ndarray]):
             """
 
             :param utt_groups_:
@@ -167,27 +183,29 @@ class Surprise(Transformer):
                                                  perplexity_fn) for group_name in
                 tqdm(utt_groups_, leave=False, desc='surprise'))
 
-        surprise_scores = {}
         perplexity = kwargs['perplexity'] if 'perplexity' in kwargs else CrossEntropy(**kwargs)
 
         if obj_type == 'corpus':
+            surprise_scores = {}
             utt_groups, group_models = defaultdict(list), defaultdict(set)
             for utt in tqdm(corpus.iter_utterances(), desc='transform'):
                 _update_groups_models(utt, utt_groups, group_models)
-            _get_surprise_scores(utt_groups, group_models, surprise_scores, perplexity.perplexity_fn)
+            _update_surprise_scores(utt_groups, group_models, surprise_scores, perplexity.perplexity_fn)
             corpus.add_meta(self._surprise_attr_name, surprise_scores)
         elif obj_type == 'utterance':
             for utt in tqdm(corpus.iter_utterances(selector=selector), desc='transform'):
+                surprise_scores = {}
                 utt_groups, group_models = defaultdict(list), defaultdict(set)
                 _update_groups_models(utt, utt_groups, group_models)
-                _get_surprise_scores(utt_groups, group_models, surprise_scores, perplexity.perplexity_fn)
+                _update_surprise_scores(utt_groups, group_models, surprise_scores, perplexity.perplexity_fn)
                 utt.add_meta(self._surprise_attr_name, surprise_scores)
         else:
             for obj in tqdm(corpus.iter_objs(obj_type, selector=selector), desc='transform'):
+                surprise_scores = {}
                 utt_groups, group_models = defaultdict(list), defaultdict(set)
                 for utt in obj.iter_utterances():
                     _update_groups_models(utt, utt_groups, group_models)
-                _get_surprise_scores(utt_groups, group_models, surprise_scores, perplexity.perplexity_fn)
+                _update_surprise_scores(utt_groups, group_models, surprise_scores, perplexity.perplexity_fn)
                 obj.add_meta(self._surprise_attr_name, surprise_scores)
         return corpus
 

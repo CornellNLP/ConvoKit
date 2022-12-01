@@ -1,9 +1,11 @@
 import tempfile
+from typing import List, Union, IO, Optional
 
 import numpy as np
 
 
-def random_sampler(tokens, sample_size, n_samples):
+def random_sampler(tokens: List[Union[np.ndarray, List[str]]], sample_size: int,
+                   n_samples: int) -> Optional[np.ndarray]:
     """
 
     :param tokens:
@@ -24,7 +26,7 @@ def random_sampler(tokens, sample_size, n_samples):
     return np.array([rng.choice(tokens_list[idx], sample_size) for idx in sample_idxs])
 
 
-def create_tmp_files(num_files):
+def create_tmp_files(num_files: int) -> List[IO]:
     """
 
     :param num_files:
@@ -36,7 +38,7 @@ def create_tmp_files(num_files):
     return tmp_files
 
 
-def delete_tmp_files(tmp_files):
+def delete_tmp_files(tmp_files: List[IO]):
     """
 
     :param tmp_files:

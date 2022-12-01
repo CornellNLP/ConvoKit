@@ -1,5 +1,6 @@
 import multiprocessing
 from collections import Counter
+from typing import Optional, Any, Union, List
 
 import numpy as np
 from joblib import Parallel, delayed
@@ -14,14 +15,14 @@ class CrossEntropy(Perplexity):
     :param kwargs:
     """
 
-    def __init__(self, perplexity_type='convokit_cross_entropy', **kwargs):
+    def __init__(self, perplexity_type: str = 'convokit_cross_entropy', **kwargs: Optional[Any]):
         super().__init__(perplexity_type, **kwargs)
 
         self._smooth = kwargs['smooth'] if 'smooth' in kwargs else True
         self._n_jobs = kwargs['n_jobs'] if 'n_jobs' in kwargs else multiprocessing.cpu_count()
 
     @staticmethod
-    def __cross_entropy(target, context, smooth):
+    def __cross_entropy(target: np.ndarray, context: np.ndarray, smooth: bool) -> float:
         """
 
         :param target:
@@ -41,7 +42,8 @@ class CrossEntropy(Perplexity):
         return sum(-np.log((context_counts.get(token, value) + smooth_k) / (n_context + smooth_v)) for token in
                    target) / n_target
 
-    def perplexity_fn(self, target_samples, context_samples, **kwargs):
+    def perplexity_fn(self, target_samples: Union[List[str], np.ndarray], context_samples: Union[List[str], np.ndarray],
+                      **kwargs: Optional[Any]) -> np.ndarray:
         """
 
         :param target_samples:
@@ -49,7 +51,7 @@ class CrossEntropy(Perplexity):
         :param kwargs:
         :return:
         """
-        self.overwrite_args(kwargs.keys(), kwargs)
+        self.overwrite_args(list(kwargs.keys()), kwargs)
 
         model_scores = Parallel(n_jobs=self._n_jobs, backend='threading')(
             delayed(self.__cross_entropy)(target_sample, context_sample, smooth=self._smooth) for

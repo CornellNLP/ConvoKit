@@ -1,4 +1,7 @@
 from abc import ABC, abstractmethod
+from typing import Optional, Any, List, Dict, Union
+
+import numpy as np
 
 
 class Perplexity(ABC):
@@ -8,7 +11,7 @@ class Perplexity(ABC):
     :param kwargs:
     """
 
-    def __init__(self, perplexity_type='', **kwargs):
+    def __init__(self, perplexity_type: str = '', **kwargs: Optional[Any]):
         self._perplexity_type = perplexity_type
         self.__dict__.update((f'_{arg}', value) for arg, value in kwargs.items())
 
@@ -29,7 +32,7 @@ class Perplexity(ABC):
         private_var_prefix = f'_{self.__class__.__name__}'
         return {arg[1:]: value for arg, value in self.__dict__.items() if not arg.startswith(private_var_prefix)}
 
-    def overwrite_args(self, args_to_overwrite, kwargs):
+    def overwrite_args(self, args_to_overwrite: List[str], kwargs: Dict[str, Any]):
         """
 
         :param args_to_overwrite:
@@ -40,7 +43,8 @@ class Perplexity(ABC):
             self.__dict__[f'_{arg}'] = kwargs[arg] if arg in kwargs else self.__dict__[f'_{arg}']
 
     @abstractmethod
-    def perplexity_fn(self, target_samples, context_samples, **kwargs):
+    def perplexity_fn(self, target_samples: Union[List[str], np.ndarray], context_samples: Union[List[str], np.ndarray],
+                      **kwargs: Optional[Any]) -> np.ndarray:
         """
 
         :param target_samples:

@@ -4,6 +4,7 @@ import subprocess
 import sys
 import warnings
 from pathlib import Path
+from typing import Optional, Any, Union, List
 
 import kenlm
 import numpy as np
@@ -20,7 +21,7 @@ class KenlmPerplexity(Perplexity):
     :param kwargs:
     """
 
-    def __init__(self, perplexity_type='kenlm_perplexity', **kwargs):
+    def __init__(self, perplexity_type: str = 'kenlm_perplexity', **kwargs: Optional[Any]):
         super().__init__(perplexity_type, **kwargs)
 
         self._ngram_order = kwargs['ngram_order'] if 'ngram_order' in kwargs else 2
@@ -40,7 +41,7 @@ class KenlmPerplexity(Perplexity):
         self._n_jobs = kwargs['n_jobs'] if 'n_jobs' in kwargs else multiprocessing.cpu_count()
 
     @staticmethod
-    def __populate_train_file(filepath, samples):
+    def __populate_train_file(filepath: str, samples: Union[List[str], np.ndarray]):
         """
 
         :param filepath:
@@ -51,7 +52,7 @@ class KenlmPerplexity(Perplexity):
             for sample in samples:
                 f.write(f'{" ".join(sample)}\n')
 
-    def _get_kenlm_model(self, context_samples):
+    def _get_kenlm_model(self, context_samples: Union[List[str], np.ndarray]) -> kenlm.Model:
         """
 
         :param context_samples:
@@ -78,7 +79,8 @@ class KenlmPerplexity(Perplexity):
 
         return kenlm_model
 
-    def perplexity_fn(self, target_samples, context_samples, **kwargs):
+    def perplexity_fn(self, target_samples: Union[List[str], np.ndarray], context_samples: Union[List[str], np.ndarray],
+                      **kwargs: Optional[Any]) -> np.ndarray:
         """
 
         :param target_samples:
@@ -86,7 +88,7 @@ class KenlmPerplexity(Perplexity):
         :param kwargs:
         :return:
         """
-        self.overwrite_args(kwargs.keys(), kwargs)
+        self.overwrite_args(list(kwargs.keys()), kwargs)
 
         kenlm_model = self._get_kenlm_model(context_samples)
         model_scores = Parallel(n_jobs=self._n_jobs, backend='threading')(
