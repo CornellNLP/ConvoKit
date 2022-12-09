@@ -1,5 +1,4 @@
-import tempfile
-from typing import List, Union, IO, Optional
+from typing import List, Union, Optional
 
 import numpy as np
 
@@ -24,28 +23,3 @@ def random_sampler(tokens: List[Union[np.ndarray, List[str]]], sample_size: int,
     rng = np.random.default_rng()
     sample_idxs = rng.integers(0, tokens_list.shape[0], size=n_samples)
     return np.array([rng.choice(tokens_list[idx], sample_size) for idx in sample_idxs])
-
-
-def create_tmp_files(num_files: int) -> List[IO]:
-    """
-
-    :param num_files:
-    :return:
-    """
-    tmp_files = []
-    for _ in range(num_files):
-        tmp_files.append(tempfile.NamedTemporaryFile('w', delete=True))
-    return tmp_files
-
-
-def delete_tmp_files(tmp_files: List[IO]):
-    """
-
-    :param tmp_files:
-    :return:
-    """
-    for tmp_file in tmp_files:
-        try:
-            tmp_file.close()
-        except FileNotFoundError:
-            pass

@@ -1,4 +1,4 @@
-from .cross_entropy import CrossEntropy
-from .kenlm_perplexity import KenlmPerplexity
-from .perplexity import Perplexity
+from .convokit_lm import ConvoKitLanguageModel
+from .kenlm import Kenlm
+from .language_model import LanguageModel
 from .surprise import *
