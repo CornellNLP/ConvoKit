@@ -3,6 +3,7 @@ from itertools import chain
 from typing import Callable, List, Tuple, Dict, Any, Optional, Union, Set
 
 import numpy as np
+from IPython import get_ipython
 from joblib import Parallel, delayed
 from nltk.tokenize import word_tokenize
 from tqdm import tqdm

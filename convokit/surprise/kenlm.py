@@ -3,12 +3,12 @@ import subprocess
 import time
 import warnings
 from pathlib import Path
-from typing import Optional, Any, Union, List
+from typing import Optional, Any, Union, List, Tuple
 
 import kenlm
 import numpy as np
 
-from .file_utils import create_tmp_files, delete_files
+from .file_utils import create_temp_files, delete_files
 from .language_model import LanguageModel
 
 
@@ -49,7 +49,7 @@ class Kenlm(LanguageModel):
         self._model_filename = kwargs['model_filename'] if 'model_filename' in kwargs else self._model_type
 
     @staticmethod
-    def load_kenlm_from_file(trained_model_filepath):
+    def load_kenlm_from_file(trained_model_filepath: str) -> kenlm.Model:
         """
 
         :param trained_model_filepath:
@@ -58,7 +58,7 @@ class Kenlm(LanguageModel):
         kenlm_model = kenlm.Model(trained_model_filepath)
         return kenlm_model
 
-    def __make_files(self):
+    def __make_files(self) -> Tuple[str, str, str]:
         """
 
         :return:
@@ -71,7 +71,7 @@ class Kenlm(LanguageModel):
             arpa_filename = os.path.join(self._models_dir, epoch, f'{self._model_filename}.arpa')
             model_filename = os.path.join(self._models_dir, epoch, f'{self._model_filename}.bin')
         else:
-            train_file, arpa_file, model_file = create_tmp_files(num_files=3)
+            train_file, arpa_file, model_file = create_temp_files(num_files=3)
             train_filename, arpa_filename, model_filename = train_file.name, arpa_file.name, model_file.name
         return train_filename, arpa_filename, model_filename
 

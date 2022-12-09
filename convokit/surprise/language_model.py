@@ -19,7 +19,7 @@ class LanguageModel(ABC):
         self.__dict__.update((f'_{arg}', value) for arg, value in kwargs.items())
 
     @property
-    def type(self):
+    def type(self) -> str:
         """
 
         :return:
@@ -27,7 +27,7 @@ class LanguageModel(ABC):
         return self._model_type
 
     @property
-    def config(self):
+    def config(self) -> Dict[str, Any]:
         """
 
         :return:

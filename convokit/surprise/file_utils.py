@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import List, IO
 
 
-def create_tmp_files(num_files: int) -> List[IO]:
+def create_temp_files(num_files: int) -> List[IO]:
     """
 
     :param num_files:
@@ -15,7 +15,7 @@ def create_tmp_files(num_files: int) -> List[IO]:
     return tmp_files
 
 
-def delete_files(tmp_filenames: List[str], remove_parent_dir=True):
+def delete_files(tmp_filenames: List[str], remove_parent_dir: bool = True):
     """
 
     :param tmp_filenames:
