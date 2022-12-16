@@ -59,6 +59,7 @@ setup(
     ],
     extras_require={
         "craft": ["torch>=0.12"],
+        "kenlm": ["kenlm>=0.0.0"],
     },
     classifiers=[
         "Programming Language :: Python",

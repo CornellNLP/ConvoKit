@@ -1,12 +1,15 @@
 import json
 import os
 import shutil
+import tempfile
 import urllib.request
 import uuid
 import warnings
 import zipfile
-from typing import Dict
+from pathlib import Path
+from typing import Dict, Union, Optional, List, IO
 
+import numpy as np
 import requests
 
 
@@ -238,7 +241,6 @@ def download_local(name: str, data_dir: str):
 def _download_helper(
     dataset_path: str, url: str, verbose: bool, name: str, downloadeds_path: str
 ) -> None:
-
     if (
         url.lower().endswith(".corpus")
         or url.lower().endswith(".corpus.zip")
@@ -254,7 +256,15 @@ def _download_helper(
                 if length > 1e6
                 else str(round(length / 1e3, 1)) + "KB"
             )
-            print("Downloading", name, "from", url, "(" + length + ")...", end=" ", flush=True)
+            print(
+                "Downloading",
+                name,
+                "from",
+                url,
+                "(" + length + ")...",
+                end=" ",
+                flush=True,
+            )
         shutil.copyfileobj(response, out_file)
 
     # post-process (extract) corpora
@@ -278,7 +288,9 @@ def _download_helper(
         )  # os.path.join(os.path.dirname(data), name)
         f.write(
             "{}$#${}$#${}\n".format(
-                name, os.path.realpath(os.path.dirname(dataset_path) + "/"), corpus_version(fn)
+                name,
+                os.path.realpath(os.path.dirname(dataset_path) + "/"),
+                corpus_version(fn),
             )
         )
         # f.write(name + "\n")
@@ -292,7 +304,6 @@ def corpus_version(filename: str) -> int:
 
 # retrieve grouping and completes the download link for subreddit
 def get_subreddit_info(subreddit_name: str) -> str:
-
     # base directory of subreddit corpuses
     subreddit_base = "http://zissou.infosci.cornell.edu/convokit/datasets/subreddit-corpus/"
     data_dir = subreddit_base + "corpus-zipped/"
@@ -335,13 +346,17 @@ def _get_wikiconv_year_info(year: str) -> str:
 
 
 def _get_supreme_info(year: str) -> str:
-
     supreme_base = "http://zissou.infosci.cornell.edu/convokit/datasets/supreme-corpus/"
     return supreme_base + "supreme-" + year + ".zip"
 
 
 def meta_index(corpus=None, filename: str = None) -> Dict:
-    keys = ["utterances-index", "conversations-index", "speakers-index", "overall-index"]
+    keys = [
+        "utterances-index",
+        "conversations-index",
+        "speakers-index",
+        "overall-index",
+    ]
     if corpus is not None:
         return {k: v for k, v in corpus.meta_index.items() if k in keys}
     if filename is not None:
@@ -379,3 +394,55 @@ def deprecation(prev_name: str, new_name: str, stacklevel: int = 3):
 
 def create_safe_id():
     return "_" + uuid.uuid4().hex
+
+
+def random_sampler(
+    tokens: List[Union[np.ndarray, List[str]]], sample_size: int, n_samples: int
+) -> Optional[np.ndarray]:
+    """
+
+    :param tokens:
+    :param sample_size:
+    :param n_samples:
+    :return:
+    """
+    if not sample_size:
+        assert len(tokens) == 1
+        return np.tile(tokens[0], (n_samples, 1))
+
+    tokens_list = np.array([tokens_ for tokens_ in tokens if len(tokens_) >= sample_size])
+    if tokens_list.shape[0] == 0:
+        return None
+
+    rng = np.random.default_rng()
+    sample_idxs = rng.integers(0, tokens_list.shape[0], size=n_samples)
+    return np.array([rng.choice(tokens_list[idx], sample_size) for idx in sample_idxs])
+
+
+def create_temp_files(num_files: int) -> List[IO]:
+    """
+
+    :param num_files:
+    :return:
+    """
+    tmp_files = []
+    for _ in range(num_files):
+        tmp_files.append(tempfile.NamedTemporaryFile("w", delete=True))
+    return tmp_files
+
+
+def delete_files(tmp_filenames: List[str], remove_parent_dir: bool = True):
+    """
+
+    :param tmp_filenames:
+    :param remove_parent_dir:
+    :return:
+    """
+    tmp_filepaths = [Path(tmp_filename) for tmp_filename in tmp_filenames]
+    parent_dir = tmp_filepaths[0].parents[0]
+
+    for tmp_filepath in tmp_filepaths:
+        Path.unlink(tmp_filepath, missing_ok=True)
+
+    if remove_parent_dir and len(list(parent_dir.glob("*"))) == 0:
+        Path.rmdir(parent_dir)
