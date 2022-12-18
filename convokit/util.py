@@ -399,12 +399,12 @@ def create_safe_id():
 def random_sampler(
     tokens: List[Union[np.ndarray, List[str]]], sample_size: int, n_samples: int
 ) -> Optional[np.ndarray]:
-    """
+    """Generates random samples from a list of lists of tokens.
 
-    :param tokens:
-    :param sample_size:
-    :param n_samples:
-    :return:
+    :param tokens: A list of lists of tokens to sample from.
+    :param sample_size: The number of tokens to include in each sample.
+    :param n_samples: The number of samples to take.
+    :return: A `numpy.array`, where each row is a sample of tokens.
     """
     if not sample_size:
         assert len(tokens) == 1
@@ -420,10 +420,10 @@ def random_sampler(
 
 
 def create_temp_files(num_files: int) -> List[IO]:
-    """
+    """Creates a specified number of `tempfile` files.
 
-    :param num_files:
-    :return:
+    :param num_files: The number of `tempfile` files to be created.
+    :return: A list of `tempfile.NamedTemporaryFile` files.
     """
     tmp_files = []
     for _ in range(num_files):
@@ -432,11 +432,11 @@ def create_temp_files(num_files: int) -> List[IO]:
 
 
 def delete_files(tmp_filenames: List[str], remove_parent_dir: bool = True):
-    """
+    """Delete temporary files generated intermittently.
 
-    :param tmp_filenames:
-    :param remove_parent_dir:
-    :return:
+    :param tmp_filenames: The filenames of all the files to be deleted.
+    :param remove_parent_dir: Indicator of whether the parent directory is to be deleted, if it is
+        empty after deleting all the temporary files, defaults to True.
     """
     tmp_filepaths = [Path(tmp_filename) for tmp_filename in tmp_filenames]
     parent_dir = tmp_filepaths[0].parents[0]
