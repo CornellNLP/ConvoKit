@@ -8,26 +8,29 @@ from joblib import Parallel, delayed
 class LanguageModel(ABC):
     """The abstract base class for all language models.
 
-    The language model base class defines the `evaluate()` method, which aims at performing language
-    model evaluation using the `eval_type` specified as an argument to the `evaluate()` method. Note
-    that this method must be defined and implemented in the subclass (e.g., if the `eval_type` is
-    set to `cross_entropy`, the subclass must implement `cross_entropy()` method). The implemented
-    method takes in a list of target tokens and a list of context tokens, and outputs the language
+    The language model base class defines the :py:meth:`~convokit.LanguageModel.evaluate` method,
+    which performs language model evaluation using the `eval_type` specified as an argument to the
+    :py:meth:`~convokit.LanguageModel.evaluate` method. Note that this method must be defined and
+    implemented in the subclass (e.g., if the `eval_type` is set to "cross_entropy", the subclass
+    must implement :py:meth:`~convokit.LanguageModel.cross_entropy` method). The implemented method
+    should take in a list of target tokens and a list of context tokens, and output the language
     model evaluation score.
 
     Since most language models employs cross-entropy and perplexity evaluations, this base class
-    includes unimplemented designs of `cross_entropy()` and `perplexity()` functions, which may be
-    implemented (as needed) in the subclasses. For reference, see: `convokit.ConvoKitLanguageModel`
-    and `convokit.Kenlm` classes, which extend this base class.
+    includes unimplemented designs of :py:meth:`~convokit.LanguageModel.cross_entropy` and
+    :py:meth:`~convokit.LanguageModel.perplexity` functions, which may be implemented (as needed) in
+    the subclasses. See the subclass implementations: :py:class:`~convokit.ConvoKitLanguageModel`
+    and :py:class:`~convokit.Kenlm` classes, which extend this base class.
 
-    The `evaluate()` method defined in this class is called on a set of context samples and a set of
-    target samples, and evaluates the target-context distribution deviations using the `eval_type`
-    language model evaluation function.
+    The :py:meth:`~convokit.LanguageModel.evaluate` method defined in this class is called on a set
+    of context samples and a set of target samples, and evaluates the target-context distribution
+    deviations using the `eval_type` language model evaluation function.
 
-    Note: The subclasses cannot override the `evaluate()` method.
+    Note: The subclasses cannot override the :py:meth:`~convokit.LanguageModel.evaluate` method.
 
-    :param model_type: The name of the `convokit.LanguageModel`, defaults to "language_model". Note
-        that the `model_type` can be accessed using the `type` property (e.g., `lm.type`).
+    :param model_type: The name (identifier) of :py:class:`~convokit.LanguageModel`, defaults to
+        "language_model". Note that the `model_type` can be accessed using the `type` property
+        (e.g., `lm.type`).
     :param kwargs: Any additional keyword arguments needed in the language model evaluations. For
         instance, the cross-entropy computes might require smoothing parameter; hence, a `smooth`
         parameter can be passed as an additional keyword argument.
@@ -78,15 +81,16 @@ class LanguageModel(ABC):
     def cross_entropy(
         self, target: Union[List[str], np.ndarray], context: Union[List[str], np.ndarray]
     ) -> float:
-        """An unimplemented base class method to compute the cross-entropy.
+        r"""An unimplemented base class method to compute the cross-entropy.
 
         The cross-entropy between a list of target tokens and a list of context tokens is to be
         computed by the implementation in the subclass. Note that any variables to be used in this
         method (e.g., smoothing value) must be accessed from the class scope.
 
-        Calculates :math:`H(P, Q) = -\sum_{x \in X}P(x) \times \ln(Q(x))`. Note that we use the
-        natural logarithm; however, any base and corresponding exponent can be employed. For
-        instance, KenLM uses base-10 (see `convokit.Kenlm` for reference).
+        Calculates :math:`H(P, Q) = -\sum_{x \in X}P(x) \times \ln(Q(x))`.
+
+        Note that we use the natural logarithm; however, any base and corresponding exponent can be
+        employed. For instance, KenLM uses base-10 (see :py:class:`~convokit.Kenlm` for reference).
 
         :param target: A list of tokens that make up the target text (P).
         :param context: A list of tokens that make up the context text (Q).
@@ -97,15 +101,16 @@ class LanguageModel(ABC):
     def perplexity(
         self, target: Union[List[str], np.ndarray], context: Union[List[str], np.ndarray]
     ) -> float:
-        """An unimplemented base class method to compute perplexity.
+        r"""An unimplemented base class method to compute perplexity.
 
         The perplexity between a list of target tokens and a list of context tokens is to be
         computed by the implementation in the subclass. Note that any variables to be used in this
         method (e.g., smoothing value) must be accessed from the class scope.
 
-        Calculates :math:`\text{PPL}(P, Q) = \exp(-\sum_{x \in X}P(x) \times \ln(Q(x)))`. Note that
-        we use the natural logarithm; however, any base and corresponding exponent can be employed.
-        For instance, KenLM uses base-10 (see `convokit.Kenlm` for reference).
+        Calculates :math:`\text{PPL}(P, Q) = \exp(-\sum_{x \in X}P(x) \times \ln(Q(x)))`.
+
+        Note that we use the natural logarithm; however, any base and corresponding exponent can be
+        employed. For instance, KenLM uses base-10 (see :py:class:`~convokit.Kenlm` for reference).
 
         :param target: A list of tokens that make up the target text (P).
         :param context: A list of tokens that make up the context text (Q).
@@ -123,11 +128,12 @@ class LanguageModel(ABC):
     ) -> np.ndarray:
         """Computes the average deviation between target and context distributions.
 
-        For a given list of fixed size target and context sample lists, the `evaluate()` method
-        computes the deviation between each target and corresponding context pair, using `eval_type`
-        language model evaluation metric. Note that the subclass implementing this abstract base
-        class must define and implement the `eval_type` evaluation method. The final score output by
-        this method is an average of all the individual scores.
+        For a given list of (fixed size) target sample lists and (fixed size) context sample lists,
+        the :py:meth:`~convokit.LanguageModel.evaluate` method computes the deviation between each
+        target and corresponding context pair, using `eval_type` language model evaluation metric.
+        Note that the subclass implementing this abstract base class must define and implement the
+        `eval_type` evaluation method. The final score output by this method is an average of all
+        the individual scores.
 
         Also note that, if specified as keyword arguments, any class variable values are overwritten
         from within this method.
@@ -138,7 +144,8 @@ class LanguageModel(ABC):
             corresponding target sample lists.
         :param eval_type: The language model evaluation function (as `str`), used in evaluating the
             language model trained using the context text, evaluated using the target text. Defaults
-            to "cross_entropy", i.e., calls the `cross_entropy()` method.
+            to "cross_entropy", i.e., calls the :py:meth:`~convokit.LanguageModel.cross_entropy`
+            method.
         :param kwargs: Any additional keyword arguments needed in the language model evaluations. If
             any class variables are passed using `kwargs`, the corresponding class variable values
             are overwritten using the new values.

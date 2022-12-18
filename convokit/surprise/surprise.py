@@ -139,46 +139,64 @@ class Surprise(Transformer):
         :param target: A list of tokens in the target.
         :param context: A list of lists of tokens in each group of the context.
         :param lm_evaluation_fn: The language model evaluation function. If using an instance of
-            `convokit.LanguageModel`, the `evaluate` function is to be used here. To see examples of
-            `convokit.LanguageModel`, see: `convokit.ConvoKitLanguageModel` and `convokit.Kenlm`.
-            The function takes in a list of target samples and corresponding context samples, and
+            :py:class:`~convokit.LanguageModel`, the :py:meth:`~convokit.LanguageModel.evaluate`
+            function is to be used here. To see examples of :py:class:`~convokit.LanguageModel`,
+            see: :py:class:`~convokit.ConvoKitLanguageModel` and :py:class:`~convokit.Kenlm`. This
+            function takes in a list of target samples and corresponding context samples, and
             returns the amount of surprise using some underlying language model evaluation metric.
         :param kwargs: Additional keyword arguments to be passed to the language model evaluation
             function:
-            - When using `convokit.LanguageModel`, the following keywords are relevant:
-                - `eval_type`: The language model evaluation metric, defaults to `cross_entropy`.
-                - The following arguments, if specified, overwrite the existing class values:
-                    - `n_jobs`: The number of concurrent threads to be used for routines that are
+
+            * When using :py:class:`~convokit.LanguageModel`, the following keywords are relevant:
+
+                * `eval_type`: The language model evaluation metric, defaults to "cross_entropy".
+                * The following arguments, if specified, overwrite the existing class values:
+
+                    * `n_jobs`: The number of concurrent threads to be used for routines that are
                       parallelized with `joblib`, defaults to 1.
-                    - `model_type`: Name of `convokit.LanguageModel`, defaults to "language_model".
-            - When using `convokit.ConvoKitLanguageModel`, the following keywords are relevant:
-                - `eval_type`: The language model evaluation metric, defaults to `cross_entropy`.
-                - The following arguments, if specified, overwrite the existing class values:
-                    - `smooth`: Indicator of using Laplace smoothing in the computation of surprise
+                    * `model_type`: The name of :py:class:`~convokit.LanguageModel`, defaults to
+                      "language_model".
+
+            * When using :py:class:`~convokit.ConvoKitLanguageModel`, the following keywords are
+              relevant:
+
+                * `eval_type`: The language model evaluation metric, defaults to "cross_entropy".
+                * The following arguments, if specified, overwrite the existing class values:
+
+                    * `smooth`: Indicator of using Laplace smoothing in the computation of surprise
                       scores, defaults to `True`.
-                - The following arguments, inherited from `convokit.LanguageModel`, if specified,
-                  overwrite the existing class values:
-                    - `n_jobs`: The number of concurrent threads to be used for routines that are
+
+                * The following arguments, inherited from :py:class:`~convokit.LanguageModel`, if
+                  specified, overwrite the existing class values:
+
+                    * `n_jobs`: The number of concurrent threads to be used for routines that are
                       parallelized with `joblib`, defaults to 1.
-                    - `model_type`: Name of `convokit.LanguageModel`, defaults to "convokit_lm".
-            - When using `convokit.Kenlm`, the following keywords are relevant:
-                - `eval_type`: The language model evaluation metric, defaults to `cross_entropy`.
-                - The following arguments, if specified, overwrite the existing class values:
-                    - `ngram_order`: The order of n-gram language model.
-                    - `trained_model_filepath`: The filepath to a pre-trained language model that is
+                    * `model_type`: The name of :py:class:`~convokit.LanguageModel`, defaults to
+                      "convokit_lm".
+
+            * When using :py:class:`~convokit.Kenlm`, the following keywords are relevant:
+
+                * `eval_type`: The language model evaluation metric, defaults to "cross_entropy".
+                * The following arguments, if specified, overwrite the existing class values:
+
+                    * `ngram_order`: The order of n-gram language model.
+                    * `trained_model_filepath`: The filepath to a pre-trained language model that is
                       to be persistently used.
-                    - `is_persistent`: Indicator of model persistence, i.e., the model generated
+                    * `is_persistent`: Indicator of model persistence, i.e., the model generated
                       in the first pass or that loaded from `trained_model_filepath` is used in all
                       evaluations. When `trained_model_filepath` is specified, persistence is
                       automatically implied.
-                    - `kenlm_path`: The folder path to the folder of KenLM library.
-                    - `models_dir`: The folder path to store the (trained) binary KenLM models.
-                    - `model_filename`: The filename used in storing the KenLM model artefacts.
-                - The following arguments, inherited from `convokit.LanguageModel`, if specified,
-                  overwrite the existing class values:
-                    - `n_jobs`: The number of concurrent threads to be used for routines that are
+                    * `kenlm_path`: The folder path to the folder of KenLM library.
+                    * `models_dir`: The folder path to store the (trained) binary KenLM models.
+                    * `model_filename`: The filename used in storing the KenLM model artefacts.
+
+                * The following arguments, inherited from :py:class:`~convokit.LanguageModel`, if
+                  specified, overwrite the existing class values:
+
+                    * `n_jobs`: The number of concurrent threads to be used for routines that are
                       parallelized with `joblib`, defaults to 1.
-                    - `model_type`: Name of `convokit.LanguageModel`, defaults to "kenlm".
+                    * `model_type`: The name of :py:class:`~convokit.LanguageModel`, defaults to
+                      "kenlm".
         :return: The surprise score output by the language model evaluation function.
         """
         target_tokens = np.array(target)
@@ -234,16 +252,20 @@ class Surprise(Transformer):
             the default key used will be "GROUP_group_name_MODEL_model_key" unless `group_name` and
             `model_key` are equal, in which case just "model_key" will be used as the key.
         :param kwargs: Additional keyword arguments to be passed for surprise computations (see
-            the documentation for `Surprise._compute_surprise()` for these arguments), and in
-            creating the language model (if needed):
-            - `language_model`: An instance of `convokit.LanguageModel` to be used in computing the
-              surprise scores, defaults to `convokit.ConvoKitLanguageModel` and the arguments to the
-              `convokit.ConvoKitLanguageModel` can be specified here as:
-                - `smooth`: Indicator of using Laplace smoothing in the computation of surprise
+            the documentation for :py:meth:`~Surprise._compute_surprise()` for these arguments), and
+            in creating the language model (if needed):
+
+            * `language_model`: An instance of :py:class:`~convokit.LanguageModel` to be used in
+              computing the surprise scores, defaults to :py:class:`~convokit.ConvoKitLanguageModel`
+              and the arguments to the :py:class:`~convokit.ConvoKitLanguageModel` can be specified
+              here as:
+
+                * `smooth`: Indicator of using Laplace smoothing in the computation of surprise
                   scores, defaults to `True`.
-                - `n_jobs`: The number of concurrent threads to be used for routines that are
+                * `n_jobs`: The number of concurrent threads to be used for routines that are
                   parallelized with `joblib`, defaults to 1.
-                - `model_type`: Name of `convokit.LanguageModel`, defaults to "convokit_lm".
+                * `model_type`: The name of :py:class:`~convokit.LanguageModel`, defaults to
+                  "convokit_lm".
         :return: A modified version of the input corpus with the surprise scores.
         """
 
@@ -315,11 +337,11 @@ class Surprise(Transformer):
             :param surprise_scores_: The surprise score (dictionary value) that is to be updated for
                 the corresponding utterance group and model. The dictionary is modified in place.
             :param lm_evaluation_fn: The language model evaluation function. If using an instance
-                of `convokit.LanguageModel`, the `evaluate` function is to be used here. To see the
-                examples of `convokit.LanguageModel`, see: `convokit.ConvoKitLanguageModel` and
-                `convokit.Kenlm`. The function takes in a list of target samples and corresponding
-                context samples, and returns the amount of surprise using some underlying language
-                model evaluation metric.
+                of :py:class:`~convokit.LanguageModel`, :py:meth:`~convokit.LanguageModel.evaluate`
+                function is to be used here. To see examples of :py:class:`~convokit.LanguageModel`,
+                see: :py:class:`~convokit.ConvoKitLanguageModel` and :py:class:`~convokit.Kenlm`.
+                The function takes in a list of target samples and corresponding context samples,
+                and returns the amount of surprise using some underlying model evaluation metric.
             """
             for model_key in group_models_[group_name]:
                 assert model_key in self._model_groups, "invalid model key"
@@ -351,11 +373,11 @@ class Surprise(Transformer):
                 for the corresponding utterance groups and models. The surprise scores dictionary is
                 modified in place.
             :param lm_evaluation_fn: The language model evaluation function. If using an instance
-                of `convokit.LanguageModel`, the `evaluate` function is to be used here. To see the
-                examples of `convokit.LanguageModel`, see: `convokit.ConvoKitLanguageModel` and
-                `convokit.Kenlm`. The function takes in a list of target samples and corresponding
-                context samples, and returns the amount of surprise using some underlying language
-                model evaluation metric.
+                of :py:class:`~convokit.LanguageModel`, the `evaluate` function is to be used here.
+                To see the subclass implementations of :py:class:`~convokit.LanguageModel`, see:
+                :py:class:`~convokit.ConvoKitLanguageModel` and :py:class:`~convokit.Kenlm`. The
+                function takes in a list of target samples and corresponding context samples, and
+                returns the amount of surprise using some underlying model evaluation metric.
             """
             if self._n_jobs == 1:
                 for group_name in tqdm(utt_groups_, leave=False, desc="surprise", delay=2):
@@ -421,15 +443,16 @@ class Surprise(Transformer):
         return corpus
 
     def transform(self, corpus: Corpus, **kwargs) -> Corpus:
-        """Wrapper over the `transform` function of the Surprise transformer.
+        """A wrapper over :py:meth:`~convokit.Surprise._transform` of the Surprise transformer.
 
-        Note: Since the transformer's `fit()` function populates the model groups, the `transform`
-        function is to be called after `fit()`.
+        Note: Since the transformer's :py:meth:`~convokit.Surprise.fit` method populates the model
+        groups, the :py:meth:`~convokit.Surprise.transform` function is to be called after calling
+        :py:meth:`~convokit.Surprise.fit`.
 
         :param corpus: The corpus to transform.
-        :param kwargs: Any keyword arguments to be passed to the `transform` function of the
-            Surprise transformer. Refer to the documentation of `Surprise._transform()` for specific
-            keyword arguments.
+        :param kwargs: Any keyword arguments to be passed to :py:meth:`~convokit.Surprise.transform`
+            function of the Surprise transformer (e.g., `eval_type`). Refer to the documentation of
+            :py:meth:`~convokit.Surprise._transform()` for specific keyword arguments.
         :return: A modified version of the input corpus with the surprise scores.
         """
         return self._transform(corpus=corpus, **kwargs)

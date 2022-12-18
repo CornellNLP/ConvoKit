@@ -12,14 +12,17 @@ class ConvoKitLanguageModel(LanguageModel):
     This language model implements cross-entropy and perplexity language model evaluation functions,
     to be used in evaluating the average deviation of target from the specified context.
 
-    :param model_type: The name of the `convokit.ConvoKitLanguageModel`, defaults to "convokit_lm".
-        Note that the `model_type` can be accessed using the `type` property (e.g., `lm.type`).
+    :param model_type: The name (identifier) of the :py:class:`~convokit.ConvoKitLanguageModel`,
+        defaults to "convokit_lm". Note that the `model_type` can be accessed using the `type`
+        property (e.g., `lm.type`).
     :param kwargs: Any additional keyword arguments needed in the language model evaluations. This
         language model currently uses the following keyword arguments:
-        - `smooth`: Indicator of using Laplace smoothing in the computation of cross-entropy scores,
+
+        * `smooth`: Indicator of using Laplace smoothing in the computation of cross-entropy scores,
           defaults to `True`.
-        - `n_jobs`: The number of concurrent threads to be used for routines that are parallelized
+        * `n_jobs`: The number of concurrent threads to be used for routines that are parallelized
           with `joblib`, defaults to 1.
+
         The language model configuration can be retrieved using the `config` property of the model
         class object (e.g., `lm.config`).
     """
@@ -34,11 +37,11 @@ class ConvoKitLanguageModel(LanguageModel):
         target: Union[List[str], np.ndarray],
         context: Union[List[str], np.ndarray],
     ) -> float:
-        """Implements the base class method to compute the cross-entropy.
+        r"""Implements the base class method to compute the cross-entropy.
 
         Calculates :math:`H(P, Q) = -\sum_{x \in X}P(x) \times \ln(Q(x))`. Note that we use the
         natural logarithm; however, any base and corresponding exponent can be employed. For
-        instance, KenLM uses base-10 (see `convokit.Kenlm` for reference).
+        instance, KenLM uses base-10 (see :py:class:`~convokit.Kenlm` for reference).
 
         The smoothing boolean argument, `smooth`, is accessed from the setting in the language model
         constructor (defaults to `True` when unspecified).
@@ -67,11 +70,11 @@ class ConvoKitLanguageModel(LanguageModel):
     def perplexity(
         self, target: Union[List[str], np.ndarray], context: Union[List[str], np.ndarray]
     ) -> float:
-        """Implements the base class method to compute perplexity.
+        r"""Implements the base class method to compute perplexity.
 
         Calculates :math:`\text{PPL}(P, Q) = \exp(-\sum_{x \in X}P(x) \times \ln(Q(x)))`. Note that
         we use the natural logarithm; however, any base and corresponding exponent can be employed.
-        For instance, KenLM uses base-10 (see `convokit.Kenlm` for reference).
+        For instance, KenLM uses base-10 (see :py:class:`~convokit.Kenlm` for reference).
 
         For convenience, the perplexity score is computed as the exponentiation of the cross-entropy
         calculated using the `cross_entropy()` method.

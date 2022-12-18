@@ -16,4 +16,5 @@ These are the transformers related to generating some analysis of the Corpus.
    Pairer <pairer.rst>
    PairedPrediction <pairedprediction.rst>
    Ranker <ranker.rst>
+   Surprise <surprise.rst>
    SpeakerConvoDiversity <speakerConvoDiversity.rst>

@@ -31,24 +31,26 @@ class Kenlm(LanguageModel):
     class. If kenlm installation fails, please follow: https://github.com/kpu/kenlm/issues/57 to
     install the KenLM library.
 
-    :param model_type: The name of the `convokit.Kenlm`, defaults to "kenlm". Note that the
-        `model_type` can be accessed using the `type` property (e.g., `lm.type`).
+    :param model_type: The name of the :py:class:`~convokit.Kenlm`, defaults to "kenlm". Note that
+        the `model_type` can be accessed using the `type` property (e.g., `lm.type`).
     :param kwargs: Any additional keyword arguments needed in the language model evaluations. This
         language model currently uses the following keyword arguments:
-        - `ngram_order`: The order of n-gram language model, when the specified `ngram_order` is
+
+        * `ngram_order`: The order of n-gram language model, when the specified `ngram_order` is
           less than 2 (or unspecified), the `ngram_order` is set to 2, since the KenLM library does
           not support n-gram order below 2 (see: https://github.com/kpu/kenlm/issues/171).
-        - `trained_model_filepath`: The filepath to a pre-trained language model that is to be
+        * `trained_model_filepath`: The filepath to a pre-trained language model that is to be
           persistently used.
-        - `is_persistent`: Indicator of model persistence, i.e., the model generated in the first
+        * `is_persistent`: Indicator of model persistence, i.e., the model generated in the first
           pass or that loaded from `trained_model_filepath` is used in all evaluations. When the
           `trained_model_filepath` is specified, persistence is implied. Defaults to `False`.
-        - `kenlm_path`: The path to the KenLM library, defaults to the user's home directory.
-        - `models_dir`: The folder path to store the (trained) binary KenLM models, defaults to
+        * `kenlm_path`: The path to the KenLM library, defaults to the user's home directory.
+        * `models_dir`: The folder path to store the (trained) binary KenLM models, defaults to
           `None`, indicating that the trained KenLM models need not be stored.
-        - `model_filename`: The filename used in storing model artefacts, defaults to `model_type`.
-        - `n_jobs`: The number of concurrent threads to be used for routines that are parallelized
+        * `model_filename`: The filename used in storing model artefacts, defaults to `model_type`.
+        * `n_jobs`: The number of concurrent threads to be used for routines that are parallelized
           with `joblib`, defaults to 1.
+
         The language model configuration can be retrieved using the `config` property of the model
         class object (e.g., `lm.config`).
     """
