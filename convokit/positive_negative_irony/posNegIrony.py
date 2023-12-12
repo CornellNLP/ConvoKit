@@ -28,7 +28,7 @@ class PosNegIronyTransformer(Transformer):
     ):
         if input_filter:
             if len(signature(input_filter).parameters) == 1:
-                self.input_filter = lambda utt: input_filter(self, utt)
+                self.input_filter = lambda utt: input_filter(utt)
             else:
                 self.input_filter = input_filter
         else:
