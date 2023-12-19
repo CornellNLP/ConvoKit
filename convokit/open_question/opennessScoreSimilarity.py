@@ -61,7 +61,7 @@ class OpennessScoreSimilarity(Transformer):
 
     def generated_openness_score_similarity(self, text):
         if len(text) > 500 and len(word_tokenize(text)) > 100:
-            text_token = word_tokenize(self.find_last_question(text))
+            text_token = word_tokenize(self._find_last_question(text))
             text = ""
             for token in text:
                 text = text + " " + token
@@ -190,7 +190,7 @@ class OpennessScoreSimilarity(Transformer):
                 scores.append(self._sbert_embedd_sim(embedding1, embedding2))
         return np.mean(scores)
 
-    def _find_last_question(text):
+    def _find_last_question(self, text):
         end_sent = set([".", "?", "!"])
         last_q = text.rfind("?")
         for i in range(last_q - 1, -1, -1):
