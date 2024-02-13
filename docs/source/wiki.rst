@@ -66,7 +66,7 @@ Related links
 Data License
 ^^^^^^^^^^^^
 
-This dataset is governed by the `CC BY license v4.0 <https://creativecommons.org/licenses/by/4.0/>`_. Copyright (C) 2017-2020 The ConvoKit Developers.
+This dataset is governed by the `CC BY-SA license v4.0 <https://creativecommons.org/licenses/by-sa/4.0/>`_.
 
 
 Contact
