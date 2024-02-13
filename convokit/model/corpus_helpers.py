@@ -577,9 +577,11 @@ def dump_utterances(corpus, dir_name, exclude_vectors, fields_to_skip):
                 KeyMeta: dump_helper_bin(ut.meta, d_bin, fields_to_skip.get("utterance", [])),
                 KeyReplyTo: ut.reply_to,
                 KeyTimestamp: ut.timestamp,
-                KeyVectors: ut.vectors
-                if exclude_vectors is None
-                else list(set(ut.vectors) - set(exclude_vectors)),
+                KeyVectors: (
+                    ut.vectors
+                    if exclude_vectors is None
+                    else list(set(ut.vectors) - set(exclude_vectors))
+                ),
             }
             json.dump(ut_obj, f)
             f.write("\n")

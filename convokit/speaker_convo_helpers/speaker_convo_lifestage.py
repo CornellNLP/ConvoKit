@@ -2,7 +2,6 @@ from convokit.transformer import Transformer
 
 
 class SpeakerConvoLifestage(Transformer):
-
     """
     Transformer that, for each speaker in a conversation, computes the lifestage of the speaker in that conversation. For instance, if lifestages are 20 conversations long, then the first 20 conversations a speaker participates in will be in lifestage 0, and the second 20 will be in lifestage 1.
 

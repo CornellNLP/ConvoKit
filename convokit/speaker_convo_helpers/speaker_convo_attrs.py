@@ -3,7 +3,6 @@ from convokit.model import Corpus
 
 
 class SpeakerConvoAttrs(Transformer):
-
     """
     Transformer that aggregates statistics per (speaker, convo). e.g., average wordcount of all utterances that speaker contributed per convo. Assumes that `corpus.organize_speaker_convo_history` has already been called.
 

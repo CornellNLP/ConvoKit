@@ -115,7 +115,6 @@ class ColNormedTfidfTransformer(Transformer):
 
 
 class ColNormedTfidf(TransformerMixin):
-
     """
     Model that derives tf-idf reweighted representations of utterances,
     which are normalized by column. Can be used in ConvoKit through the `ColNormedTfidfTransformer` transformer; see documentation of that transformer for further details.

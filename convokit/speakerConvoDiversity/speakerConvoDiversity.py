@@ -215,7 +215,6 @@ def compute_speaker_convo_divergence(
 
 
 class SpeakerConvoDiversityWrapper(Transformer):
-
     """
     Implements methodology for calculating linguistic diversity per life-stage. A wrapper around `SpeakerConvoDiversity`.
 

@@ -37,7 +37,6 @@ def get_unigrams_and_bigrams(document):
 
 
 class PolitenessFeatureVectorizer:
-
     """
     Returns document features based on-
         - unigrams and bigrams
