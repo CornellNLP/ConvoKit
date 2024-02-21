@@ -125,6 +125,7 @@ class SpeakerConvoDiversity(Transformer):
             corpus,
             "speaker",
             target_text_func=lambda utt: self._get_utt_row(utt, input_table).tokens,
+            smooth=False
         )
         self._set_output(corpus, input_table)
         return corpus
@@ -162,8 +163,7 @@ class SpeakerConvoDiversity(Transformer):
             surprise_attr_name=self.surprise_attr_name,
             target_sample_size=target_sample_size,
             context_sample_size=context_sample_size,
-            n_samples=n_samples,
-            smooth=False,
+            n_samples=n_samples
         )
 
     def _get_text_func(self, utt: Utterance, df: pd.DataFrame):
