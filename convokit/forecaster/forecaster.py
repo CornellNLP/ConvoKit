@@ -1,5 +1,5 @@
 from convokit import Corpus, Conversation, Utterance, Transformer
-from typing import Callable, Optional, Union, Any, List, Generator
+from typing import Callable, Optional, Union, Any, List, Iterator
 from collections import namedtuple
 from .forecasterModel import ForecasterModel
 import pandas as pd
@@ -50,7 +50,7 @@ class Forecaster(Transformer):
         corpus: Corpus,
         context_selector: Callable[[ContextTuple], bool],
         include_future_context: bool = False
-    ) -> Generator[ContextTuple]:
+    ) -> Iterator[ContextTuple]:
         """
         Helper function that generates an iterator over conversational contexts that satisfy the provided context selector,
         across the entire corpus
