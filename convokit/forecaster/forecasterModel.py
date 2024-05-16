@@ -1,31 +1,33 @@
 from abc import ABC, abstractmethod
-
+from typing import Callable
 
 class ForecasterModel(ABC):
-    def __init__(
-        self,
-        forecast_attribute_name: str = "prediction",
-        forecast_prob_attribute_name: str = "score",
-    ):
-        """
+    def __init__(self):
+        self._labeler = None
 
-        :param forecast_attribute_name: name for DataFrame column containing predictions, default: "prediction"
-        :param forecast_prob_attribute_name: name for column containing prediction scores, default: "score"
-        """
-        self.forecast_attribute_name = forecast_attribute_name
-        self.forecast_prob_attribute_name = forecast_prob_attribute_name
+    @property
+    def labeler(self):
+        return self._labeler
+    
+    @labeler.setter
+    def labeler(self, value: Callable):
+        self._labeler = value
 
     @abstractmethod
-    def train(self, id_to_context_reply_label):
+    def fit(self, contexts):
         """
-        Train the Forecaster Model with the context-reply-label tuples
+        Train this conversational forecasting model on the given data
+
+        :param contexts: an iterator over context tuples
         """
         pass
 
     @abstractmethod
-    def forecast(self, id_to_context_reply_label):
+    def transform(self, contexts, forecast_attribute_name, forecast_prob_attribute_name):
         """
-        Use the Forecaster Model to compute forecasts and scores
-        for given context-reply pairs and return a results dataframe
+        Apply this trained conversational forecasting model to the given data, and return its forecasts
+        in the form of a DataFrame indexed by (current) utterance ID
+
+        :param contexts: an iterator over context tuples
         """
         pass

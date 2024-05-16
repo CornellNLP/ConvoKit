@@ -1,160 +1,129 @@
-from convokit.model import Corpus, Conversation, Utterance
-from typing import Callable, Optional
-from convokit import Transformer
-from .cumulativeBoW import CumulativeBoW
+from convokit import Corpus, Conversation, Utterance, Transformer
+from typing import Callable, Optional, Union, Any, List, Generator
+from collections import namedtuple
 from .forecasterModel import ForecasterModel
 import pandas as pd
+import numpy as np
 
+# Define a namedtuple template to represent conversational context tuples
+ContextTuple = namedtuple("ContextTuple", ["context", "current_utterance", "future_context", "conversation_id"])
 
 class Forecaster(Transformer):
     """
-    Implements basic Forecaster behavior.
+    A wrapper class that provides a consistent, Transformer-style interface to any conversational forecasting model. 
+    From a user perspective, this makes it easy to apply forecasting models to ConvoKit corpora and evaluate them without 
+    having to know a lot about the inner workings of conversational forecasting, and to swap between different kinds of 
+    models without having to change a lot of code. From a developer perspective, this provides a prebuilt foundation upon which 
+    new conversational forecasting models can be easily developed, as the Forecaster class handles to complicated work of 
+    iterating over conversational contexts in temporal fashion, allowing the developer to focus only on writing the code to handle each conversational context.
 
-    :param forecaster_model: ForecasterModel to use, e.g. cumulativeBoW or CRAFT
-    :param forecast_mode: 'future' or 'past'. 'future' (the default behavior) annotates each utterance with a forecast score using all context up to and including that utterance (i.e., a prediction of the future state of the conversation after this utterance). 'past' annotates each utterance with a forecast score using all context prior to that utterance (i.e., what the model believed this utterance would look like prior to actually seeing it)
-    :param convo_structure: conversations in expected corpus are 'branched' or 'linear', default: "branched"
-    :param text_func: optional function for extracting the text of the utterance, default: uses utterance's text attribute
-    :param label_func: callable function for getting the utterance's forecast label (True or False); only used in training
-    :param use_last_only: if forecast_mode is 'past' and use_last_only is True, for each dialog, use only the context-reply pair where the reply is the last utterance in the dialog
-    :param skip_broken_convos: if True and convo_structure is 'branched', exclude all conversations that have broken reply-to structures, default: True
+    :param forecaster_model: An instance of a ForecasterModel subclass that implements the conversational forecasting model you want to use. ConvoKit provides CRAFT and BERT implementations.
+    :param labeler: A function that specifies where/how to find the label for any given conversation. Alternatively, a string can be provided, in which case it will be interpreted as the name of a Conversation metadata field containing the label.
+    :param context_preprocessor: An optional function that allows simple preprocessing of conversational contexts. Note that this should NOT be used to perform any restructuring or feature engineering on the data (that work is considered the exclusive purview of the underlying ForecasterModel); instead, it is intended to perform simple Corpus-specific data cleaning steps (i.e., removing utterances that lack key metadata required by the model)
     :param forecast_attribute_name: metadata feature name to use in annotation for forecast result, default: "forecast"
     :param forecast_prob_attribute_name: metadata feature name to use in annotation for forecast result probability, default: "forecast_prob"
     """
 
     def __init__(
         self,
-        forecaster_model: ForecasterModel = None,
-        forecast_mode: str = "future",
-        convo_structure: str = "branched",
-        text_func=lambda utt: utt.text,
-        label_func: Callable[[Utterance], bool] = lambda utt: True,
-        use_last_only: bool = False,
-        skip_broken_convos: bool = True,
+        forecaster_model: ForecasterModel,
+        labeler: Union[Callable[[Conversation], int], str],
+        context_preprocessor: Union[Callable[[List[Utterance]], List[Utterance]], None] = None,
         forecast_attribute_name: str = "forecast",
-        forecast_prob_attribute_name: str = "forecast_prob",
+        forecast_prob_attribute_name: str = "forecast_prob"
     ):
-        assert convo_structure in ["branched", "linear"]
-        self.convo_structure = convo_structure
-
-        if forecaster_model is None:
-            print(
-                "No model passed to Forecaster. Initializing default forecaster model: Cumulative Bag-of-words..."
-            )
-            self.forecaster_model = CumulativeBoW(
-                forecast_attribute_name=forecast_attribute_name,
-                forecast_prob_attribute_name=forecast_prob_attribute_name,
-            )
+        self.forecaster_model = forecaster_model
+        if type(labeler) == str:
+            # assume the string is the name of a conversation metadata field containing the label
+            self.labeler = lambda c: int(c.meta[labeler])
         else:
-            self.forecaster_model = forecaster_model
-        self.forecast_mode = forecast_mode
-        self.label_func = label_func
-        self.text_func = text_func
-        self.use_last_only = use_last_only
-        self.skip_broken_convos = skip_broken_convos
+            self.labeler = labeler
+        self.context_preprocessor = context_preprocessor
         self.forecast_attribute_name = forecast_attribute_name
         self.forecast_prob_attribute_name = forecast_prob_attribute_name
 
-    def _get_context_reply_label_dict(
-        self, corpus: Corpus, convo_selector, utt_excluder, include_label=True
-    ):
-        """
-        Returns a dict mapping reply id to (context, reply, label).
+        # also give the underlying ForecasterModel access to the labeler function
+        self.forecaster_model.labeler = self.labeler
 
-        If self.forecast_mode == 'future': return a dict mapping the leaf utt id to the path from root utt to leaf utt
+    def _create_context_iterator(
+        self,
+        corpus: Corpus,
+        context_selector: Callable[[ContextTuple], bool],
+        include_future_context: bool = False
+    ) -> Generator[ContextTuple]:
         """
-        dialogs = []
-        if self.convo_structure == "branched":
-            for convo in corpus.iter_conversations(convo_selector):
-                try:
-                    for path in convo.get_root_to_leaf_paths():
-                        path = [utt for utt in path if not utt_excluder(utt)]
-                        if len(path) == 1:
-                            continue
-                        dialogs.append(path)
-                except ValueError as e:
-                    if not self.skip_broken_convos:
-                        raise e
-
-        elif self.convo_structure == "linear":
-            for convo in corpus.iter_conversations(convo_selector):
-                utts = convo.get_chronological_utterance_list(
-                    selector=lambda x: not utt_excluder(x)
-                )
-                if len(utts) == 1:
+        Helper function that generates an iterator over conversational contexts that satisfy the provided context selector,
+        across the entire corpus
+        """
+        for convo in corpus.iter_conversations():
+            # contexts are iterated in chronological order, representing the idea that conversational forecasting models
+            # must make an updated forecast every time a new utterance is posted
+            chronological_utts = convo.get_chronological_utterance_list()
+            for i in range(1, len(chronological_utts)):
+                current_utt = chronological_utts[i]
+                # context is all utterances up to and including the most recent utterance
+                context = chronological_utts[(i-1):(i+1)]
+                # if a preprocessor is given, run it first to get the "clean" version of the context
+                if self.context_preprocessor is not None:
+                    context = self.context_preprocessor(context)
+                if include_future_context:
+                    if i == len(chronological_utts) - 1:
+                        # not to be confused with future_context=None, which indicates that include_future_context was false;
+                        # this special value indicates that include_future_context is true but there is no future context
+                        # (because we are at the end of the conversation)
+                        future_context = []
+                    else:
+                        future_context = [chronological_utts[(i+1):]]
+                else:
+                    future_context = None
+                # pack the full context tuple
+                context_tuple = ContextTuple(context, current_utt, future_context, convo.id)
+                # the current context tuple should be skipped if it does not satisfy the given selector,
+                # or the context is empty (which may happen as a result of preprocessing)
+                if len(context_tuple.context) == 0 or not context_selector(context_tuple):
                     continue
-                dialogs.append(utts)
-
-        id_to_context_reply_label = dict()
-
-        # this flag determines whether the dictionary entry for each utterance ID should include that
-        # utterance in the context (True corresponds to "future" behavior). This needs to be always
-        # False when include_label = True, since include_label assumes that the label comes from the
-        # utterance after the last utterance in the context. This override logic won't affect
-        # forecast_mode however, since that argument only applies to transform() while include_label
-        # is only True when called from fit()
-        include_current = (self.forecast_mode == "future") and (not include_label)
-
-        for dialog in dialogs:
-            if self.use_last_only:
-                reply = self.text_func(dialog[-1])
-                context = [
-                    self.text_func(utt) for utt in (dialog if include_current else dialog[:-1])
-                ]
-                label = self.label_func(dialog[-1]) if include_label else None
-                id_to_context_reply_label[dialog[-1].id] = (context, reply, label)
-            else:
-                for idx in range(0 if include_current else 1, len(dialog)):
-                    reply = self.text_func(dialog[idx])
-                    label = self.label_func(dialog[idx]) if include_label else None
-                    reply_id = dialog[idx].id
-                    context = [
-                        self.text_func(utt)
-                        for utt in (dialog[: (idx + 1)] if include_current else dialog[:idx])
-                    ]
-                    id_to_context_reply_label[reply_id] = (
-                        (context, reply, label) if include_label else (context, reply, None)
-                    )
-
-        return id_to_context_reply_label
+                # if the current context was not skipped, it is next in the iterator
+                yield context_tuple
 
     def fit(
         self,
         corpus: Corpus,
-        y=None,
-        selector: Callable[[Conversation], bool] = lambda convo: True,
-        ignore_utterances: Callable[[Utterance], bool] = lambda utt: False,
+        context_selector: Callable[[ContextTuple], bool] = lambda context: True
     ):
         """
-        Train the ForecasterModel on the given corpus.
+        Wrapper method for training the underlying conversational forecasting model. Forecaster itself does not implement any actual training logic. 
+        Instead, it handles the job of selecting and iterating over context tuples. The resulting iterator is presented as a parameter to the fit 
+        method of the underlying model, which can process the pairs however it sees fit. Within each pair, context is unstructured - it contains all 
+        utterances temporally preceding the reply, but does not impose any particular structure beyond that, allowing each conversational 
+        forecasting model to decide how it wants to define “context”.
 
-        :param corpus: target Corpus
-        :param selector: a (lambda) function that takes a Conversation and returns a bool: True if the Conversation is to be included in the fitting step. By default, includes all Conversations.
-        :param ignore_utterances: a (lambda) function that takes an Utterance and returns a bool: True if the Utterance should be excluded from the Conversation in the fitting step. By default, all Utterances are included.
+        :param corpus: The Corpus containing the data to train on
+        :param context_selector: A function that takes in a context tuple and returns a boolean indicator of whether it should be included in training data. This can be used to both select data based on splits (i.e. keep only those in the “train” split) and to specify special behavior of what contexts are looked at in training (i.e. in CRAFT where only the last context, directly preceding the toxic comment, is used in training).
+        
         :return: fitted Forecaster Transformer
         """
-        id_to_context_reply_label = self._get_context_reply_label_dict(
-            corpus, selector, ignore_utterances, include_label=True
-        )
-        self.forecaster_model.train(id_to_context_reply_label)
+        contexts = self._create_context_iterator(corpus, context_selector, include_future_context=True)
+        self.forecaster_model.fit(contexts)
+
+        return self
 
     def transform(
         self,
         corpus: Corpus,
-        selector: Callable[[Conversation], bool] = lambda convo: True,
-        ignore_utterances: Callable[[Utterance], bool] = lambda utt: False,
+        context_selector: Callable[[ContextTuple], bool] = lambda context: True
     ) -> Corpus:
         """
-        Annotate the corpus utterances with forecast and forecast score information
+        Wrapper method for applying the underlying conversational forecasting model to make forecasts over the Conversations in a given Corpus. 
+        Like the fit method, this simply acts to create an iterator over context tuples to be transformed, and forwards the iterator to the 
+        underlying conversational forecasting model to do the actual forecasting.
 
-        :param corpus: target Corpus
-        :param selector: a (lambda) function that takes a Conversation and returns a bool: True if the Conversation is to be included in the transformation step. By default, includes all Conversations.
-        :param ignore_utterances: a (lambda) function that takes an Utterance and returns a bool: True if the Utterance should be excluded from the Conversation in the transformation step. By default, all Utterances are included.
+        :param corpus: the Corpus containing the data to run on
+        :param context_selector: A function that takes in a context tuple and returns a boolean indicator of whether it should be included. Excluded contexts will simply not have a forecast.
+
         :return: annotated Corpus
         """
-        id_to_context_reply_label = self._get_context_reply_label_dict(
-            corpus, selector, ignore_utterances, include_label=False
-        )
-        forecast_df = self.forecaster_model.forecast(id_to_context_reply_label)
+        contexts = self._create_context_iterator(corpus, context_selector)
+        forecast_df = self.forecaster_model.transform(contexts, self.forecast_attribute_name, self.forecast_prob_attribute_name)
 
         for utt in corpus.iter_utterances():
             if utt.id in forecast_df.index:
@@ -175,60 +144,56 @@ class Forecaster(Transformer):
     def fit_transform(
         self,
         corpus: Corpus,
-        y=None,
-        selector: Callable[[Conversation], bool] = lambda convo: True,
-        ignore_utterances: Callable[[Utterance], bool] = lambda utt: False,
+        context_selector: Callable[[ContextTuple], bool] = lambda context: True
     ) -> Corpus:
-        self.fit(corpus, selector=selector, ignore_utterances=ignore_utterances)
-        return self.transform(corpus, selector=selector, ignore_utterances=ignore_utterances)
+        """
+        Convenience method for running fit and transform on the same data
+
+        :param corpus: the Corpus containing the data to run on
+        :param context_selector: A function that takes in a context tuple and returns a boolean indicator of whether it should be included. Excluded contexts will simply not have a forecast.
+
+        :return: annotated Corpus
+        """
+        self.fit(corpus, context_selector)
+        return self.transform(corpus, context_selector)
 
     def summarize(
         self,
         corpus: Corpus,
-        selector: Callable[[Conversation], bool] = lambda convo: True,
-        ignore_utterances: Callable[[Utterance], bool] = lambda utt: False,
-        exclude_na=True,
+        selector: Callable[[Conversation], bool] = lambda convo: True
     ):
         """
-        Returns a DataFrame of utterances and their forecasts (and forecast probabilities)
+        Compute and display conversation-level performance metrics over a Corpus that has already been annotated by transform
 
-        :param corpus: target Corpus
-        :param exclude_na: whether to drop NaN results
-        :param selector: a (lambda) function that takes a Conversation and returns a bool: True if the Conversation is to be included in the summary step. By default, includes all Conversations.
-        :param ignore_utterances: a (lambda) function that takes an Utterance and returns a bool: True if the Utterance should be excluded from the Conversation in the summary step. By default, all Utterances are included.
-        :return: a pandas DataFrame
+        :param corpus: the Corpus containing the forecasts to evaluate
+        :param selector: A filtering function to limit the conversations the metrics are computed over. Note that unlike the context_selectors used in fit and transform, this selector operates on conversations (since evaluation is conversation-level).
         """
-        utt_forecast_prob = []
-        for convo in corpus.iter_conversations(selector):
-            for utt in convo.iter_utterances(lambda x: not ignore_utterances(x)):
-                utt_forecast_prob.append(
-                    (
-                        utt.id,
-                        utt.meta[self.forecast_attribute_name],
-                        utt.meta[self.forecast_prob_attribute_name],
-                    )
-                )
-        forecast_df = (
-            pd.DataFrame(
-                utt_forecast_prob,
-                columns=["utt_id", self.forecast_attribute_name, self.forecast_prob_attribute_name],
-            )
-            .set_index("utt_id")
-            .sort_values(self.forecast_prob_attribute_name, ascending=False)
-        )
-        if exclude_na:
-            forecast_df = forecast_df.dropna()
-        return forecast_df
+        conversational_forecasts_df = {
+            "conversation_id": [],
+            "label": [],
+            "score": [],
+            "forecast": []
+        }
+        for convo in corpus.iter_conversations():
+            if selector(convo):
+                conversational_forecasts_df['conversation_id'].append(convo.id)
+                conversational_forecasts_df['label'].append(self.labeler(convo))
+                forecasts = [utt.meta[self.forecast_attribute_name] for utt in convo.iter_utterances() if self.forecast_attribute_name in utt.meta]
+                forecast_scores = [utt.meta[self.forecast_prob_attribute_name] for utt in convo.iter_utterances() if self.forecast_prob_attribute_name in utt.meta]
+                conversational_forecasts_df['score'].append(np.max(forecast_scores))
+                conversational_forecasts_df['forecast'].append(np.max(forecasts))
+        conversational_forecasts_df = pd.DataFrame(conversational_forecasts_df).set_index("conversation_id")
 
-    def get_model(self):
-        """
-        Get the forecaster model object
-        """
-        return self.forecaster_model
+        acc = (conversational_forecasts_df["label"] == conversational_forecasts_df["forecast"]).mean()
+        tp = ((conversational_forecasts_df["label"]==1)&(conversational_forecasts_df["forecast"]==1)).sum()
+        fp = ((conversational_forecasts_df["label"]==0)&(conversational_forecasts_df["forecast"]==1)).sum()
+        tn = ((conversational_forecasts_df["label"]==0)&(conversational_forecasts_df["forecast"]==0)).sum()
+        fn = ((conversational_forecasts_df["label"]==1)&(conversational_forecasts_df["forecast"]==0)).sum()
+        p = tp / (tp + fp)
+        r = tp / (tp + fn)
+        fpr = fp / (fp + tn)
+        f1 = 2 / (((tp + fp) / tp) + ((tp + fn) / tp))
+        metrics = {"Accuracy": acc, "Precision": p, "Recall": r, "FPR": fpr, "F1": f1}
 
-    def set_model(self, forecaster_model):
-        """
-        Set the forecaster model
-        :return:
-        """
-        self.forecaster_model = forecaster_model
+        print(pd.Series(metrics))
+        return conversational_forecasts_df, metrics
