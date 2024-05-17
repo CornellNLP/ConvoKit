@@ -87,6 +87,7 @@ def download(
 
     cur_version = dataset_config["cur_version"]
     DatasetURLs = dataset_config["DatasetURLs"]
+    ModelURLs = dataset_config["ModelURLS"]
 
     if name.startswith("subreddit"):
         subreddit_name = name.split("-", maxsplit=1)[1]
@@ -158,6 +159,14 @@ def download(
         # name not in downloaded or \
         #    (use_newest_version and name in cur_version and
         #        downloaded[name] < cur_version[name]):
+        if name in ModelURLs:
+            for url in ModelURLs[name]:
+                full_name = name + url[url.rfind("/") :]
+                if full_name not in downloaded:
+                    model_file_path = dataset_path + url[url.rfind("/") :]
+                    if not os.path.exists(os.path.dirname(model_file_path)):
+                        os.makedirs(os.path.dirname(model_file_path))
+                    _download_helper(model_file_path, url, verbose, full_name, downloadeds_path)
         if name.endswith("-motifs"):
             for url in DatasetURLs[name]:
                 full_name = name + url[url.rfind("/") :]
