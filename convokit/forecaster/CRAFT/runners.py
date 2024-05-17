@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 import torch.nn.functional as F
 from torch import nn
+from copy import deepcopy
 
 class Predictor(nn.Module):
     """This helper module encapsulates the CRAFT pipeline, defining the logic of passing an input through each consecutive sub-module."""
@@ -59,7 +60,7 @@ def makeContextEncoderInput(utt_encoder_hidden, dialog_lengths, batch_size, batc
 def train(input_variable, dialog_lengths, dialog_lengths_list, utt_lengths, batch_indices, dialog_indices, labels, # input/output arguments
           encoder, context_encoder, attack_clf,                                                                    # network arguments
           encoder_optimizer, context_encoder_optimizer, attack_clf_optimizer,                                      # optimization arguments
-          batch_size, clip, max_length=MAX_LENGTH):                                                                # misc arguments
+          batch_size, clip, device):                                                                               # misc arguments
 
     # Zero gradients
     encoder_optimizer.zero_grad()
@@ -103,7 +104,7 @@ def train(input_variable, dialog_lengths, dialog_lengths_list, utt_lengths, batc
     return loss.item()
 
 def evaluateBatch(encoder, context_encoder, predictor, voc, input_batch, dialog_lengths, 
-                  dialog_lengths_list, utt_lengths, batch_indices, dialog_indices, batch_size, device, max_length=MAX_LENGTH):
+                  dialog_lengths_list, utt_lengths, batch_indices, dialog_indices, batch_size, device, max_length):
     # Set device options
     input_batch = input_batch.to(device)
     dialog_lengths = dialog_lengths.to(device)
@@ -113,9 +114,9 @@ def evaluateBatch(encoder, context_encoder, predictor, voc, input_batch, dialog_
     predictions = (scores > 0.5).float()
     return predictions, scores
 
-def validate(dataset, encoder, context_encoder, predictor, voc, batch_size, device):
+def validate(dataset, encoder, context_encoder, predictor, voc, batch_size, device, max_length, batch_iterator_func):
     # create a batch iterator for the given data
-    batch_iterator = batchIterator(voc, dataset, batch_size, shuffle=False)
+    batch_iterator = batch_iterator_func(voc, dataset, batch_size, shuffle=False)
     # find out how many iterations we will need to cover the whole dataset
     n_iters = len(dataset) // batch_size + int(len(dataset) % batch_size > 0)
     # containers for full prediction results so we can compute accuracy at the end
@@ -129,7 +130,7 @@ def validate(dataset, encoder, context_encoder, predictor, voc, batch_size, devi
         # run the model
         predictions, scores = evaluateBatch(encoder, context_encoder, predictor, voc, input_variable,
                                             dialog_lengths, dialog_lengths_list, utt_lengths, batch_indices, dialog_indices,
-                                            true_batch_size, device)
+                                            true_batch_size, device, max_length)
         # aggregate results for computing accuracy at the end
         all_preds += [p.item() for p in predictions]
         all_labels += [l.item() for l in labels]
@@ -140,10 +141,10 @@ def validate(dataset, encoder, context_encoder, predictor, voc, batch_size, devi
 
 def trainIters(voc, pairs, val_pairs, encoder, context_encoder, attack_clf,
                encoder_optimizer, context_encoder_optimizer, attack_clf_optimizer, embedding,
-               n_iteration, batch_size, print_every, validate_every, clip):
+               n_iteration, batch_size, print_every, validate_every, clip, device, max_length, batch_iterator_func):
     
     # create a batch iterator for training data
-    batch_iterator = batchIterator(voc, pairs, batch_size)
+    batch_iterator = batch_iterator_func(voc, pairs, batch_size)
     
     # Initializations
     print('Initializing ...')
@@ -165,7 +166,7 @@ def trainIters(voc, pairs, val_pairs, encoder, context_encoder, attack_clf,
         loss = train(input_variable, dialog_lengths, dialog_lengths_list, utt_lengths, batch_indices, dialog_indices, labels, # input/output arguments
                      encoder, context_encoder, attack_clf,                                                                    # network arguments
                      encoder_optimizer, context_encoder_optimizer, attack_clf_optimizer,                                      # optimization arguments
-                     true_batch_size, clip)                                                                                   # misc arguments
+                     true_batch_size, clip, device)                                                                           # misc arguments
         print_loss += loss
         
         # Print progress
@@ -183,14 +184,14 @@ def trainIters(voc, pairs, val_pairs, encoder, context_encoder, attack_clf,
             attack_clf.eval()
             
             predictor = Predictor(encoder, context_encoder, attack_clf)
-            accuracy = validate(val_pairs, encoder, context_encoder, predictor, voc, batch_size, device)
+            accuracy = validate(val_pairs, encoder, context_encoder, predictor, voc, batch_size, device, max_length, batch_iterator_func)
             print("Validation set accuracy: {:.2f}%".format(accuracy * 100))
 
             # keep track of our best model so far
             if accuracy > best_acc:
                 print("Validation accuracy better than current best; saving model...")
                 best_acc = accuracy
-                best_model = {
+                best_model = deepcopy({
                     'iteration': iteration,
                     'en': encoder.state_dict(),
                     'ctx': context_encoder.state_dict(),
@@ -201,7 +202,7 @@ def trainIters(voc, pairs, val_pairs, encoder, context_encoder, attack_clf,
                     'loss': loss,
                     'voc_dict': voc.__dict__,
                     'embedding': embedding.state_dict()
-                }
+                })
             
             # put the network components back into training mode
             encoder.train()
@@ -210,15 +211,15 @@ def trainIters(voc, pairs, val_pairs, encoder, context_encoder, attack_clf,
 
     return best_model
 
-def evaluateDataset(dataset, encoder, context_encoder, predictor, voc, batch_size, device):
+def evaluateDataset(dataset, encoder, context_encoder, predictor, voc, batch_size, device, max_length, batch_iterator_func, pred_col_name, score_col_name):
     # create a batch iterator for the given data
-    batch_iterator = batchIterator(voc, dataset, batch_size, shuffle=False)
+    batch_iterator = batch_iterator_func(voc, dataset, batch_size, shuffle=False)
     # find out how many iterations we will need to cover the whole dataset
     n_iters = len(dataset) // batch_size + int(len(dataset) % batch_size > 0)
     output_df = {
         "id": [],
-        "prediction": [],
-        "score": []
+        pred_col_name: [],
+        score_col_name: []
     }
     for iteration in range(1, n_iters+1):
         batch, batch_dialogs, _, true_batch_size = next(batch_iterator)
@@ -228,7 +229,7 @@ def evaluateDataset(dataset, encoder, context_encoder, predictor, voc, batch_siz
         # run the model
         predictions, scores = evaluateBatch(encoder, context_encoder, predictor, voc, input_variable,
                                             dialog_lengths, dialog_lengths_list, utt_lengths, batch_indices, dialog_indices,
-                                            true_batch_size, device)
+                                            true_batch_size, device, max_length)
 
         # format the output as a dataframe (which we can later re-join with the corpus)
         for i in range(true_batch_size):
@@ -236,8 +237,8 @@ def evaluateDataset(dataset, encoder, context_encoder, predictor, voc, batch_siz
             pred = predictions[i].item()
             score = scores[i].item()
             output_df["id"].append(convo_id)
-            output_df["prediction"].append(pred)
-            output_df["score"].append(score)
+            output_df[pred_col_name].append(pred)
+            output_df[score_col_name].append(score)
                 
         print("Iteration: {}; Percent complete: {:.1f}%".format(iteration, iteration / n_iters * 100))
 

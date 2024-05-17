@@ -28,7 +28,7 @@ class Forecaster(Transformer):
         self,
         forecaster_model: ForecasterModel,
         labeler: Union[Callable[[Conversation], int], str],
-        context_preprocessor: Union[Callable[[List[Utterance]], List[Utterance]], None] = None,
+        context_preprocessor: Optional[Callable[[List[Utterance]], List[Utterance]]] = None,
         forecast_attribute_name: str = "forecast",
         forecast_prob_attribute_name: str = "forecast_prob"
     ):
@@ -88,7 +88,8 @@ class Forecaster(Transformer):
     def fit(
         self,
         corpus: Corpus,
-        context_selector: Callable[[ContextTuple], bool] = lambda context: True
+        context_selector: Callable[[ContextTuple], bool] = lambda context: True,
+        val_context_selector: Optional[Callable[[ContextTuple], bool]] = None
     ):
         """
         Wrapper method for training the underlying conversational forecasting model. Forecaster itself does not implement any actual training logic. 
@@ -99,11 +100,15 @@ class Forecaster(Transformer):
 
         :param corpus: The Corpus containing the data to train on
         :param context_selector: A function that takes in a context tuple and returns a boolean indicator of whether it should be included in training data. This can be used to both select data based on splits (i.e. keep only those in the “train” split) and to specify special behavior of what contexts are looked at in training (i.e. in CRAFT where only the last context, directly preceding the toxic comment, is used in training).
-        
+        :param val_context_selector: An optional function that mirrors context_selector but is used to create a separate held-out validation set
+
         :return: fitted Forecaster Transformer
         """
         contexts = self._create_context_iterator(corpus, context_selector, include_future_context=True)
-        self.forecaster_model.fit(contexts)
+        val_contexts = None
+        if val_context_selector is not None:
+            val_contexts = self._create_context_iterator(corpus, val_context_selector, include_future_context=True)
+        self.forecaster_model.fit(contexts, val_contexts)
 
         return self
 

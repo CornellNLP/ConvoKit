@@ -14,7 +14,7 @@ class ForecasterModel(ABC):
         self._labeler = value
 
     @abstractmethod
-    def fit(self, contexts):
+    def fit(self, contexts, val_contexts=None):
         """
         Train this conversational forecasting model on the given data
 
