@@ -7,7 +7,8 @@ except (ModuleNotFoundError, ImportError) as e:
 
 import pandas as pd
 from convokit.forecaster.CRAFT.data import loadPrecomputedVoc, processContext, batchIterator
-from convokit import download, warn, ConvoKitConfig
+from convokit import download, warn
+from convokit.convokitConfig import ConvoKitConfig
 from .CRAFT.model import EncoderRNN, ContextEncoderRNN, SingleTargetClf
 from .CRAFT.runners import Predictor, trainIters, evaluateDataset
 from .forecasterModel import ForecasterModel
