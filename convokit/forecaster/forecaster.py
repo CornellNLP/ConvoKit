@@ -183,8 +183,8 @@ class Forecaster(Transformer):
             if selector(convo):
                 conversational_forecasts_df['conversation_id'].append(convo.id)
                 conversational_forecasts_df['label'].append(self.labeler(convo))
-                forecasts = [utt.meta[self.forecast_attribute_name] for utt in convo.iter_utterances() if self.forecast_attribute_name in utt.meta]
-                forecast_scores = [utt.meta[self.forecast_prob_attribute_name] for utt in convo.iter_utterances() if self.forecast_prob_attribute_name in utt.meta]
+                forecasts = np.asarray([utt.meta[self.forecast_attribute_name] for utt in convo.iter_utterances() if utt.meta.get(self.forecast_attribute_name, None) is not None])
+                forecast_scores = np.asarray([utt.meta[self.forecast_prob_attribute_name] for utt in convo.iter_utterances() if utt.meta.get(self.forecast_prob_attribute_name, None) is not None])
                 conversational_forecasts_df['score'].append(np.max(forecast_scores))
                 conversational_forecasts_df['forecast'].append(np.max(forecasts))
         conversational_forecasts_df = pd.DataFrame(conversational_forecasts_df).set_index("conversation_id")

@@ -38,10 +38,10 @@ DEFAULT_CONFIG = {
 }
 
 MODEL_FILENAME_MAP = {
-    "craft-wiki-pretrained": "craft-pretrained.tar",
-    "craft-wiki-finetuned": "craft-full.tar",
-    "craft-cmv-pretrained": "craft-pretrained.tar",
-    "craft-cmv-finetuned": "craft-full.tar"
+    "craft-wiki-pretrained": "craft_pretrained.tar",
+    "craft-wiki-finetuned": "craft_full.tar",
+    "craft-cmv-pretrained": "craft_pretrained.tar",
+    "craft-cmv-finetuned": "craft_full.tar"
 }
 
 DECISION_THRESHOLDS = {
@@ -89,7 +89,7 @@ class CRAFTModel(ForecasterModel):
         if initial_weights in MODEL_FILENAME_MAP:
             # load ConvoKitConfig in order to look up the model storage path
             convokitconfig = ConvoKitConfig()
-            download_dir = convokitconfig.model_directory
+            download_dir = os.path.expanduser(convokitconfig.model_directory)
             # download the model and its supporting vocabulary objects
             base_path = download(initial_weights, data_dir=download_dir)
             model_path = os.path.join(base_path, MODEL_FILENAME_MAP[initial_weights])
@@ -142,7 +142,7 @@ class CRAFTModel(ForecasterModel):
         context_sd = self._model['ctx']
         try:
             attack_clf_sd = self._model['atk_clf']
-        except IndexError:
+        except KeyError:
             # this happens if we're loading from a non-finetuned initial weights; the classifier layer still needs training
             attack_clf_sd = None
         embedding_sd = self._model['embedding']
@@ -172,10 +172,12 @@ class CRAFTModel(ForecasterModel):
     def fit(self, contexts, val_contexts=None):
         # convert the input contexts into CRAFT's data format
         train_pairs = self._context_to_craft_data(contexts)
+        print("Processed", len(train_pairs), "context tuples for model training")
         # val_contexts is made Optional to conform to the Forecaster spec, but in reality CRAFT requires a validation set
         if val_contexts is None:
             raise ValueError("CRAFTModel requires a validation set!")
         val_pairs = self._context_to_craft_data(val_contexts)
+        print("Processed", len(val_pairs), "context tuples for model validation")
 
         # initialize the CRAFT model with whatever weights we currently have saved
         embedding, encoder, context_encoder, attack_clf = self._init_craft()
@@ -209,6 +211,7 @@ class CRAFTModel(ForecasterModel):
     def transform(self, contexts, forecast_attribute_name, forecast_prob_attribute_name):
         # convert the input contexts into CRAFT's data format
         test_pairs = self._context_to_craft_data(contexts)
+        print("Processed", len(test_pairs), "context tuples for model evaluation")
 
         # initialize the CRAFT model with whatever weights we currently have saved
         embedding, encoder, context_encoder, attack_clf = self._init_craft()

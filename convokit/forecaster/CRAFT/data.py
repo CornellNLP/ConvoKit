@@ -105,9 +105,9 @@ def loadPrecomputedVoc(corpus_name, word2index_path, index2word_path):
 # Given a context utterance list from Forecaster, preprocess each utterance's text by tokenizing and truncating.
 # Returns the processed dialog entry where text has been replaced with a list of
 # tokens, each no longer than MAX_LENGTH - 1 (to leave space for the EOS token)
-def processContext(voc, context, is_attack, max_length):
+def processContext(voc, context, is_attack):
     processed = []
-    for utterance in context:
+    for utterance in context.context:
         # since the iterative nature of Forecaster may lead us to see the same utterance
         # multiple times, we'll cache the tokenized form of the utterance as metadata
         # and look it up if it already exists
