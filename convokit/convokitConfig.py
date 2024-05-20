@@ -7,6 +7,7 @@ DEFAULT_CONFIG_CONTENTS = (
     "# Default Backend Parameters\n"
     "db_host: localhost:27017\n"
     "data_directory: ~/.convokit/saved-corpora\n"
+    "model_directory: ~/.convokit/saved-models\n"
     "default_backend: mem"
 )
 
@@ -50,6 +51,10 @@ class ConvoKitConfig:
     @property
     def data_directory(self):
         return self.config_contents.get("data_directory", "~/.convokit/saved-corpora")
+
+    @property
+    def model_directory(self):
+        return self.config_contents.get("model_directory", "~/.convokit/saved-models")
 
     @property
     def default_backend(self):
