@@ -34,21 +34,21 @@ DEFAULT_CONFIG = {
     "learning_rate": 1e-5,
     "print_every": 10,
     "finetune_epochs": 30,
-    "validation_size": 0.2
+    "validation_size": 0.2,
 }
 
 MODEL_FILENAME_MAP = {
     "craft-wiki-pretrained": "craft_pretrained.tar",
     "craft-wiki-finetuned": "craft_full.tar",
     "craft-cmv-pretrained": "craft_pretrained.tar",
-    "craft-cmv-finetuned": "craft_full.tar"
+    "craft-cmv-finetuned": "craft_full.tar",
 }
 
 DECISION_THRESHOLDS = {
     "craft-wiki-pretrained": 0.570617,
     "craft-wiki-finetuned": 0.570617,
     "craft-cmv-pretrained": 0.548580,
-    "craft-cmv-finetuned": 0.548580
+    "craft-cmv-finetuned": 0.548580,
 }
 
 # To understand the separation of concerns for the CRAFT files:
@@ -61,7 +61,7 @@ class CRAFTModel(ForecasterModel):
     """
     A ConvoKit Forecaster-adherent reimplementation of the CRAFT conversational forecasting model from
     the paper "Trouble on the Horizon: Forecasting the Derailment of Online Conversations as they Develop"
-    (Chang and Danescu-Niculescu-Mizil, 2019). 
+    (Chang and Danescu-Niculescu-Mizil, 2019).
 
     Usage note: CRAFT is a neural network model; full end-to-end training of neural networks is considered
     outside the scope of ConvoKit, so the ConvoKit CRAFTModel must be initialized with existing weights.
@@ -88,7 +88,7 @@ class CRAFTModel(ForecasterModel):
         vocab_word2index: str = "auto",
         decision_threshold: Union[float, str] = "auto",
         torch_device: str = "cpu",
-        config: dict = DEFAULT_CONFIG
+        config: dict = DEFAULT_CONFIG,
     ):
         super().__init__()
 
@@ -102,15 +102,25 @@ class CRAFTModel(ForecasterModel):
             model_path = os.path.join(base_path, MODEL_FILENAME_MAP[initial_weights])
             # load the vocab, ensuring that we use the download ones
             if vocab_index2word != "auto" or vocab_word2index != "auto":
-                warn(f"CRAFTModel was initialized using a ConvoKit-provided model {initial_weights} but a custom vocabulary was specified. This is an unsupported configuration; the custom vocabulary will be ignored and the model-provided vocabulary will be loaded.")
-            self._voc = loadPrecomputedVoc(initial_weights, os.path.join(base_path, "word2index.json"), os.path.join(base_path, "index2word.json"))
+                warn(
+                    f"CRAFTModel was initialized using a ConvoKit-provided model {initial_weights} but a custom vocabulary was specified. This is an unsupported configuration; the custom vocabulary will be ignored and the model-provided vocabulary will be loaded."
+                )
+            self._voc = loadPrecomputedVoc(
+                initial_weights,
+                os.path.join(base_path, "word2index.json"),
+                os.path.join(base_path, "index2word.json"),
+            )
         else:
             # assume that initial_weights is a true path to a local model
             model_path = initial_weights
             # we don't know the vocab for local models, so the user must manually supply one
             if vocab_index2word == "auto" or vocab_word2index == "auto":
-                raise ValueError("CRAFTModel was initialized using a path to a custom model; a custom vocabulary also must be specified for this use case ('auto' is not supported)!")
-            self._voc = loadPrecomputedVoc(os.path.basename(initial_weights), vocab_word2index, vocab_index2word)
+                raise ValueError(
+                    "CRAFTModel was initialized using a path to a custom model; a custom vocabulary also must be specified for this use case ('auto' is not supported)!"
+                )
+            self._voc = loadPrecomputedVoc(
+                os.path.basename(initial_weights), vocab_word2index, vocab_index2word
+            )
         self._model = torch.load(model_path, map_location=torch.device(torch_device))
 
         # either take the decision threshold as given or use a predetermined one (default 0.5 if none can be found)
@@ -134,34 +144,36 @@ class CRAFTModel(ForecasterModel):
             convo = context.current_utterance.get_conversation()
             label = self.labeler(convo)
             processed_context = processContext(self._voc, context, label)
-            utt = processed_context[-1]["tokens"][:(MAX_LENGTH-1)]
-            context_utts = [u["tokens"][:(MAX_LENGTH-1)] for u in processed_context]
+            utt = processed_context[-1]["tokens"][: (MAX_LENGTH - 1)]
+            context_utts = [u["tokens"][: (MAX_LENGTH - 1)] for u in processed_context]
             pairs.append((context_utts, utt, label, context.current_utterance.id))
         return pairs
-    
+
     def _init_craft(self):
         """
         Initialize the CRAFT layers using the currently saved checkpoints
         (these will either be the initial_weights, or what got saved after fit())
         """
         print("Loading saved parameters...")
-        encoder_sd = self._model['en']
-        context_sd = self._model['ctx']
+        encoder_sd = self._model["en"]
+        context_sd = self._model["ctx"]
         try:
-            attack_clf_sd = self._model['atk_clf']
+            attack_clf_sd = self._model["atk_clf"]
         except KeyError:
             # this happens if we're loading from a non-finetuned initial weights; the classifier layer still needs training
             attack_clf_sd = None
-        embedding_sd = self._model['embedding']
-        self._voc.__dict__ = self._model['voc_dict']
+        embedding_sd = self._model["embedding"]
+        self._voc.__dict__ = self._model["voc_dict"]
 
-        print('Building encoders, decoder, and classifier...')
+        print("Building encoders, decoder, and classifier...")
         # Initialize word embeddings
         embedding = nn.Embedding(self._voc.num_words, HIDDEN_SIZE)
         embedding.load_state_dict(embedding_sd)
         # Initialize utterance and context encoders
         encoder = EncoderRNN(HIDDEN_SIZE, embedding, ENCODER_N_LAYERS, self._config["dropout"])
-        context_encoder = ContextEncoderRNN(HIDDEN_SIZE, CONTEXT_ENCODER_N_LAYERS, self._config["dropout"])
+        context_encoder = ContextEncoderRNN(
+            HIDDEN_SIZE, CONTEXT_ENCODER_N_LAYERS, self._config["dropout"]
+        )
         encoder.load_state_dict(encoder_sd)
         context_encoder.load_state_dict(context_sd)
         # Initialize classifier
@@ -172,10 +184,10 @@ class CRAFTModel(ForecasterModel):
         encoder = encoder.to(self._device)
         context_encoder = context_encoder.to(self._device)
         attack_clf = attack_clf.to(self._device)
-        print('Models built and ready to go!')
+        print("Models built and ready to go!")
 
         return embedding, encoder, context_encoder, attack_clf
-    
+
     def fit(self, contexts, val_contexts=None):
         """
         Fine-tune the CRAFT model, and save the best model according to validation performance.
@@ -196,7 +208,9 @@ class CRAFTModel(ForecasterModel):
         embedding, encoder, context_encoder, attack_clf = self._init_craft()
 
         # Compute the number of training iterations we will need in order to achieve the number of epochs specified in the settings at the start of the notebook
-        n_iter_per_epoch = len(train_pairs) // self._config["batch_size"] + int(len(train_pairs) % self._config["batch_size"] == 1)
+        n_iter_per_epoch = len(train_pairs) // self._config["batch_size"] + int(
+            len(train_pairs) % self._config["batch_size"] == 1
+        )
         n_iteration = n_iter_per_epoch * self._config["finetune_epochs"]
 
         # Put dropout layers in train mode
@@ -205,19 +219,37 @@ class CRAFTModel(ForecasterModel):
         attack_clf.train()
 
         # Initialize optimizers
-        print('Building optimizers...')
+        print("Building optimizers...")
         encoder_optimizer = optim.Adam(encoder.parameters(), lr=self._config["learning_rate"])
-        context_encoder_optimizer = optim.Adam(context_encoder.parameters(), lr=self._config["learning_rate"])
+        context_encoder_optimizer = optim.Adam(
+            context_encoder.parameters(), lr=self._config["learning_rate"]
+        )
         attack_clf_optimizer = optim.Adam(attack_clf.parameters(), lr=self._config["learning_rate"])
 
         # Run training iterations, validating after every epoch
         print("Starting Training!")
         print("Will train for {} iterations".format(n_iteration))
-        best_model = trainIters(self._voc, train_pairs, val_pairs, encoder, context_encoder, attack_clf,
-                encoder_optimizer, context_encoder_optimizer, attack_clf_optimizer, embedding,
-                n_iteration, self._config["batch_size"], self._config["print_every"], n_iter_per_epoch, 
-                self._config["clip"], self._device, MAX_LENGTH, batchIterator)
-        
+        best_model = trainIters(
+            self._voc,
+            train_pairs,
+            val_pairs,
+            encoder,
+            context_encoder,
+            attack_clf,
+            encoder_optimizer,
+            context_encoder_optimizer,
+            attack_clf_optimizer,
+            embedding,
+            n_iteration,
+            self._config["batch_size"],
+            self._config["print_every"],
+            n_iter_per_epoch,
+            self._config["clip"],
+            self._device,
+            MAX_LENGTH,
+            batchIterator,
+        )
+
         # save the resulting checkpoints so we can load them later during transform
         self._model = best_model
 
@@ -229,7 +261,7 @@ class CRAFTModel(ForecasterModel):
         :param forecast_attribute_name: Forecaster will use this to look up the table column containing your model's discretized predictions (see output specification below)
         :param forecast_prob_attribute_name: Forecaster will use this to look up the table column containing your model's raw forecast probabilities (see output specification below)
 
-        :return: a Pandas DataFrame, with one row for each context, indexed by the ID of that context's current utterance. Contains two columns, one with raw probabilities named according to forecast_prob_attribute_name, and one with discretized (binary) forecasts named according to forecast_attribute_name 
+        :return: a Pandas DataFrame, with one row for each context, indexed by the ID of that context's current utterance. Contains two columns, one with raw probabilities named according to forecast_prob_attribute_name, and one with discretized (binary) forecasts named according to forecast_attribute_name
         """
         # convert the input contexts into CRAFT's data format
         test_pairs = self._context_to_craft_data(contexts)
@@ -248,18 +280,18 @@ class CRAFTModel(ForecasterModel):
 
         # Run the pipeline!
         forecasts_df = evaluateDataset(
-            test_pairs, 
-            encoder, 
-            context_encoder, 
-            predictor, 
-            self._voc, 
-            self._config["batch_size"], 
+            test_pairs,
+            encoder,
+            context_encoder,
+            predictor,
+            self._voc,
+            self._config["batch_size"],
             self._device,
-            MAX_LENGTH, 
+            MAX_LENGTH,
             batchIterator,
             self._decision_threshold,
-            forecast_attribute_name, 
-            forecast_prob_attribute_name
+            forecast_attribute_name,
+            forecast_prob_attribute_name,
         )
 
         return forecasts_df

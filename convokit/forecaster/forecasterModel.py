@@ -1,19 +1,21 @@
 from abc import ABC, abstractmethod
 from typing import Callable
 
+
 class ForecasterModel(ABC):
     """
-    An abstract class defining an interface that Forecaster can call into to invoke a conversational forecasting algorithm. 
-    The “contract” between Forecaster and ForecasterModel means that ForecasterModel can expect to receive conversational data 
+    An abstract class defining an interface that Forecaster can call into to invoke a conversational forecasting algorithm.
+    The “contract” between Forecaster and ForecasterModel means that ForecasterModel can expect to receive conversational data
     in a consistent format, defined above.
     """
+
     def __init__(self):
         self._labeler = None
 
     @property
     def labeler(self):
         return self._labeler
-    
+
     @labeler.setter
     def labeler(self, value: Callable):
         self._labeler = value
@@ -36,6 +38,6 @@ class ForecasterModel(ABC):
 
         :param contexts: an iterator over context tuples
 
-        :return: a Pandas DataFrame, with one row for each context, indexed by the ID of that context's current utterance. Contains two columns, one with raw probabilities named according to forecast_prob_attribute_name, and one with discretized (binary) forecasts named according to forecast_attribute_name. Subclass implementations of ForecasterModel MUST adhere to this return value specification! 
+        :return: a Pandas DataFrame, with one row for each context, indexed by the ID of that context's current utterance. Contains two columns, one with raw probabilities named according to forecast_prob_attribute_name, and one with discretized (binary) forecasts named according to forecast_attribute_name. Subclass implementations of ForecasterModel MUST adhere to this return value specification!
         """
         pass
