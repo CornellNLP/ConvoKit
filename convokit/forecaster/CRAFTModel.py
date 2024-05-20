@@ -72,6 +72,13 @@ class CRAFTModel(ForecasterModel):
     (craft-wiki-pretrained and craft-cmv-pretrained, respectively), which provide trained versions of the
     underlying utterance and conversation encoder layers but leave the classification layers at their
     random initializations so that they can be fitted to your data.
+
+    :param initial_weights: Specifies where to find the saved model to be loaded to initialize CRAFT. To use ConvoKit's provided models, use "craft-wiki-pretrained" for the model pretrained on Wikipedia data, or "craft-wiki-finetuned" for the model already fine-tuned on CGA-WIKI. Replace "wiki" with "cmv" for the Reddit CMV equivalents. Alternatively, if you have a custom model you want to use, you can pass in the full path to the saved PyTorch checkpoint file.
+    :param vocab_index2word: File containing the mapping from vocabulary index to raw string tokens. If you are using a provided model, you MUST leave this as the default value of "auto" (other values will be ignored and overridden to "auto"). Conversely, if using a custom model, you CANNOT leave this as "auto" and you must provide a full path to the vocabulary file that you made for your custom model.
+    :param vocab_word2index: File containing the mapping from raw string tokens to vocabulary index. If you are using a provided model, you MUST leave this as the default value of "auto" (other values will be ignored and overridden to "auto"). Conversely, if using a custom model, you CANNOT leave this as "auto" and you must provide a full path to the vocabulary file that you made for your custom model.
+    :param decision_threshold: Output probability beyond which a forecast should be considered "positive"/"True". Highly recommended to leave this at auto, which will use published values for the provided models, or 0.5 for custom models.
+    :param torch_device: "cpu" or "cuda" (for GPUs). If you have access to a GPU it is strongly recommended to set this to "cuda"; the default is "cpu" only for compatibility with non-GPU setups.
+    :param config: Allows overwriting of CRAFT hyperparameters. Strongly recommended to keep this at default unless you know what you're doing!
     """
 
     def __init__(
@@ -170,6 +177,12 @@ class CRAFTModel(ForecasterModel):
         return embedding, encoder, context_encoder, attack_clf
     
     def fit(self, contexts, val_contexts=None):
+        """
+        Fine-tune the CRAFT model, and save the best model according to validation performance.
+
+        :param contexts: an iterator over context tuples, provided by the Forecaster framework
+        :param val_contexts: an iterator over context tuples to be used only for validation. IMPORTANT: this is marked Optional only for compatibility with the generic Forecaster API; CRAFT actually REQUIRES a validation set so leaving this parameter at None will raise an error!
+        """
         # convert the input contexts into CRAFT's data format
         train_pairs = self._context_to_craft_data(contexts)
         print("Processed", len(train_pairs), "context tuples for model training")
@@ -209,6 +222,15 @@ class CRAFTModel(ForecasterModel):
         self._model = best_model
 
     def transform(self, contexts, forecast_attribute_name, forecast_prob_attribute_name):
+        """
+        Run a fine-tuned CRAFT model on the provided data
+
+        :param contexts: context tuples from the Forecaster framework
+        :param forecast_attribute_name: Forecaster will use this to look up the table column containing your model's discretized predictions (see output specification below)
+        :param forecast_prob_attribute_name: Forecaster will use this to look up the table column containing your model's raw forecast probabilities (see output specification below)
+
+        :return: a Pandas DataFrame, with one row for each context, indexed by the ID of that context's current utterance. Contains two columns, one with raw probabilities named according to forecast_prob_attribute_name, and one with discretized (binary) forecasts named according to forecast_attribute_name 
+        """
         # convert the input contexts into CRAFT's data format
         test_pairs = self._context_to_craft_data(contexts)
         print("Processed", len(test_pairs), "context tuples for model evaluation")
@@ -235,6 +257,7 @@ class CRAFTModel(ForecasterModel):
             self._device,
             MAX_LENGTH, 
             batchIterator,
+            self._decision_threshold,
             forecast_attribute_name, 
             forecast_prob_attribute_name
         )

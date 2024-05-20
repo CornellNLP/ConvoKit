@@ -104,14 +104,14 @@ def train(input_variable, dialog_lengths, dialog_lengths_list, utt_lengths, batc
     return loss.item()
 
 def evaluateBatch(encoder, context_encoder, predictor, voc, input_batch, dialog_lengths, 
-                  dialog_lengths_list, utt_lengths, batch_indices, dialog_indices, batch_size, device, max_length):
+                  dialog_lengths_list, utt_lengths, batch_indices, dialog_indices, batch_size, device, max_length, threshold=0.5):
     # Set device options
     input_batch = input_batch.to(device)
     dialog_lengths = dialog_lengths.to(device)
     utt_lengths = utt_lengths.to(device)
     # Predict future attack using predictor
     scores = predictor(input_batch, dialog_lengths, dialog_lengths_list, utt_lengths, batch_indices, dialog_indices, batch_size, max_length)
-    predictions = (scores > 0.5).float()
+    predictions = (scores > threshold).float()
     return predictions, scores
 
 def validate(dataset, encoder, context_encoder, predictor, voc, batch_size, device, max_length, batch_iterator_func):
@@ -211,7 +211,7 @@ def trainIters(voc, pairs, val_pairs, encoder, context_encoder, attack_clf,
 
     return best_model
 
-def evaluateDataset(dataset, encoder, context_encoder, predictor, voc, batch_size, device, max_length, batch_iterator_func, pred_col_name, score_col_name):
+def evaluateDataset(dataset, encoder, context_encoder, predictor, voc, batch_size, device, max_length, batch_iterator_func, threshold, pred_col_name, score_col_name):
     # create a batch iterator for the given data
     batch_iterator = batch_iterator_func(voc, dataset, batch_size, shuffle=False)
     # find out how many iterations we will need to cover the whole dataset
@@ -229,7 +229,7 @@ def evaluateDataset(dataset, encoder, context_encoder, predictor, voc, batch_siz
         # run the model
         predictions, scores = evaluateBatch(encoder, context_encoder, predictor, voc, input_variable,
                                             dialog_lengths, dialog_lengths_list, utt_lengths, batch_indices, dialog_indices,
-                                            true_batch_size, device, max_length)
+                                            true_batch_size, device, max_length, threshold)
 
         # format the output as a dataframe (which we can later re-join with the corpus)
         for i in range(true_batch_size):

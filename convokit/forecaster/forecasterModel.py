@@ -29,5 +29,7 @@ class ForecasterModel(ABC):
         in the form of a DataFrame indexed by (current) utterance ID
 
         :param contexts: an iterator over context tuples
+
+        :return: a Pandas DataFrame, with one row for each context, indexed by the ID of that context's current utterance. Contains two columns, one with raw probabilities named according to forecast_prob_attribute_name, and one with discretized (binary) forecasts named according to forecast_attribute_name. Subclass implementations of ForecasterModel MUST adhere to this return value specification! 
         """
         pass
