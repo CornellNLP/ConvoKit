@@ -62,7 +62,7 @@ class Forecaster(Transformer):
             for i in range(1, len(chronological_utts)):
                 current_utt = chronological_utts[i]
                 # context is all utterances up to and including the most recent utterance
-                context = chronological_utts[(i-1):(i+1)]
+                context = chronological_utts[:(i+1)]
                 # if a preprocessor is given, run it first to get the "clean" version of the context
                 if self.context_preprocessor is not None:
                     context = self.context_preprocessor(context)
@@ -94,9 +94,9 @@ class Forecaster(Transformer):
         """
         Wrapper method for training the underlying conversational forecasting model. Forecaster itself does not implement any actual training logic. 
         Instead, it handles the job of selecting and iterating over context tuples. The resulting iterator is presented as a parameter to the fit 
-        method of the underlying model, which can process the pairs however it sees fit. Within each pair, context is unstructured - it contains all 
-        utterances temporally preceding the reply, but does not impose any particular structure beyond that, allowing each conversational 
-        forecasting model to decide how it wants to define “context”.
+        method of the underlying model, which can process the tuples however it sees fit. Within each tuple, context is unstructured - it contains all 
+        utterances temporally preceding the most recent utterance, plus that most recent utterance itself, but does not impose any particular structure 
+        beyond that, allowing each conversational forecasting model to decide how it wants to define “context”.
 
         :param corpus: The Corpus containing the data to train on
         :param context_selector: A function that takes in a context tuple and returns a boolean indicator of whether it should be included in training data. This can be used to both select data based on splits (i.e. keep only those in the “train” split) and to specify special behavior of what contexts are looked at in training (i.e. in CRAFT where only the last context, directly preceding the toxic comment, is used in training).

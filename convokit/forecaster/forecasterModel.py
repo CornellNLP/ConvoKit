@@ -2,6 +2,11 @@ from abc import ABC, abstractmethod
 from typing import Callable
 
 class ForecasterModel(ABC):
+    """
+    An abstract class defining an interface that Forecaster can call into to invoke a conversational forecasting algorithm. 
+    The “contract” between Forecaster and ForecasterModel means that ForecasterModel can expect to receive conversational data 
+    in a consistent format, defined above.
+    """
     def __init__(self):
         self._labeler = None
 
@@ -19,6 +24,7 @@ class ForecasterModel(ABC):
         Train this conversational forecasting model on the given data
 
         :param contexts: an iterator over context tuples
+        :param val_contexts: an optional second iterator over context tuples to be used as a separate held-out validation set. Concrete ForecasterModel implementations may choose to ignore this, or conversely even enforce its presence.
         """
         pass
 
