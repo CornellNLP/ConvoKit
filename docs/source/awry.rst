@@ -1,5 +1,5 @@
-Conversations Gone Awry Dataset
-===============================
+Conversations Gone Awry Dataset - Wikipedia version (CGA-WIKI) 
+==============================================================
 
 A collection of conversations from Wikipedia talk pages that derail into personal attacks (4,188 conversations, 30,021 comments).
 

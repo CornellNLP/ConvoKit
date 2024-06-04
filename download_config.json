@@ -96,5 +96,27 @@
     "casino-corpus": "https://zissou.infosci.cornell.edu/convokit/datasets/casino-corpus/casino-corpus.zip",
     "wiki-sampled-en-corpus": "https://zissou.infosci.cornell.edu/convokit/datasets/wiki-sampled-en-corpus/wiki-sampled-en-corpus.zip",
     "wiki-sampled-zh-corpus": "https://zissou.infosci.cornell.edu/convokit/datasets/wiki-sampled-zh-corpus/wiki-sampled-zh-corpus.zip"
+  },
+  "ModelURLS": {
+    "craft-wiki-pretrained": [
+      "https://zissou.infosci.cornell.edu/convokit/models/craft_wikiconv/craft_pretrained.tar",
+      "https://zissou.infosci.cornell.edu/convokit/models/craft_wikiconv/index2word.json",
+      "https://zissou.infosci.cornell.edu/convokit/models/craft_wikiconv/word2index.json"
+    ],
+    "craft-wiki-finetuned": [
+      "https://zissou.infosci.cornell.edu/convokit/models/craft_wikiconv/craft_full.tar",
+      "https://zissou.infosci.cornell.edu/convokit/models/craft_wikiconv/index2word.json",
+      "https://zissou.infosci.cornell.edu/convokit/models/craft_wikiconv/word2index.json"
+    ],
+    "craft-cmv-pretrained": [
+      "https://zissou.infosci.cornell.edu/convokit/models/craft_cmv/craft_pretrained.tar",
+      "https://zissou.infosci.cornell.edu/convokit/models/craft_cmv/index2word.json",
+      "https://zissou.infosci.cornell.edu/convokit/models/craft_cmv/word2index.json"
+    ],
+    "craft-cmv-finetuned": [
+      "https://zissou.infosci.cornell.edu/convokit/models/craft_cmv/craft_full.tar",
+      "https://zissou.infosci.cornell.edu/convokit/models/craft_cmv/index2word.json",
+      "https://zissou.infosci.cornell.edu/convokit/models/craft_cmv/word2index.json"
+    ]
   }
 }

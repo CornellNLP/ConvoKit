@@ -2,8 +2,8 @@ Datasets
 ========
 
 .. toctree::
-   Conversations Gone Awry Dataset (Wikipedia version) <awry.rst>
-   Conversations Gone Awry Dataset (Reddit CMV version) <awry_cmv.rst>
+   Conversations Gone Awry Dataset - Wikipedia version (CGA-WIKI) <awry.rst>
+   Conversations Gone Awry Dataset - Reddit CMV version (CGA-CMV) <awry_cmv.rst>
    Cornell Movie-Dialogs Corpus <movie.rst>
    CANDOR Corpus <candor.rst>
    Parliament Question Time Corpus <parliament.rst>
