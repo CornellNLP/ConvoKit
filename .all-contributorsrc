@@ -307,6 +307,19 @@
       "contributions": [
         "data"
       ]
+    },
+    {
+      "login": "seanzhangkx8",
+      "name": "seanzhangkx8",
+      "avatar_url": "https://avatars.githubusercontent.com/u/106214464?v=4",
+      "profile": "https://github.com/seanzhangkx8",
+      "contributions": [
+        "code",
+        "ideas",
+        "maintenance",
+        "doc",
+        "review"
+      ]
     }
   ],
   "contributorsPerLine": 7,
@@ -314,5 +327,7 @@
   "projectOwner": "CornellNLP",
   "repoType": "github",
   "repoHost": "https://github.com",
-  "skipCi": true
+  "skipCi": true,
+  "commitType": "docs",
+  "commitConvention": "angular"
 }
