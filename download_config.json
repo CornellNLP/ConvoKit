@@ -1,7 +1,7 @@
 {
   "cur_version": {
     "chromium-corpus": 0,
-    "conversations-gone-awry-cmv-corpus": 1,
+    "conversations-gone-awry-cmv-corpus": 2,
     "conversations-gone-awry-corpus": 4,
     "diplomacy-corpus": 2,
     "friends-corpus": 2,
@@ -34,7 +34,7 @@
   },
   "DatasetURLs": {
     "chromium-corpus": "http://zissou.infosci.cornell.edu/convokit/datasets/chromium-corpus/chromium-corpus.zip",
-    "conversations-gone-awry-cmv-corpus": "http://zissou.infosci.cornell.edu/convokit/datasets/conversations-gone-awry-cmv-corpus/full.zip",
+    "conversations-gone-awry-cmv-corpus": "http://zissou.infosci.cornell.edu/convokit/datasets/conversations-gone-awry-cmv-corpus/conversations-gone-awry-cmv-corpus.zip",
     "conversations-gone-awry-corpus": "http://zissou.infosci.cornell.edu/convokit/datasets/conversations-gone-awry-corpus/conversations-gone-awry-corpus.zip",
     "diplomacy-corpus": "http://zissou.infosci.cornell.edu/convokit/datasets/diplomacy-corpus/diplomacy-corpus.zip",
     "friends-corpus": "http://zissou.infosci.cornell.edu/convokit/datasets/friends-corpus/friends-corpus.zip",
