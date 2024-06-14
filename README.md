@@ -57,7 +57,7 @@ Available as an interactive notebook: [full version (fine-tuning + inference)](h
 ConvoKit ships with several datasets ready for use "out-of-the-box".
 These datasets can be downloaded using the `convokit.download()` [helper function](https://github.com/CornellNLP/ConvoKit/blob/master/convokit/util.py).  Alternatively you can access them directly [here](http://zissou.infosci.cornell.edu/convokit/datasets/).
 
-### [Conversations Gone Awry Datasets](https://convokit.cornell.edu/documentation/awry.html)
+### [Conversations Gone Awry Datasets]([Wikipedia](https://convokit.cornell.edu/documentation/awry.html)/[CMV](https://convokit.cornell.edu/documentation/awry_cmv.html))
 
 Two related corpora of conversations that derail into antisocial behavior. One corpus (CGA-WIKI) consists of Wikipedia talk page conversations that derail into personal attacks as labeled by crowdworkers (4,188 conversations containing 30.021 comments). The other (CGA-CMV) consists of discussion threads on the subreddit ChangeMyView (CMV) that derail into rule-violating behavior as determined by the presence of a moderator intervention (6,842 conversations containing 42,964 comments).
 Name for download: `conversations-gone-awry-corpus` (for CGA-WIKI) or `conversations-gone-awry-cmv-corpus` (for CGA-CMV)
