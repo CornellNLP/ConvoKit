@@ -1,12 +1,15 @@
 import json
 import os
 import shutil
+import tempfile
 import urllib.request
 import uuid
 import warnings
 import zipfile
-from typing import Dict
+from pathlib import Path
+from typing import Dict, Union, Optional, List, IO
 
+import numpy as np
 import requests
 
 
@@ -251,7 +254,15 @@ def _download_helper(
                 if length > 1e6
                 else str(round(length / 1e3, 1)) + "KB"
             )
-            print("Downloading", name, "from", url, "(" + length + ")...", end=" ", flush=True)
+            print(
+                "Downloading",
+                name,
+                "from",
+                url,
+                "(" + length + ")...",
+                end=" ",
+                flush=True,
+            )
         shutil.copyfileobj(response, out_file)
 
     # post-process (extract) corpora
@@ -275,7 +286,9 @@ def _download_helper(
         )  # os.path.join(os.path.dirname(data), name)
         f.write(
             "{}$#${}$#${}\n".format(
-                name, os.path.realpath(os.path.dirname(dataset_path) + "/"), corpus_version(fn)
+                name,
+                os.path.realpath(os.path.dirname(dataset_path) + "/"),
+                corpus_version(fn),
             )
         )
         # f.write(name + "\n")
@@ -336,7 +349,12 @@ def _get_supreme_info(year: str) -> str:
 
 
 def meta_index(corpus=None, filename: str = None) -> Dict:
-    keys = ["utterances-index", "conversations-index", "speakers-index", "overall-index"]
+    keys = [
+        "utterances-index",
+        "conversations-index",
+        "speakers-index",
+        "overall-index",
+    ]
     if corpus is not None:
         return {k: v for k, v in corpus.meta_index.items() if k in keys}
     if filename is not None:
@@ -374,3 +392,55 @@ def deprecation(prev_name: str, new_name: str, stacklevel: int = 3):
 
 def create_safe_id():
     return "_" + uuid.uuid4().hex
+
+
+def random_sampler(
+    tokens: List[Union[np.ndarray, List[str]]], sample_size: int, n_samples: int
+) -> Optional[np.ndarray]:
+    """Generates random samples from a list of lists of tokens.
+
+    :param tokens: A list of lists of tokens to sample from.
+    :param sample_size: The number of tokens to include in each sample.
+    :param n_samples: The number of samples to take.
+    :return: A `numpy.array`, where each row is a sample of tokens.
+    """
+    if not sample_size:
+        assert len(tokens) == 1
+        return np.tile(tokens[0], (n_samples, 1))
+
+    tokens_list = np.array([tokens_ for tokens_ in tokens if len(tokens_) >= sample_size])
+    if tokens_list.shape[0] == 0:
+        return None
+
+    rng = np.random.default_rng()
+    sample_idxs = rng.integers(0, tokens_list.shape[0], size=n_samples)
+    return np.array([rng.choice(tokens_list[idx], sample_size) for idx in sample_idxs])
+
+
+def create_temp_files(num_files: int) -> List[IO]:
+    """Creates a specified number of `tempfile` files.
+
+    :param num_files: The number of `tempfile` files to be created.
+    :return: A list of `tempfile.NamedTemporaryFile` files.
+    """
+    tmp_files = []
+    for _ in range(num_files):
+        tmp_files.append(tempfile.NamedTemporaryFile("w", delete=True))
+    return tmp_files
+
+
+def delete_files(tmp_filenames: List[str], remove_parent_dir: bool = True):
+    """Delete temporary files generated intermittently.
+
+    :param tmp_filenames: The filenames of all the files to be deleted.
+    :param remove_parent_dir: Indicator of whether the parent directory is to be deleted, if it is
+        empty after deleting all the temporary files, defaults to True.
+    """
+    tmp_filepaths = [Path(tmp_filename) for tmp_filename in tmp_filenames]
+    parent_dir = tmp_filepaths[0].parents[0]
+
+    for tmp_filepath in tmp_filepaths:
+        Path.unlink(tmp_filepath, missing_ok=True)
+
+    if remove_parent_dir and len(list(parent_dir.glob("*"))) == 0:
+        Path.rmdir(parent_dir)

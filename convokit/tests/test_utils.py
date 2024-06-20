@@ -9,7 +9,10 @@ from convokit.model import Corpus, Utterance, Speaker
 
 FOX_TEXT = "A quick brown fox jumps over the lazy dog."
 BUFFALO_TEXT = "Buffalo buffalo Buffalo buffalo buffalo buffalo Buffalo buffalo"
-FOX_BUFFALO_TEXT = "A quick brown fox jumps over the lazy dog. Buffalo buffalo Buffalo buffalo buffalo buffalo Buffalo buffalo"
+FOX_BUFFALO_TEXT = (
+    "A quick brown fox jumps over the lazy dog. Buffalo buffalo Buffalo buffalo "
+    "buffalo buffalo Buffalo buffalo"
+)
 BURR_SIR_TEXT_1 = "Pardon me. Are you Aaron Burr, sir?"
 BURR_SIR_TEXT_2 = "That depends. Who's asking?"
 BURR_SIR_SENTENCE_1 = "Pardon me."
@@ -124,6 +127,31 @@ def small_burr_corpus():
     utterances = [
         Utterance(id="0", text=BURR_SIR_TEXT_1, speaker=hamilton),
         Utterance(id="1", text=BURR_SIR_TEXT_2, speaker=burr),
+    ]
+
+    return Corpus(utterances=utterances)
+
+
+def small_burr_conv_corpus():
+    hamilton = Speaker(id="hamilton")
+    burr = Speaker(id="burr")
+
+    utterances = [
+        Utterance(id="0", text=BURR_SIR_SENTENCE_1, conversation_id="0", speaker=hamilton),
+        Utterance(
+            id="1", text=BURR_SIR_SENTENCE_2, conversation_id="0", reply_to="0", speaker=burr
+        ),
+        Utterance(id="2", text=BURR_SIR_SENTENCE_3, conversation_id="1", speaker=burr),
+        Utterance(
+            id="3", text=BURR_SIR_SENTENCE_4, conversation_id="1", reply_to="2", speaker=hamilton
+        ),
+        Utterance(
+            id="4", text=BURR_SIR_SENTENCE_1, conversation_id="1", reply_to="3", speaker=burr
+        ),
+        Utterance(id="5", text=BURR_SIR_SENTENCE_2, conversation_id="2", speaker=hamilton),
+        Utterance(
+            id="6", text=BURR_SIR_SENTENCE_3, conversation_id="2", reply_to="5", speaker=burr
+        ),
     ]
 
     return Corpus(utterances=utterances)
