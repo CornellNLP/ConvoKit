@@ -41,7 +41,7 @@ Also includes functionality to extract surface motifs to represent utterances, u
 
 ### [Hypergraph conversation representation](http://www.cs.cornell.edu/~cristian/Patterns_of_participant_interactions.html) <sub><sup>[(API)](https://convokit.cornell.edu/documentation/hyperconvo.html)</sup></sub>
 A method for extracting structural features of conversations through a hypergraph representation.
-Example: [hypergraph creation and feature extraction, visualization and interpretation on a subsample of Reddit](https://github.com/CornellNLP/ConvoKit/blob/master/examples/hyperconvo/demo_new.ipynb).
+Example: [hypergraph creation and feature extraction, visualization and interpretation on a subsample of Reddit](https://github.com/CornellNLP/ConvoKit/blob/master/examples/hyperconvo/hyperconvo_demo.ipynb).
 
 ### [Linguistic diversity in conversations](http://www.cs.cornell.edu/~cristian/Finding_your_voice__linguistic_development.html) <sub><sup>[(API)](https://convokit.cornell.edu/documentation/speakerConvoDiversity.html)</sup></sub>
 A method to compute the linguistic diversity of individuals within their own conversations, and between other individuals in a population.
