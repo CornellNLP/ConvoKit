@@ -95,7 +95,6 @@ def train(
     clip,
     device,
 ):  # misc arguments
-
     # Zero gradients
     encoder_optimizer.zero_grad()
     context_encoder_optimizer.zero_grad()
@@ -256,7 +255,6 @@ def trainIters(
     max_length,
     batch_iterator_func,
 ):
-
     # create a batch iterator for training data
     batch_iterator = batch_iterator_func(voc, pairs, batch_size)
 
