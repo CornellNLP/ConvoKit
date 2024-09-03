@@ -440,7 +440,7 @@ class Corpus:
             By default, the selector includes all Utterances in the Corpus.
         :return: a generator of Utterances
         """
-        for v in self.utterances.values():
+        for v in tqdm(self.utterances.values()):
             if selector(v):
                 yield v
 
@@ -470,7 +470,7 @@ class Corpus:
             By default, the selector includes all Conversations in the Corpus.
         :return: a generator of Conversations
         """
-        for v in self.conversations.values():
+        for v in tqdm(self.conversations.values()):
             if selector(v):
                 yield v
 
@@ -501,7 +501,7 @@ class Corpus:
         :return: a generator of Speakers
         """
 
-        for speaker in self.speakers.values():
+        for speaker in tqdm(self.speakers.values()):
             if selector(speaker):
                 yield speaker
 

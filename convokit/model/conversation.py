@@ -1,6 +1,8 @@
 from collections import defaultdict
 from typing import Dict, List, Callable, Generator, Optional
 
+from tqdm import tqdm
+
 from convokit.util import warn
 from .corpusComponent import CorpusComponent
 from .corpusUtil import *
@@ -71,8 +73,8 @@ class Conversation(CorpusComponent):
                         By default, the selector includes all Utterances in the Conversation.
                 :return: a generator of Utterances
         """
-        for ut_id in self._utterance_ids:
-            utt = self._owner.get_utterance(ut_id)
+        for utt_id in tqdm(self._utterance_ids):
+            utt = self._owner.get_utterance(utt_id)
             if selector(utt):
                 yield utt
 
@@ -134,7 +136,7 @@ class Conversation(CorpusComponent):
             for ut_id in self._utterance_ids:
                 ut = self._owner.get_utterance(ut_id)
                 self._speaker_ids.add(ut.speaker.id)
-        for speaker_id in self._speaker_ids:
+        for speaker_id in tqdm(self._speaker_ids):
             speaker = self._owner.get_speaker(speaker_id)
             if selector(speaker):
                 yield speaker
