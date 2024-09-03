@@ -87,6 +87,7 @@ def download(
 
     cur_version = dataset_config["cur_version"]
     DatasetURLs = dataset_config["DatasetURLs"]
+    ModelURLs = dataset_config["ModelURLS"]
 
     if name.startswith("subreddit"):
         subreddit_name = name.split("-", maxsplit=1)[1]
@@ -158,7 +159,14 @@ def download(
         # name not in downloaded or \
         #    (use_newest_version and name in cur_version and
         #        downloaded[name] < cur_version[name]):
-        if name.endswith("-motifs"):
+        if name in ModelURLs:
+            for url in ModelURLs[name]:
+                full_name = name + url[url.rfind("/") :]
+                model_file_path = dataset_path + url[url.rfind("/") :]
+                if not os.path.exists(os.path.dirname(model_file_path)):
+                    os.makedirs(os.path.dirname(model_file_path))
+                _download_helper(model_file_path, url, verbose, full_name, downloadeds_path)
+        elif name.endswith("-motifs"):
             for url in DatasetURLs[name]:
                 full_name = name + url[url.rfind("/") :]
                 if full_name not in downloaded:
@@ -236,12 +244,14 @@ def download_local(name: str, data_dir: str):
 def _download_helper(
     dataset_path: str, url: str, verbose: bool, name: str, downloadeds_path: str
 ) -> None:
+    is_corpus = False
     if (
         url.lower().endswith(".corpus")
         or url.lower().endswith(".corpus.zip")
         or url.lower().endswith(".zip")
     ):
         dataset_path += ".zip"
+        is_corpus = True
 
     with urllib.request.urlopen(url) as response, open(dataset_path, "wb") as out_file:
         if verbose:
@@ -269,16 +279,18 @@ def _download_helper(
 
     if verbose:
         print("Done")
-    with open(downloadeds_path, "a") as f:
-        fn = os.path.join(
-            os.path.dirname(dataset_path), name
-        )  # os.path.join(os.path.dirname(data), name)
-        f.write(
-            "{}$#${}$#${}\n".format(
-                name, os.path.realpath(os.path.dirname(dataset_path) + "/"), corpus_version(fn)
+    # for Corpus objects only: check the Corpus version
+    if is_corpus:
+        with open(downloadeds_path, "a") as f:
+            fn = os.path.join(
+                os.path.dirname(dataset_path), name
+            )  # os.path.join(os.path.dirname(data), name)
+            f.write(
+                "{}$#${}$#${}\n".format(
+                    name, os.path.realpath(os.path.dirname(dataset_path) + "/"), corpus_version(fn)
+                )
             )
-        )
-        # f.write(name + "\n")
+            # f.write(name + "\n")
 
 
 def corpus_version(filename: str) -> int:

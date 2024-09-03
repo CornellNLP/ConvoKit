@@ -41,7 +41,7 @@ Also includes functionality to extract surface motifs to represent utterances, u
 
 ### [Hypergraph conversation representation](http://www.cs.cornell.edu/~cristian/Patterns_of_participant_interactions.html) <sub><sup>[(API)](https://convokit.cornell.edu/documentation/hyperconvo.html)</sup></sub>
 A method for extracting structural features of conversations through a hypergraph representation.
-Example: [hypergraph creation and feature extraction, visualization and interpretation on a subsample of Reddit](https://github.com/CornellNLP/ConvoKit/blob/master/examples/hyperconvo/demo_new.ipynb).
+Example: [hypergraph creation and feature extraction, visualization and interpretation on a subsample of Reddit](https://github.com/CornellNLP/ConvoKit/blob/master/examples/hyperconvo/hyperconvo_demo.ipynb).
 
 ### [Linguistic diversity in conversations](http://www.cs.cornell.edu/~cristian/Finding_your_voice__linguistic_development.html) <sub><sup>[(API)](https://convokit.cornell.edu/documentation/speakerConvoDiversity.html)</sup></sub>
 A method to compute the linguistic diversity of individuals within their own conversations, and between other individuals in a population.
@@ -57,7 +57,7 @@ Available as an interactive notebook: [full version (fine-tuning + inference)](h
 ConvoKit ships with several datasets ready for use "out-of-the-box".
 These datasets can be downloaded using the `convokit.download()` [helper function](https://github.com/CornellNLP/ConvoKit/blob/master/convokit/util.py).  Alternatively you can access them directly [here](http://zissou.infosci.cornell.edu/convokit/datasets/).
 
-### [Conversations Gone Awry Datasets]([Wikipedia](https://convokit.cornell.edu/documentation/awry.html)/[CMV](https://convokit.cornell.edu/documentation/awry_cmv.html))
+### Conversations Gone Awry Datasets ([Wikipedia](https://convokit.cornell.edu/documentation/awry.html)/[CMV](https://convokit.cornell.edu/documentation/awry_cmv.html))
 
 Two related corpora of conversations that derail into antisocial behavior. One corpus (CGA-WIKI) consists of Wikipedia talk page conversations that derail into personal attacks as labeled by crowdworkers (4,188 conversations containing 30.021 comments). The other (CGA-CMV) consists of discussion threads on the subreddit ChangeMyView (CMV) that derail into rule-violating behavior as determined by the presence of a moderator intervention (6,842 conversations containing 42,964 comments).
 Name for download: `conversations-gone-awry-corpus` (for CGA-WIKI) or `conversations-gone-awry-cmv-corpus` (for CGA-CMV)
