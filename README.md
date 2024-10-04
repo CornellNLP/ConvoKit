@@ -137,6 +137,18 @@ A collection of all the conversations that occurred over 10 seasons of Friends, 
 
 Name for download: `friends-corpus`
 
+### [Federal Open Market Committee (FOMC) Corpus](https://convokit.cornell.edu/documentation/fomc.html)
+
+Transcripts of recurring meetings of the Federal Reserve’s Open Market Committee (FOMC), where important aspects of U.S. monetary policy are decided, covering the period 1977-2008.
+
+Name for download: `fomc-corpus`
+
+### [NPR Interview 2P Dataset Corpus](https://convokit.cornell.edu/documentation/npr-2p.html)
+
+This corpus contains conversations between NPR show hosts and their guests.
+
+Name for download: `npr-2p-corpus`
+
 ### [Switchboard Dialog Act Corpus](https://convokit.cornell.edu/documentation/switchboard.html)
 
 A collection of 1,155 five-minute telephone conversations between two participants, annotated with speech act tags.

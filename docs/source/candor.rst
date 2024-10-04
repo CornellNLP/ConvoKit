@@ -5,8 +5,8 @@ CANDOR corpus is a dataset of 1650 conversations that strangers had over video c
 A full description of the dataset can be found here: `Andrew Reece et al. ,The CANDOR corpus: Insights from a large multimodal dataset of naturalistic conversation. Sci. Adv.9,eadf3197(2023). <https://www.science.org/doi/10.1126/sciadv.adf3197>`_
 Please cite this paper when using CANDOR in your research.
 
-Usage
------
+Data Usage
+-----------
 
 Request CANDOR Corpus from (transcripts only): `BetterUp CANDOR Corpus <https://betterup-data-requests.herokuapp.com/>`_
 
