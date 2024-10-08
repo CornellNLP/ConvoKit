@@ -4,7 +4,7 @@
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![pypi](https://img.shields.io/pypi/v/convokit.svg)](https://pypi.org/pypi/convokit/)
-[![py\_versions](https://img.shields.io/badge/python-3.8%2B-blue)](https://pypi.org/pypi/convokit/)
+[![py\_versions](https://img.shields.io/badge/python-3.9%2B-blue)](https://pypi.org/pypi/convokit/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![license](https://img.shields.io/badge/license-MIT-green)](https://github.com/CornellNLP/ConvoKit/blob/master/LICENSE.md)
 [![Discord Community](https://img.shields.io/static/v1?logo=discord&style=flat&color=red&label=discord&message=community)](https://discord.gg/WMFqMWgz6P)
@@ -180,7 +180,7 @@ Name for download: `spolin-corpus`
 In addition to the provided datasets, you may also use ConvoKit with your own custom datasets by loading them into a `convokit.Corpus` object. [This example script](https://github.com/CornellNLP/ConvoKit/blob/master/examples/converting_movie_corpus.ipynb) shows how to construct a Corpus from custom data.
 
 ## Installation
-This toolkit requires Python >= 3.8.
+This toolkit requires Python >= 3.9.
 
 1. Download the toolkit: `pip3 install convokit`
 2. Download Spacy's English model: `python3 -m spacy download en`
