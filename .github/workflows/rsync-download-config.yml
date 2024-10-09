@@ -10,7 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: rsync download config
+
+    - name: Add server to known_hosts
+      run: ssh-keyscan -H ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
+
+    - name: Rsync download config
       uses: burnett01/rsync-deployments@master
       with:
         switches: -vzr
