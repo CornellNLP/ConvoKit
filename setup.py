@@ -44,7 +44,7 @@ setup(
         "matplotlib>=3.0.0",
         "pandas>=0.23.4",
         "msgpack-numpy>=0.4.3.2",
-        "spacy>=2.3.5",
+        "spacy>=3.8.2",
         "scipy>=1.1.0",
         "scikit-learn>=0.20.0",
         "nltk>=3.4",
