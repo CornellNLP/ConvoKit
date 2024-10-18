@@ -1,8 +1,0 @@
-black
-pre-commit
-pytest
-pytest-cov
-twine
-sphinx
-m2r2
-sphinx-rtd-theme

@@ -1,0 +1,29 @@
+Metadata-Version: 2.1
+Name: convokit
+Version: 3.0.0
+Summary: ConvoKit
+Home-page: https://github.com/CornellNLP/ConvoKit
+Author: Jonathan P. Chang, Caleb Chiam, Liye Fu, Andrew Wang, Justine Zhang, Cristian Danescu-Niculescu-Mizil
+Author-email: cristian@cs.cornell.edu
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+License-File: LICENSE.md
+Requires-Dist: matplotlib>=3.0.0
+Requires-Dist: pandas>=0.23.4
+Requires-Dist: msgpack-numpy>=0.4.3.2
+Requires-Dist: spacy>=2.3.5
+Requires-Dist: scipy>=1.1.0
+Requires-Dist: scikit-learn>=0.20.0
+Requires-Dist: nltk>=3.4
+Requires-Dist: dill>=0.2.9
+Requires-Dist: joblib>=0.13.2
+Requires-Dist: clean-text>=0.6.0
+Requires-Dist: unidecode>=1.1.1
+Requires-Dist: tqdm>=4.64.0
+Requires-Dist: pymongo>=4.0
+Requires-Dist: pyyaml>=5.4.1
+Requires-Dist: dnspython>=1.16.0
+Provides-Extra: craft
+Requires-Dist: torch>=0.12; extra == "craft"
