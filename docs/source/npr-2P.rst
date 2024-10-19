@@ -41,6 +41,9 @@ Conversations are indexed by the id of the first utterance that appears in the c
 
 Usage
 -----
+
+Convert the CANDOR Corpus into ConvoKit format using this notebook `Converting NPR-2P Corpus to ConvoKit Format <https://github.com/CornellNLP/ConvoKit/blob/master/examples/dataset-examples/NPR-2P/npr_to_convokit.ipynb>`_
+
 To download directly with ConvoKit:
 
 >>> from convokit import Corpus, download

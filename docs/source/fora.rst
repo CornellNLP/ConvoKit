@@ -10,7 +10,7 @@ Usage
 
 Request Fora Corpus from (transcripts only): `https://github.com/schropes/fora-corpus <https://github.com/schropes/fora-corpus>`_
 
-Convert the Fora Corpus into ConvoKit format using this notebook `Converting Fora Corpus to ConvoKit Format <>`_
+Convert the Fora Corpus into ConvoKit format using this notebook `Converting Fora Corpus to ConvoKit Format <https://github.com/CornellNLP/ConvoKit/blob/master/examples/dataset-examples/FORA/ConvoKit_Fora_Conversion.ipynb>`_
 
 Dataset details
 ---------------

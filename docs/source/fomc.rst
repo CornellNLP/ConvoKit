@@ -40,6 +40,8 @@ Conversations are indexed by a string representing the meeting date.
 Usage
 -----------
 
+Convert the CANDOR Corpus into ConvoKit format using this notebook `Converting FOMC Corpus to ConvoKit Format <https://github.com/CornellNLP/ConvoKit/blob/master/examples/dataset-examples/fomc/fomc_to_convokit.ipynb>`_
+
 To download directly with ConvoKit:
 
 >>> from convokit import Corpus, download
