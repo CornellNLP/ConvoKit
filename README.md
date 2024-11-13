@@ -149,6 +149,12 @@ This corpus contains conversations between NPR show hosts and their guests.
 
 Name for download: `npr-2p-corpus`
 
+### [DeliData Dataset Corpus](https://convokit.cornell.edu/documentation/deli.html)
+
+This corpus contains conversations in multi-party problem-solving contexts, containing information about group discussions and team performance.
+
+Name for download: `deli-corpus`
+
 ### [Switchboard Dialog Act Corpus](https://convokit.cornell.edu/documentation/switchboard.html)
 
 A collection of 1,155 five-minute telephone conversations between two participants, annotated with speech act tags.

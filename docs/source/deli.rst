@@ -7,13 +7,6 @@ The corpus is available upon request from the authors, and a ConvoKit-compatible
 
 For a full description of the dataset collection and potential applications, please refer to the original publication: `Karadzhov, G., Stafford, T., & Vlachos, A. (2023). DeliData: A dataset for deliberation in multi-party problem solving. Proceedings of the ACM on Human-Computer Interaction, 7(CSCW2), 1-25.`
 
-Usage
------
-
-Request the DeliData Corpus: https://delibot.xyz/delidata
-
-Convert the DeliData Corpus into ConvoKit format using the following notebook: `Converting DeliData to ConvoKit Format <https://github.com/CornellNLP/ConvoKit/blob/master/examples/dataset-examples/DELI/ConvoKit_DeliData_Conversion.ipynb>`_
-
 Dataset details
 ---------------
 
@@ -60,8 +53,20 @@ Metadata for each conversation includes:
 * sol_tracker_all: Up-to-date "state-of-mind" for each of the participants, i.e. an approximation of what each participant think the correct solution is at given timestep. This is based on initial solutions, submitted solutions, and solution mentions. team_performance value is calculated based on this column
 * performance_change: Change in team performance relative to the previous utterance.
 
-Statistics about the dataset
-----------------------------
+Usage
+-----
+
+Convert the DeliData Corpus into ConvoKit format using the following notebook: `Converting DeliData to ConvoKit Format <https://github.com/CornellNLP/ConvoKit/blob/master/examples/dataset-examples/DELI/ConvoKit_DeliData_Conversion.ipynb>`_
+
+To download directly with ConvoKit:
+
+>>> from convokit import Corpus, download
+>>> corpus = Corpus(filename=download("deli-corpus"))
+
+
+For some quick stats:
+
+>>> corpus.print_summary_stats()
 
 * Number of Speakers: 30
 * Number of Utterances: 17111
@@ -78,3 +83,8 @@ Contact
 ^^^^^^^
 
 Questions regarding the DeliData corpus should be directed to Georgi Karadzhov (georgi.karadzhov@sheffield.ac.uk).
+
+Files
+^^^^^^^
+
+Request the DeliData Corpus: https://delibot.xyz/delidata
