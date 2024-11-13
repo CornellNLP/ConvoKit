@@ -3,6 +3,7 @@ import unicodedata
 import nltk
 import random
 import itertools
+import json
 
 try:
     import torch
@@ -13,36 +14,19 @@ except (ModuleNotFoundError, ImportError) as e:
 
 from typing import List, Tuple
 
-CONSTANTS = {
-    "PAD_token": 0,
-    "SOS_token": 1,
-    "EOS_token": 2,
-    "UNK_token": 3,
-    "WORD2INDEX_URL": "http://zissou.infosci.cornell.edu/convokit/models/craft_wikiconv/word2index.json",
-    "INDEX2WORD_URL": "http://zissou.infosci.cornell.edu/convokit/models/craft_wikiconv/index2word.json",
-    "MODEL_URL": "http://zissou.infosci.cornell.edu/convokit/models/craft_wikiconv/craft_full.tar",
-}
-
 # Default word tokens
 PAD_token = 0  # Used for padding short sentences
 SOS_token = 1  # Start-of-sentence token
 EOS_token = 2  # End-of-sentence token
 UNK_token = 3  # Unknown word token
 
-# model download paths
-WORD2INDEX_URL = "http://zissou.infosci.cornell.edu/convokit/models/craft_wikiconv/word2index.json"
-INDEX2WORD_URL = "http://zissou.infosci.cornell.edu/convokit/models/craft_wikiconv/index2word.json"
-MODEL_URL = "http://zissou.infosci.cornell.edu/convokit/models/craft_wikiconv/craft_full.tar"
-
 
 class Voc:
-    """A class for representing the vocabulary used by a CRAFT model"""
-
     def __init__(self, name, word2index=None, index2word=None):
         self.name = name
         self.trimmed = (
             False if not word2index else True
-        )  # if a precomputed vocab is specified assume the speaker wants to use it as-is
+        )  # if a precomputed vocab is specified assume the user wants to use it as-is
         self.word2index = word2index if word2index else {"UNK": UNK_token}
         self.word2count = {}
         self.index2word = (
@@ -93,20 +77,6 @@ class Voc:
             self.addWord(word)
 
 
-# Create a Voc object from precomputed data structures
-def loadPrecomputedVoc(corpus_name, word2index_url, index2word_url):
-    # load the word-to-index lookup map
-    r = requests.get(word2index_url)
-    word2index = r.json()
-    # load the index-to-word lookup map
-    r = requests.get(index2word_url)
-    index2word = r.json()
-    return Voc(corpus_name, word2index, index2word)
-
-
-# Helper functions for preprocessing and tokenizing text
-
-
 # Turn a Unicode string to plain ASCII, thanks to
 # https://stackoverflow.com/a/518232/2809427
 def unicodeToAscii(s):
@@ -114,7 +84,7 @@ def unicodeToAscii(s):
 
 
 # Tokenize the string using NLTK
-def craft_tokenize(voc, text):
+def tokenize(voc, text):
     tokenizer = nltk.tokenize.RegexpTokenizer(pattern=r"\w+|[^\w\s]")
     # simplify the problem space by considering only ASCII data
     cleaned_text = unicodeToAscii(text.lower())
@@ -124,13 +94,38 @@ def craft_tokenize(voc, text):
         return []
 
     tokens = tokenizer.tokenize(cleaned_text)
+
+    # replace out-of-vocabulary tokens
     for i in range(len(tokens)):
         if tokens[i] not in voc.word2index:
             tokens[i] = "UNK"
+
     return tokens
 
 
-# Helper functions for turning dialog and text sequences into tensors, and manipulating those tensors
+# Create a Voc object from precomputed data structures
+def loadPrecomputedVoc(corpus_name, word2index_path, index2word_path):
+    with open(word2index_path) as fp:
+        word2index = json.load(fp)
+    with open(index2word_path) as fp:
+        index2word = json.load(fp)
+    return Voc(corpus_name, word2index, index2word)
+
+
+# Given a context utterance list from Forecaster, preprocess each utterance's text by tokenizing and truncating.
+# Returns the processed dialog entry where text has been replaced with a list of
+# tokens, each no longer than MAX_LENGTH - 1 (to leave space for the EOS token)
+def processContext(voc, context, is_attack):
+    processed = []
+    for utterance in context.context:
+        # since the iterative nature of Forecaster may lead us to see the same utterance
+        # multiple times, we'll cache the tokenized form of the utterance as metadata
+        # and look it up if it already exists
+        if "craft_tokens" not in utterance.meta:
+            utterance.meta["craft_tokens"] = tokenize(voc, utterance.text)
+        tokens = utterance.meta["craft_tokens"]
+        processed.append({"tokens": tokens, "is_attack": is_attack, "id": utterance.id})
+    return processed
 
 
 def indexesFromSentence(voc, sentence):
@@ -141,15 +136,15 @@ def zeroPadding(l, fillvalue=PAD_token):
     return list(itertools.zip_longest(*l, fillvalue=fillvalue))
 
 
-def binaryMatrix(l):
+def binaryMatrix(l, value=PAD_token):
     m = []
     for i, seq in enumerate(l):
         m.append([])
         for token in seq:
             if token == PAD_token:
-                m[i].append(0)
+                m[i].append(False)
             else:
-                m[i].append(1)
+                m[i].append(True)
     return m
 
 
@@ -189,13 +184,13 @@ def outputVar(l, voc):
     max_target_len = max([len(indexes) for indexes in indexes_batch])
     padList = zeroPadding(indexes_batch)
     mask = binaryMatrix(padList)
-    mask = torch.ByteTensor(mask)
+    mask = torch.BoolTensor(mask)
     padVar = torch.LongTensor(padList)
     return padVar, mask, max_target_len
 
 
 # Returns all items for a given batch of pairs
-def batch2TrainData(voc, pair_batch: List[Tuple], already_sorted=False):
+def batch2TrainData(voc, pair_batch, already_sorted=False):
     if not already_sorted:
         pair_batch.sort(key=lambda x: len(x[0]), reverse=True)
     input_batch, output_batch, label_batch, id_batch = [], [], [], []
@@ -203,10 +198,7 @@ def batch2TrainData(voc, pair_batch: List[Tuple], already_sorted=False):
         input_batch.append(pair[0])
         output_batch.append(pair[1])
         label_batch.append(pair[2])
-        if len(pair) > 3:
-            id_batch.append(pair[3])
-        else:
-            id_batch.append(None)
+        id_batch.append(pair[3])
     dialog_lengths = torch.tensor([len(x) for x in input_batch])
     input_utterances, batch_indices, dialog_indices = dialogBatch2UtteranceBatch(input_batch)
     inp, utt_lengths = inputVar(input_utterances, voc)
@@ -242,7 +234,8 @@ def batchIterator(voc, source_data, batch_size, shuffle=True):
         batch.sort(key=lambda x: len(x[0]), reverse=True)
         # for analysis purposes, get the source dialogs and labels associated with this batch
         batch_dialogs = [x[0] for x in batch]
+        batch_labels = [x[2] for x in batch]
         # convert batch to tensors
         batch_tensors = batch2TrainData(voc, batch, already_sorted=True)
-        yield (batch_tensors, batch_dialogs, true_batch_size)
+        yield (batch_tensors, batch_dialogs, batch_labels, true_batch_size)
         cur_idx += batch_size

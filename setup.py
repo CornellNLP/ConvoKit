@@ -44,7 +44,7 @@ setup(
         "matplotlib>=3.0.0",
         "pandas>=0.23.4",
         "msgpack-numpy>=0.4.3.2",
-        "spacy>=2.3.5",
+        "spacy>=3.8.2",
         "scipy>=1.1.0",
         "scikit-learn>=0.20.0",
         "nltk>=3.4",
@@ -56,14 +56,16 @@ setup(
         "pymongo>=4.0",
         "pyyaml>=5.4.1",
         "dnspython>=1.16.0",
+        "thinc>=8.3.0,<8.4.0",
     ],
     extras_require={
         "craft": ["torch>=0.12"],
     },
     classifiers=[
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
     ],
 )
