@@ -12,7 +12,10 @@ Issues
 
 **Error associated with Numpy**
 
-ConvoKit currently requires Numpy 1.x.x, as Numpy 2.x is known to cause compatibility issues. Please verify your Numpy version. We are working on supporting Numpy 2.x and appreciate your understanding.
+Pre Spacy 3.8.2 is not compatible with numpy 2.0.0+ due to compatibility issues with thinc. Spacy 3.8.2 is compatible with numpy 2.0.0+ but currently requires thinc to be >=8.3.0, <8.4.0, so as a temporary solution ConvoKit now enforces spacy>=3.8.2, thinc >=8.3.0, <8.4.0. We will continue to keep an eye on spacy releases and update the requirements if there are new releases targeting this issue.
+For additional insight into the issue:
+`spaCy issue #13528 <https://github.com/explosion/spaCy/issues/13528>`_
+`thinc issue #939 <https://github.com/explosion/thinc/issues/939>`_
 
 -----------------------------
 
@@ -65,9 +68,9 @@ The two recommended fixes are to run:
 
 and if that doesn't fix the issue, then run:
 
->>> open /Applications/Python\ 3.8/Install\ Certificates.command
+>>> open /Applications/Python\ 3.9/Install\ Certificates.command
 
-(Substitute 3.8 in the above command with your current Python version (e.g. 3.9 or 3.10) if necessary.)
+(Substitute 3.9 in the above command with your current Python version (e.g. 3.10 or 3.11 or 3.12) if necessary.)
 
 Immutability of Metadata Fields
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

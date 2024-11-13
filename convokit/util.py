@@ -6,7 +6,7 @@ import uuid
 import warnings
 import zipfile
 from typing import Dict
-
+from .convokitConfig import ConvoKitConfig
 import requests
 
 
@@ -108,15 +108,16 @@ def download(
 
     custom_data_dir = data_dir
 
-    data_dir = os.path.expanduser("~/.convokit/")
-
+    config = ConvoKitConfig()
+    data_dir = config.data_directory
+    data_dir = os.path.expanduser(data_dir)
     # pkg_resources.resource_filename("convokit", "")
     if not os.path.exists(data_dir):
         os.mkdir(data_dir)
     if not os.path.exists(os.path.join(data_dir, "downloads")):
         os.mkdir(os.path.join(data_dir, "downloads"))
 
-    dataset_path = os.path.join(data_dir, "downloads", name)
+    dataset_path = os.path.join(data_dir, name)
 
     if custom_data_dir is not None:
         dataset_path = os.path.join(custom_data_dir, name)
@@ -192,7 +193,8 @@ def download_local(name: str, data_dir: str):
     :return: string path to local Corpus
     """
     custom_data_dir = data_dir
-    data_dir = os.path.expanduser("~/.convokit/")
+    config = ConvoKitConfig()
+    data_dir = config.data_directory
 
     # pkg_resources.resource_filename("convokit", "")
     if not os.path.exists(data_dir):
