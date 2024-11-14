@@ -3,7 +3,7 @@ DeliData Corpus
 
 DeliData is a dataset designed for analyzing deliberation in multi-party problem-solving contexts. It contains information about group discussions, capturing various aspects of participant interactions, message annotations, and team performance.
 
-The corpus is available upon request from the authors, and a ConvoKit-compatible version can be derived using ConvoKit’s conversion tools.
+The corpus is available upon request from the authors, and a ConvoKit-compatible version can be derived using ConvoKit’s conversion tools. ConvoKit also host the ConvoKit-format deli corpus, which can be directly downloaded following instruction in the Usage section.
 
 For a full description of the dataset collection and potential applications, please refer to the original publication: `Karadzhov, G., Stafford, T., & Vlachos, A. (2023). DeliData: A dataset for deliberation in multi-party problem solving. Proceedings of the ACM on Human-Computer Interaction, 7(CSCW2), 1-25.`
 
@@ -24,8 +24,8 @@ Utterance-level information
 
 Each utterance includes:
 
-* id: Unique identifier for an utterance (e.g., "42279c2c-e046-47b9-8947-15ed2dd4620b").
-* conversation_id: Identifier for the conversation that the utterance belongs to (e.g., "d27d5b32-27d9-40a2-881b-5f64a8cd1c2f").
+* id: Unique identifier for an utterance.
+* conversation_id: Identifier for the conversation that the utterance belongs to.
 * reply_to: Identifier for the previous utterance in the conversation, if any (null if not a reply).
 * speaker: Name or pseudonym of the utterance speaker.
 * text: Normalized textual content of the utterance with applied tokenization and masked special tokens.
@@ -87,4 +87,4 @@ Questions regarding the DeliData corpus should be directed to Georgi Karadzhov (
 Files
 ^^^^^^^
 
-Request the DeliData Corpus: https://delibot.xyz/delidata
+Request the Official Released DeliData Corpus without ConvoKit formatting: https://delibot.xyz/delidata
