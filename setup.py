@@ -60,6 +60,7 @@ setup(
         "thinc>=8.3.0,<8.4.0",
         "h5py==3.12.1",
         "numexpr>=2.8.0",  
+        "ruff>=0.4.8",
         "bottleneck",
     ],
     extras_require={
