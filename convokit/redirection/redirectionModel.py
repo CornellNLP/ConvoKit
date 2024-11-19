@@ -1,9 +1,9 @@
 from convokit import Transformer
-from likelihoodModel import LikelihoodModel
-from contextSelector import default_previous_context_selector, default_future_context_selector
+from .likelihoodModel import LikelihoodModel
+from .contextSelector import default_previous_context_selector, default_future_context_selector
 import torch
 import random
-from preprocessing import format_conversations, get_chunk_dataset
+from .preprocessing import format_conversations, get_chunk_dataset
 
 
 class RedirectionModel(Transformer):

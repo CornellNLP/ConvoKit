@@ -1,4 +1,4 @@
-from preprocessing import default_speaker_prefixes
+from .preprocessing import default_speaker_prefixes
 
 def default_previous_context_selector(convo):
     actual_contexts = {}

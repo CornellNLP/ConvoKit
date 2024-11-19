@@ -1,4 +1,4 @@
-from likelihoodModel import LikelihoodModel
+from .likelihoodModel import LikelihoodModel
 import torch
 from peft import LoraConfig, get_peft_model, AutoPeftModelForCausalLM, PeftModel
 from transformers import (
