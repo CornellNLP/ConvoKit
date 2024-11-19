@@ -10,7 +10,7 @@
 [![Discord Community](https://img.shields.io/static/v1?logo=discord&style=flat&color=red&label=discord&message=community)](https://discord.gg/WMFqMWgz6P)
 
 
-This toolkit contains tools to extract conversational features and analyze social phenomena in conversations, using a [single unified interface](https://convokit.cornell.edu/documentation/architecture.html) inspired by (and compatible with) scikit-learn.  Several large [conversational datasets](https://github.com/CornellNLP/ConvoKit#datasets) are included together with scripts exemplifying the use of the toolkit on these datasets. The latest version is [3.0.1](https://github.com/CornellNLP/ConvoKit/releases/tag/v3.0.1) (released Nov. 8, 2024); follow the [project on GitHub](https://github.com/CornellNLP/ConvoKit) to keep track of updates.
+This toolkit contains tools to extract conversational features and analyze social phenomena in conversations, using a [single unified interface](https://convokit.cornell.edu/documentation/architecture.html) inspired by (and compatible with) scikit-learn.  Several large [conversational datasets](https://github.com/CornellNLP/ConvoKit#datasets) are included together with scripts exemplifying the use of the toolkit on these datasets. The latest version is [3.0.1](https://github.com/CornellNLP/ConvoKit/releases/tag/v3.0.1) (released November 13, 2024); follow the [project on GitHub](https://github.com/CornellNLP/ConvoKit) to keep track of updates.
 
 Read our [documentation](https://convokit.cornell.edu/documentation) or try ConvoKit in our [interactive tutorial](https://colab.research.google.com/github/CornellNLP/ConvoKit/blob/master/examples/Introduction_to_ConvoKit.ipynb).
 
@@ -136,6 +136,24 @@ Name for download: `iq2-corpus`
 A collection of all the conversations that occurred over 10 seasons of Friends, a popular American TV sitcom that ran in the 1990s.
 
 Name for download: `friends-corpus`
+
+### [Federal Open Market Committee (FOMC) Corpus](https://convokit.cornell.edu/documentation/fomc.html)
+
+Transcripts of recurring meetings of the Federal Reserve’s Open Market Committee (FOMC), where important aspects of U.S. monetary policy are decided, covering the period 1977-2008.
+
+Name for download: `fomc-corpus`
+
+### [NPR Interview 2P Dataset Corpus](https://convokit.cornell.edu/documentation/npr-2p.html)
+
+This corpus contains conversations between NPR show hosts and their guests.
+
+Name for download: `npr-2p-corpus`
+
+### [DeliData Dataset Corpus](https://convokit.cornell.edu/documentation/deli.html)
+
+This corpus contains conversations in multi-party problem-solving contexts, containing information about group discussions and team performance.
+
+Name for download: `deli-corpus`
 
 ### [Switchboard Dialog Act Corpus](https://convokit.cornell.edu/documentation/switchboard.html)
 

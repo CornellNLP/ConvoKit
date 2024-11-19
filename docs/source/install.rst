@@ -3,7 +3,7 @@ Installing ConvoKit
 
 System Requirements
 ===================
-ConvoKit requires Python 3.8 or above.
+ConvoKit requires Python 3.9 or above.
 
 Package Installation
 ====================

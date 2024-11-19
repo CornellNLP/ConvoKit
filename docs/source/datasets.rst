@@ -27,3 +27,7 @@ Datasets
    Supreme Court Oral Arguments Dataset <supreme.rst>
    Wikipedia Articles for Deletion Dataset <wiki-articles-for-deletion-corpus.rst>
    CaSiNo Corpus <casino-corpus.rst>
+   NPR Interviews 2P Corpus <npr-2p.rst>
+   Federal Open Market Committee Corpus <fomc.rst>
+   FORA Corpus <fora.rst>
+   DeliData Corpus <deli.rst>

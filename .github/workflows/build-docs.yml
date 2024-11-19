@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: Install Dependencies
+      run: |
+        pip install sphinx sphinx-rtd-theme m2r2
     - name: Sphinx Build
       uses: ammaraskar/sphinx-action@master
       with:
