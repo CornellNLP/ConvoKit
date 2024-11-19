@@ -9,7 +9,7 @@ from transformers import (
     TrainingArguments,
 )
 from trl import SFTTrainer
-from config import DEFAULT_TRAIN_CONFIG, DEFAULT_BNB_CONFIG, DEFAULT_LORA_CONFIG
+from .config import DEFAULT_TRAIN_CONFIG, DEFAULT_BNB_CONFIG, DEFAULT_LORA_CONFIG
 
 
 class GemmaLikelihoodModel(LikelihoodModel):
