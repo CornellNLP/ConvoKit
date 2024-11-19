@@ -27,6 +27,7 @@ setup(
         "convokit.politenessStrategies",
         "convokit.prompt_types",
         "convokit.ranker",
+        "convokit.redirection",
         "convokit.text_processing",
         "convokit.speaker_convo_helpers",
         "convokit.speakerConvoDiversity",
