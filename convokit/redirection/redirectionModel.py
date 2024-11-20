@@ -71,7 +71,8 @@ class RedirectionModel(Transformer):
                     redirection = (
                         actual_prob
                         - np.log(1 - np.exp(actual_prob))
-                        - (reference_prob + np.log(1 - np.exp(reference_prob)))
+                        - reference_prob
+                        + np.log(1 - np.exp(reference_prob))
                     )
                     utt.meta[self.redirection_attribute_name] = redirection
 

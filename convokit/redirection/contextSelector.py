@@ -6,9 +6,9 @@ def default_previous_context_selector(convo):
     reference_contexts = {}
     utts = [utt for utt in convo.iter_utterances()]
     roles = list({utt.meta["role"] for utt in utts})
+    assert len(roles) == 2
     spk_prefixes = default_speaker_prefixes(roles)
     role_to_prefix = {roles[i]: spk_prefixes[i] for i in range(len(roles))}
-    assert len(roles) == 2
     role_1 = roles[0]
     role_2 = roles[1]
     prev_spk = None
@@ -56,9 +56,9 @@ def default_future_context_selector(convo):
     cur_2 = None
     utts = [utt for utt in convo.iter_utterances()]
     roles = list({utt.meta["role"] for utt in utts})
+    assert len(roles) == 2
     spk_prefixes = default_speaker_prefixes(roles)
     role_to_prefix = {roles[i]: spk_prefixes[i] for i in range(len(roles))}
-    assert len(roles) == 2
     role_1 = roles[0]
     role_2 = roles[1]
     n = len(utts)
