@@ -68,9 +68,9 @@ The two recommended fixes are to run:
 
 and if that doesn't fix the issue, then run:
 
->>> open /Applications/Python\ 3.9/Install\ Certificates.command
+>>> open /Applications/Python\ 3.10/Install\ Certificates.command
 
-(Substitute 3.9 in the above command with your current Python version (e.g. 3.10 or 3.11 or 3.12) if necessary.)
+(Substitute 3.10 in the above command with your current Python version (e.g. 3.11 or 3.12) if necessary.)
 
 Immutability of Metadata Fields
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
