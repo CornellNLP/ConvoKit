@@ -7,7 +7,7 @@ This is a Convokit-formatted version of the dataset originally distributed with 
 
 Bodhisattwa Prasad Majumder, Shuyang Li, Jianmo Ni, and Julian McAuley. 2020. `Interview: Large-Scale Modeling of Media Dialog with Discourse Patterns and Knowledge Grounding. <https://www.aclweb.org/anthology/2020.emnlp-main.653>`_ In Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP), 8129–41.
 
-Please cite this paper when using this corpus in your research.
+Please cite this paper when using NPR-2P corpus in your research.
 
 Dataset Details
 ---------------

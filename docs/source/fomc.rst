@@ -6,7 +6,7 @@ Transcripts of recurring meetings of the Federal Reserve’s Open Market Committ
 Distributed together with:
 `Talk it up or play it down? (Un)expected correlations between (de-)emphasis and recurrence of discussion points in consequential U.S. economic policy meetings <https://chenhaot.com/papers/de-emphasis-fomc.html>`_. Chenhao Tan and Lillian Lee. Presented in Text As Data 2016.
 
-Please cite this paper when using this corpus in your research.
+Please cite this paper when using FOMC corpus in your research.
 
 Dataset details
 ---------------

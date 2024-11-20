@@ -7,6 +7,8 @@ The corpus is available upon request from the authors, and a ConvoKit-compatible
 
 For a full description of the dataset collection and potential applications, please refer to the original publication: `Karadzhov, G., Stafford, T., & Vlachos, A. (2023). DeliData: A dataset for deliberation in multi-party problem solving. Proceedings of the ACM on Human-Computer Interaction, 7(CSCW2), 1-25.`
 
+Please cite this paper when using DeliData corpus in your research.
+
 Dataset details
 ---------------
 

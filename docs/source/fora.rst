@@ -3,7 +3,8 @@ Fora Corpus
 Fora corpus is a dataset of 262 annotated transcripts of multi-person facilitated dialogues regarding issues like education, elections, and public health, primarily through the sharing of personal experience. The corpus is available by request from the authors (`https://github.com/schropes/fora-corpus <https://github.com/schropes/fora-corpus>`_) and ConvoKit contains code for converting the transcripts into ConvoKit format, as detailed below.
 
 A full description of the dataset can be found here: `Schroeder, H., Roy, D., & Kabbara, J. (2024). Fora: A corpus and framework for the study of facilitated dialogue. In L.-W. Ku, A. Martins, & V. Srikumar (Eds.), Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers) (pp. 13985–14001). Association for Computational Linguistics. https://doi.org/10.18653/v1/2024.acl-long.754. <https://doi.org/10.18653/v1/2024.acl-long.754>`_
-Please cite this paper when using Fora in your research.
+
+Please cite this paper when using Fora corpus in your research.
 
 Usage
 -----
