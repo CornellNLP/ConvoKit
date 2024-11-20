@@ -15,6 +15,7 @@ class RedirectionModel(Transformer):
         redirection_attribute_name="redirection",
     ):
         self.likelihood_model = likelihood_model
+        self.tokenizer = self.likelihood_model.tokenizer
         self.previous_context_selector = previous_context_selector
         self.future_context_selector = future_context_selector
         self.redirection_attribute_name = redirection_attribute_name
@@ -25,10 +26,10 @@ class RedirectionModel(Transformer):
         train_convos_formatted = format_conversations(train_convos)
         val_convos_formatted = format_conversations(val_convos)
         train_data = get_chunk_dataset(
-            train_convos_formatted, max_tokens=self.likelihood_model.max_length
+            self.tokenizer, train_convos_formatted, max_tokens=self.likelihood_model.max_length
         )
         val_data = get_chunk_dataset(
-            train_convos_formatted, max_tokens=self.likelihood_model.max_length
+            self.tokenizer, val_convos_formatted, max_tokens=self.likelihood_model.max_length
         )
         self.likelihood_model.fit(train_data=train_data, val_data=val_data)
         return self
