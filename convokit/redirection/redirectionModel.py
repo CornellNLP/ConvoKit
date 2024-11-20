@@ -4,6 +4,7 @@ from .contextSelector import default_previous_context_selector, default_future_c
 import torch
 import random
 from .preprocessing import format_conversations, get_chunk_dataset
+import numpy as np
 
 
 class RedirectionModel(Transformer):
@@ -40,7 +41,7 @@ class RedirectionModel(Transformer):
         reference_contexts = []
         future_contexts = []
         print("Computing contexts")
-        for i, convo in enumerate(len(test_convos)):
+        for i, convo in enumerate(test_convos):
             if i % verbosity == 0 and i > 0:
                 print(i, "/", len(test_convos))
             actual, reference = self.previous_context_selector(convo)
@@ -58,17 +59,19 @@ class RedirectionModel(Transformer):
         reference_likelihoods = self.likelihood_model.transform(test_data, verbosity=verbosity)
 
         print("Computing redirection scores")
-        for i, convo in enumerate(len(test_convos)):
+        for i, convo in enumerate(test_convos):
             if i % verbosity == 0 and i > 0:
                 print(i, "/", len(test_convos))
+            convo_actual_likelihoods = actual_likelihoods[i]
+            convo_reference_likelihoods = reference_likelihoods[i]
             for utt in convo.iter_utterances():
-                if utt.id in actual_likelihoods and utt.id in reference_likelihoods:
-                    actual_prob = actual_likelihoods[utt.id]
-                    reference_prob = reference_likelihoods[utt_id]
+                if utt.id in convo_actual_likelihoods and utt.id in convo_reference_likelihoods:
+                    actual_prob = convo_actual_likelihoods[utt.id]
+                    reference_prob = convo_reference_likelihoods[utt.id]
                     redirection = (
                         actual_prob
-                        - torch.log(1 - torch.exp(actual_prob))
-                        - (reference_prob + torch.log(1 - torch.exp(reference_prob)))
+                        - np.log(1 - np.exp(actual_prob))
+                        - (reference_prob + np.log(1 - np.exp(reference_prob)))
                     )
                     utt.meta[self.redirection_attribute_name] = redirection
 
@@ -84,7 +87,7 @@ class RedirectionModel(Transformer):
         self.fit(corpus, train_selector=train_selector, val_selector=val_selector)
         return self.transform(corpus, selector=test_selector, verbosity=verbosity)
 
-    def summarize(self, top_sample_size=10, bottom_sample_size=10):
+    def summarize(self, corpus, top_sample_size=10, bottom_sample_size=10):
         utts = [
             utt for utt in corpus.iter_utterances() if self.redirection_attribute_name in utt.meta
         ]

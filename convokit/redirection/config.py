@@ -27,4 +27,5 @@ DEFAULT_TRAIN_CONFIG = {
     "optim": "paged_adamw_8bit",
     "learning_rate": 2e-4,
     "max_seq_length": 512,
+    "load_best_model_at_end": True,
 }

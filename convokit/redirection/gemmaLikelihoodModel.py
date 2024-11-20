@@ -53,6 +53,7 @@ class GemmaLikelihoodModel(LikelihoodModel):
             save_steps=self.train_config["save_steps"],
             optim=self.train_config["optim"],
             learning_rate=self.train_config["learning_rate"],
+            load_best_model_at_end=self.train_config["load_best_model_at_end"],
         )
 
         trainer = SFTTrainer(
@@ -69,10 +70,10 @@ class GemmaLikelihoodModel(LikelihoodModel):
         past_context = "\n\n".join(past_context)
         future_context = "\n\n".join(future_context)
 
-        context_ids = tokenizer.encode(
+        context_ids = self.tokenizer.encode(
             past_context, truncation=True, max_length=self.max_length, return_tensors="pt"
         )
-        future_ids = tokenizer.encode(
+        future_ids = self.tokenizer.encode(
             future_context, truncation=True, max_length=self.max_length, return_tensors="pt"
         )
         input_ids = torch.cat([context_ids, future_ids], dim=1)
@@ -92,7 +93,7 @@ class GemmaLikelihoodModel(LikelihoodModel):
     def transform(self, test_data, verbosity=5):
         prev_contexts, future_contexts = test_data
         likelihoods = []
-        for i, convo in enumerate(len(test_data)):
+        for i in range(len(prev_contexts)):
             if i % verbosity == 0 and i > 0:
                 print(i, "/", len(test_data))
             convo_likelihoods = {}
