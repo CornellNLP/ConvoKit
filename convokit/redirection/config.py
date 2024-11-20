@@ -26,5 +26,5 @@ DEFAULT_TRAIN_CONFIG = {
     "save_steps": 50,
     "optim": "paged_adamw_8bit",
     "learning_rate": 2e-4,
-    "max_seq_length": 4096,
+    "max_seq_length": 512,
 }

@@ -23,7 +23,7 @@ def format_conversations(convos):
     return formatted_convos
 
 
-def get_chunk_dataset(tokenizer, convos, max_tokens=4096, overlap_tokens=50):
+def get_chunk_dataset(tokenizer, convos, max_tokens=512, overlap_tokens=50):
     chunks = []
     for convo in convos:
         convo_chunks = chunk_text_with_overlap(
@@ -36,7 +36,7 @@ def get_chunk_dataset(tokenizer, convos, max_tokens=4096, overlap_tokens=50):
     return dataset
 
 
-def chunk_text_with_overlap(tokenizer, text, max_tokens=4096, overlap_tokens=50):
+def chunk_text_with_overlap(tokenizer, text, max_tokens=512, overlap_tokens=50):
     tokens = tokenizer.encode(text)
     chunks = []
     start = 0
