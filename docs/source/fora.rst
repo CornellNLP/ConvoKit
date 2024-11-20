@@ -100,7 +100,7 @@ Additional note
 Data License
 ^^^^^^^^^^^^
 
-ConvoKit is not distributing the corpus separately, and thus no additional data license is applicable.  The license of the original distribution applies.
+ConvoKit is not distributing the corpus separately, and thus no additional data license is applicable. The license of the original distribution applies.
 
 Contact
 ^^^^^^^

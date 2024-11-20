@@ -56,8 +56,6 @@ Metadata for each conversation includes:
 Usage
 -----
 
-Convert the DeliData Corpus into ConvoKit format using the following notebook: `Converting DeliData to ConvoKit Format <https://github.com/CornellNLP/ConvoKit/blob/master/examples/dataset-examples/DELI/ConvoKit_DeliData_Conversion.ipynb>`_
-
 To download directly with ConvoKit:
 
 >>> from convokit import Corpus, download
@@ -72,12 +70,14 @@ For some quick stats:
 * Number of Utterances: 17111
 * Number of Conversations: 500
 
+Additionally, if you want to process the original Deli data into ConvoKit format you can use the following script `Converting DeliData to ConvoKit Format <https://github.com/CornellNLP/ConvoKit/blob/master/examples/dataset-examples/DELI/ConvoKit_DeliData_Conversion.ipynb>`_
+
 Additional note
 ---------------
 Data License
 ^^^^^^^^^^^^
 
-ConvoKit is not distributing the corpus separately, and thus no additional data license is applicable.  The license of the original distribution applies.
+The license of the original distribution applies.
 
 Contact
 ^^^^^^^
