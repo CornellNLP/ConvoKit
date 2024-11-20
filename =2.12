@@ -1,0 +1,7 @@
+Collecting pybind11
+  Obtaining dependency information for pybind11 from https://files.pythonhosted.org/packages/13/2f/0f24b288e2ce56f51c920137620b4434a38fd80583dbbe24fc2a1656c388/pybind11-2.13.6-py3-none-any.whl.metadata
+  Downloading pybind11-2.13.6-py3-none-any.whl.metadata (9.5 kB)
+Downloading pybind11-2.13.6-py3-none-any.whl (243 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 243.3/243.3 kB 5.4 MB/s eta 0:00:00
+Installing collected packages: pybind11
+Successfully installed pybind11-2.13.6
