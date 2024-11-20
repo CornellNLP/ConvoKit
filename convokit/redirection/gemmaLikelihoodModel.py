@@ -56,11 +56,11 @@ class GemmaLikelihoodModel(LikelihoodModel):
         )
 
         trainer = SFTTrainer(
-            model=model,
+            model=self.model,
             train_dataset=train_data,
             eval_dataset=val_data,
             args=training_args,
-            peft_config=lora_config,
+            peft_config=self.lora_config,
             max_seq_length=self.train_config["max_seq_length"],
         )
         trainer.train()
