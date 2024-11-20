@@ -59,7 +59,7 @@ setup(
         "dnspython>=1.16.0",
         "thinc>=8.3.0,<8.4.0",
         "h5py==3.12.1",
-        "numexpr>=2.8.0",  
+        "numexpr>=2.8.0",
         "ruff>=0.4.8",
         "bottleneck",
     ],
@@ -68,7 +68,6 @@ setup(
     },
     classifiers=[
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
