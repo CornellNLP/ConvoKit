@@ -3,7 +3,7 @@ from .preprocessing import default_speaker_prefixes
 def default_previous_context_selector(convo):
     actual_contexts = {}
     reference_contexts = {}
-    utts = convo.get_chronological_utterance_list()
+    utts = [utt for utt in convo.iter_utterances()]
     roles = list({utt.meta["role"] for utt in utts})
     spk_prefixes = default_speaker_prefixes(roles)
     role_to_prefix = {roles[i]: spk_prefixes[i] for i in range(len(roles))}
@@ -53,7 +53,7 @@ def default_future_context_selector(convo):
     future_contexts = {}
     cur_1 = None
     cur_2 = None
-    utts = convo.get_chronological_utterance_list()
+    utts = [utt for utt in convo.iter_utterances()]
     roles = list({utt.meta["role"] for utt in utts})
     spk_prefixes = default_speaker_prefixes(roles)
     role_to_prefix = {roles[i]: spk_prefixes[i] for i in range(len(roles))}

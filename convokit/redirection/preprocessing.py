@@ -10,7 +10,7 @@ def default_speaker_prefixes(roles):
 def format_conversations(convos):
     formatted_convos = []
     for convo in convos:
-        utts = convo.get_chronological_utterance_list()
+        utts = [utt for utt in convo.iter_utterances()]
         roles = list({utt.meta["role"] for utt in utts})
         spk_prefixes = default_speaker_prefixes(roles)
         role_to_prefix = {roles[i]: spk_prefixes[i] for i in range(len(roles))}

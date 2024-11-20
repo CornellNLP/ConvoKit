@@ -60,8 +60,7 @@ class RedirectionModel(Transformer):
         for i, convo in enumerate(len(test_convos)):
             if i % verbosity == 0 and i > 0:
                 print(i, "/", len(test_convos))
-            utts = convo.get_chronological_utterance_list()
-            for utt in utts:
+            for utt in convo.iter_utterances():
                 if utt.id in actual_likelihoods and utt.id in reference_likelihoods:
                     actual_prob = actual_likelihoods[utt.id]
                     reference_prob = reference_likelihoods[utt_id]
