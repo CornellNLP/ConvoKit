@@ -7,7 +7,23 @@ from .preprocessing import format_conversations, get_chunk_dataset
 import numpy as np
 
 
-class RedirectionModel(Transformer):
+class Redirection(Transformer):
+    """
+    ConvoKit Transformer to compute Redirection scores, derived from
+    utterance probabilities from `likelihood_model`. The contexts used
+    to compute redirection can be defined using `previous_context_selector`
+    and `future_context_selector`, which are by default the immediate previous
+    and future contexts from different speaker roles.
+
+    :param likelihood_model: Likelihood model to compute utterance likelihoods
+    :param previous_context_selector: Computes actual, reference contexts used
+    for redirection
+    :param default_future_context_selector: Computes future contexts used for
+    redirection
+    :param redirection_attribute_name: Name of meta-data attribute to
+    save redirection scores
+    """
+
     def __init__(
         self,
         likelihood_model,
@@ -22,6 +38,14 @@ class RedirectionModel(Transformer):
         self.redirection_attribute_name = redirection_attribute_name
 
     def fit(self, corpus, train_selector=lambda convo: True, val_selector=lambda convo: True):
+        """
+        Fits the Redirection transformer to the corpus by generating the training
+        and validation data and fine-tuning the likelihood model.
+
+        :param corpus: Corpus to fit transformer
+        :param train_selector: Selector for train conversations
+        :param val_selector: Selector for val conversations
+        """
         train_convos = [convo for convo in corpus.iter_conversations() if train_selector(convo)]
         val_convos = [convo for convo in corpus.iter_conversations() if val_selector(convo)]
         train_convos_formatted = format_conversations(train_convos)
@@ -36,6 +60,17 @@ class RedirectionModel(Transformer):
         return self
 
     def transform(self, corpus, selector=lambda convo: True, verbosity=5):
+        """
+        Populates the corpus test data with redirection scores, by computing
+        previous and future contexts, determining actual and reference likelihoods,
+        and calculating redirection scores.
+
+        :param corpus: Corpus to transform
+        :param selector: Selector for test data
+        :param verbosity: Verbosity for update messages
+
+        :return: Corpus where test data is labeled with redirection scores
+        """
         test_convos = [convo for convo in corpus.iter_conversations() if selector(convo)]
         actual_contexts = []
         reference_contexts = []
@@ -85,10 +120,29 @@ class RedirectionModel(Transformer):
         test_selector=lambda convo: True,
         verbosity=10,
     ):
+        """
+        Fit and transform the model.
+
+        :param corpus: Corpus to transform
+        :param train_selector: Selector for train data
+        :param val_selector: Selector for val data
+        :param test_selector: Selector for test data
+        :param verbosity: Verbosity for update messages
+
+        :return: Corpus where test data is labeled with redirection scores
+        """
         self.fit(corpus, train_selector=train_selector, val_selector=val_selector)
         return self.transform(corpus, selector=test_selector, verbosity=verbosity)
 
     def summarize(self, corpus, top_sample_size=10, bottom_sample_size=10):
+        """
+        Summarizes redirection transformer with high and low redirecting
+        utterances.
+
+        :param corpus: Corpus to analyze
+        :param top_sample_size: Number of utterances to print for high redirection
+        :param bottom_sample_size: Number of utterances to print for low redirection
+        """
         utts = [
             utt for utt in corpus.iter_utterances() if self.redirection_attribute_name in utt.meta
         ]

@@ -2,12 +2,26 @@ from datasets import Dataset
 
 
 def default_speaker_prefixes(roles):
+    """
+    Gemerates speaker prefixes for speaker roles.
+
+    :param roles: Roles to generate prefixes for.
+
+    :return: List of speaker prefixes
+    """
     number_of_roles = len(roles)
     speakers = ["Speaker " + chr(65 + (i % 26)) + ": " for i in range(number_of_roles)]
     return speakers
 
 
 def format_conversations(convos):
+    """
+    Format the conversations used for fine-tuning and inference.
+
+    :param convos: List of conversations to format
+
+    :return: Formatted conversations
+    """
     formatted_convos = []
     for convo in convos:
         utts = [utt for utt in convo.iter_utterances()]
@@ -24,10 +38,24 @@ def format_conversations(convos):
 
 
 def get_chunk_dataset(tokenizer, convos, max_tokens=512, overlap_tokens=50):
+    """
+    Generate a chunked dataset for training given max sequence length
+    and overlap length.
+
+    :param tokenizer: Tokenizer of model
+    :param convos: List of conversations to generate dataset
+    :param max_tokens: Max sequence length
+    :param overlap_tokens: Number of overlap tokens for chunks
+
+    :return: Chunk dataset
+    """
     chunks = []
     for convo in convos:
         convo_chunks = chunk_text_with_overlap(
-            tokenizer, convo, max_tokens=max_tokens, overlap_tokens=overlap_tokens
+            tokenizer,
+            convo,
+            max_tokens=max_tokens,
+            overlap_tokens=overlap_tokens,
         )
         chunks += convo_chunks
 
@@ -37,6 +65,16 @@ def get_chunk_dataset(tokenizer, convos, max_tokens=512, overlap_tokens=50):
 
 
 def chunk_text_with_overlap(tokenizer, text, max_tokens=512, overlap_tokens=50):
+    """
+    Split conversation into chunks for training.
+
+    :param tokenizer: Tokenizer of model
+    :param text: Text to chunk
+    :param max_tokens: Max sequence length
+    :param overlap_tokens: Number of overlap tokens for chunks
+
+    :return: Chunk of texts
+    """
     tokens = tokenizer.encode(text)
     chunks = []
     start = 0

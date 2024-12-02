@@ -13,6 +13,17 @@ from .config import DEFAULT_TRAIN_CONFIG, DEFAULT_BNB_CONFIG, DEFAULT_LORA_CONFI
 
 
 class GemmaLikelihoodModel(LikelihoodModel):
+    """
+    Likelihood model supported by Gemma, used to compute utterance likelihoods.
+
+    :param hf_token: Huggingface authentication token
+    :param model_id: Gemma model id version
+    :param device: Device to use
+    :param train_config: Training config for fine-tuning
+    :param bnb_config: bitsandbytes config for quantization
+    :param lora_config: LoRA config for fine-tuning
+    """
+
     def __init__(
         self,
         hf_token,
@@ -40,6 +51,13 @@ class GemmaLikelihoodModel(LikelihoodModel):
         return self.__class__.name
 
     def fit(self, train_data, val_data):
+        """
+        Fine-tunes the Gemma model on the provided `train_data` and validates
+        on `val_data`.
+
+        :param train_data: Data to fine-tune model
+        :param val_data: Data to validate model
+        """
         training_args = TrainingArguments(
             output_dir=self.train_config["output_dir"],
             logging_dir=self.train_config["logging_dir"],
@@ -67,14 +85,29 @@ class GemmaLikelihoodModel(LikelihoodModel):
         trainer.train()
 
     def _calculate_likelihood_prob(self, past_context, future_context):
+        """
+        Computes the utterance likelihoods given the previous context to
+        condition on and the future context to predict.
+
+        :param past_context: Context to condition
+        :param future_context: Context to predict likelihood
+
+        :return: likelihoods of contexts
+        """
         past_context = "\n\n".join(past_context)
         future_context = "\n\n".join(future_context)
 
         context_ids = self.tokenizer.encode(
-            past_context, truncation=True, max_length=self.max_length, return_tensors="pt"
+            past_context,
+            truncation=True,
+            max_length=self.max_length,
+            return_tensors="pt",
         )
         future_ids = self.tokenizer.encode(
-            future_context, truncation=True, max_length=self.max_length, return_tensors="pt"
+            future_context,
+            truncation=True,
+            max_length=self.max_length,
+            return_tensors="pt",
         )
         input_ids = torch.cat([context_ids, future_ids], dim=1)
         if input_ids.shape[1] > self.max_length:
@@ -91,6 +124,14 @@ class GemmaLikelihoodModel(LikelihoodModel):
         return result
 
     def transform(self, test_data, verbosity=5):
+        """
+        Computes the utterance likelihoods for the provided `test_data`.
+
+        :param test_data: Data to compute likelihoods over
+        :param verbosity: Verbosity to print updated messages
+
+        :return: likelihoods of the `test_data`
+        """
         prev_contexts, future_contexts = test_data
         likelihoods = []
         for i in range(len(prev_contexts)):

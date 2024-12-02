@@ -2,6 +2,17 @@ from .preprocessing import default_speaker_prefixes
 
 
 def default_previous_context_selector(convo):
+    """
+    Default function to compute previous contexts for Redirection. For
+    actual contexts, uses the current utterance and immediate previous
+    utterance by speaker with different role. For reference contexts, uses
+    the previous utterance by the same role speaker instead of the current
+    utterance as a point of reference.
+
+    :param convo: ConvoKit Conversation object to compute contexts over
+
+    :return: tuple of actual contexts and reference contexts
+    """
     actual_contexts = {}
     reference_contexts = {}
     utts = [utt for utt in convo.iter_utterances()]
@@ -51,6 +62,14 @@ def default_previous_context_selector(convo):
 
 
 def default_future_context_selector(convo):
+    """
+    Default function to compute future contexts for Redirection. Uses the
+    immediate successor utterance from a different role speaker.
+
+    :param convo: ConvoKit Conversation object to compute contexts over
+
+    :return: dictionary of Utterance id to future contexts
+    """
     future_contexts = {}
     cur_1 = None
     cur_2 = None
