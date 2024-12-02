@@ -1,10 +1,12 @@
 Federal Open Market Committee (FOMC) Corpus
 ===========================================
 
-Transcripts of recurring meetings of the Federal Reserve’s Open Market Committee (FOMC), where important aspects of U.S. monetary policy are decided, covering the period 1977-2008. (108,504 conversational exchanges between 364 speakers of FOMC board members in 268 meetings). 
+Transcripts of recurring meetings of the Federal Reserve’s Open Market Committee (FOMC), where important aspects of U.S. monetary policy are decided, covering the period 1977-2008. (108,504 conversational exchanges between 364 speakers of FOMC board members in 268 meetings).
 
 Distributed together with:
 `Talk it up or play it down? (Un)expected correlations between (de-)emphasis and recurrence of discussion points in consequential U.S. economic policy meetings <https://chenhaot.com/papers/de-emphasis-fomc.html>`_. Chenhao Tan and Lillian Lee. Presented in Text As Data 2016.
+
+Please cite this paper when using FOMC corpus in your research.
 
 Dataset details
 ---------------
@@ -35,12 +37,10 @@ Metadata for utterances include:
 Conversational-level information
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Conversations are indexed by a string representing the meeting date. 
+Conversations are indexed by a string representing the meeting date.
 
 Usage
 -----------
-
-Convert the FOMC Corpus into ConvoKit format using this notebook `Converting FOMC Corpus to ConvoKit Format <https://github.com/CornellNLP/ConvoKit/blob/master/examples/dataset-examples/FOMC/fomc_to_convokit.ipynb>`_
 
 To download directly with ConvoKit:
 
@@ -55,11 +55,12 @@ Number of Speakers: 364
 Number of Utterances: 108504
 Number of Conversations: 268
 
+Additionally, if you want to process the original FOMC data into ConvoKit format you can use the following script `Converting FOMC Corpus to ConvoKit Format <https://github.com/CornellNLP/ConvoKit/blob/master/examples/dataset-examples/FOMC/fomc_to_convokit.ipynb>`_
 
 Additional note
 ---------------
 
-The original dataset can be downloaded `here <https://chenhaot.com/pages/de-emphasis-fomc.html>`_. Refer to the original README for more explanations on dataset construction. 
+The original dataset can be downloaded `here <https://chenhaot.com/pages/de-emphasis-fomc.html>`_. Refer to the original README for more explanations on dataset construction.
 
 Contact
 ^^^^^^^

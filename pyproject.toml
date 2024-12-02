@@ -5,3 +5,6 @@ exclude = '''
  | venv
  )/
 '''
+
+[tool.ruff.lint]
+select = ["NPY201"]
