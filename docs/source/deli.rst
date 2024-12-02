@@ -84,7 +84,7 @@ The license of the original distribution applies.
 Contact
 ^^^^^^^
 
-Questions regarding the DeliData corpus should be directed to Georgi Karadzhov (georgi.karadzhov@sheffield.ac.uk).
+Questions regarding the DeliData corpus should be directed to Georgi Karadzhov (georgi.karadzhov@cl.cam.ac.uk).
 
 Files
 ^^^^^^^
