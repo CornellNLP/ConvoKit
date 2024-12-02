@@ -11,7 +11,7 @@ def default_previous_context_selector(convo):
 
     :param convo: ConvoKit Conversation object to compute contexts over
 
-    :return: tuple of actual contexts and reference contexts
+    :return: Tuple of actual contexts and reference contexts
     """
     actual_contexts = {}
     reference_contexts = {}
@@ -68,7 +68,7 @@ def default_future_context_selector(convo):
 
     :param convo: ConvoKit Conversation object to compute contexts over
 
-    :return: dictionary of Utterance id to future contexts
+    :return: Dictionary of Utterance id to future contexts
     """
     future_contexts = {}
     cur_1 = None

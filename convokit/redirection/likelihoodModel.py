@@ -46,6 +46,6 @@ class LikelihoodModel(ABC):
 
         :param test_data: Data to compute likelihoods over
 
-        :return: likelihoods of the `test_data`
+        :return: Likelihoods of the `test_data`
         """
         pass

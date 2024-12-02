@@ -92,7 +92,7 @@ class GemmaLikelihoodModel(LikelihoodModel):
         :param past_context: Context to condition
         :param future_context: Context to predict likelihood
 
-        :return: likelihoods of contexts
+        :return: Likelihoods of contexts
         """
         past_context = "\n\n".join(past_context)
         future_context = "\n\n".join(future_context)
@@ -130,7 +130,7 @@ class GemmaLikelihoodModel(LikelihoodModel):
         :param test_data: Data to compute likelihoods over
         :param verbosity: Verbosity to print updated messages
 
-        :return: likelihoods of the `test_data`
+        :return: Likelihoods of the `test_data`
         """
         prev_contexts, future_contexts = test_data
         likelihoods = []
