@@ -63,6 +63,11 @@ setup(
         "numexpr>=2.8.0",
         "ruff>=0.4.8",
         "bottleneck",
+        "accelerate", 
+        "peft",
+        "bitsandbytes",
+        "transformers",
+        "trl",
     ],
     extras_require={
         "craft": ["torch>=0.12"],
