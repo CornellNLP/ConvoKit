@@ -63,7 +63,7 @@ setup(
         "numexpr>=2.8.0",
         "ruff>=0.4.8",
         "bottleneck",
-        "accelerate", 
+        "accelerate",
         "peft",
         "bitsandbytes",
         "transformers",
