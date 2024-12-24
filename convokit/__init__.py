@@ -21,7 +21,7 @@ try:
     from .expected_context_framework import *
     from .surprise import *
     from .convokitConfig import *
-except e:
+except Exception as e:
     print(f"An error occurred: {e}")
     warnings.warn("If you are using ConvoKit with Google Colab, incorrect versions of some packages (ex. scipy) may be imported while runtime start. To fix the issue, restart the session and run all codes again. Thank you!")
 
