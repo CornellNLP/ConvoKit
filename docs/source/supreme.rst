@@ -1,5 +1,5 @@
 Supreme Court Oral Arguments Corpus
-==============================
+=======================================
 
 
 A collection of cases from the U.S. Supreme Court, along with transcripts of oral arguments. Contains approximately 1,700,000 utterances over 8,000 oral arguments transcripts from 7,700 cases.
@@ -14,7 +14,7 @@ The following examples use this corpus:
 * `computing linguistic coordination <https://github.com/CornellNLP/ConvoKit/blob/master/examples/coordination/examples.ipynb>`_
 
 Some considerations regarding case and voting information
--------------------------------------------------
+---------------------------------------------------------------
 
 Each case in the data can have multiple conversations, corresponding to multiple sessions of oral arguments heard. For convenience, we include information for each conversation about how justices voted in the  corresponding *case*, meaning that vote information will be repeated across each conversation corresponding to a case. The case metadata file also lists vote information.
 
@@ -126,7 +126,7 @@ Case information
 * transcripts: a list of transcript names, URLs and IDs (corresponding to the IDs of conversations in the corpus). 
 
 Citation and other versions
-^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This corpus extends a `smaller dataset <https://confluence.cornell.edu/display/llresearch/Supreme+Court+Dialogs+Corpus>`_ of oral arguments that we previously released together with `Echoes of power\: Language effects and power differences in social interaction <https://www.cs.cornell.edu/~cristian/Echoes_of_power.html>`_. Cristian Danescu-Niculescu-Mizil, Bo Pang, Lillian Lee and Jon Kleinberg. WWW 2012.  Please cite the Echoes of Powers paper if you use either version of the corpus.  If you use the ConvoKit version 	please additionally cite: `ConvoKit\: A Toolkit for the Analysis of Conversations <https://www.cs.cornell.edu/~cristian/ConvoKit_Demo_Paper_files/convokit-demo-paper.pdf>`_. Jonathan P. Chang, Caleb Chiam, Liye Fu, Andrew Wang, Justine Zhang, Cristian Danescu-Niculescu-Mizil. Proceedings of SIGDIAL. 2020.
 
