@@ -67,7 +67,8 @@ setup(
         "peft",
         "bitsandbytes",
         "transformers",
-        "trl>=0.12.2" "tensorflow>=2.18.0",
+        "trl>=0.12.2",
+        "tensorflow>=2.18.0",
     ],
     extras_require={
         "craft": ["torch>=0.12"],
