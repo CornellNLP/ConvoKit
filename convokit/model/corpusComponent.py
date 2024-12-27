@@ -168,7 +168,7 @@ class CorpusComponent:
     def add_vector(self, vector_name: str):
         """
         Logs in the Corpus component object's internal vectors list that the component object has a vector row associated with it in the vector matrix named `vector_name`.
-        
+
         Transformers that add vectors to the Corpus should use this to update the relevant component objects during the transform() step.
 
         :param vector_name: name of vector matrix
@@ -183,7 +183,7 @@ class CorpusComponent:
     def delete_vector(self, vector_name: str):
         """
         Delete a vector associated with this Corpus component object.
-        
+
         :param vector_name:
         :return: None
         """
