@@ -18,8 +18,7 @@ class Redirection(Transformer):
     :param likelihood_model: Likelihood model to compute utterance likelihoods
     :param previous_context_selector: Computes tuple of actual, reference contexts
         used for redirection
-    :param default_future_context_selector: Computes future contexts used for
-        redirection
+    :param future_context_selector: Computes future contexts used for redirection
     :param redirection_attribute_name: Name of meta-data attribute to
         save redirection scores
     """

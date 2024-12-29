@@ -9,15 +9,15 @@ import numpy as np
 
 class UtteranceLikelihood(Transformer):
     """
-    ConvoKit Transformer to compute utterance likelihoods derived from
+    ConvoKit transformer to compute utterance log-likelihoods derived from
     `likelihood_model`. The contexts used to compute the likelihoods can be
     defined using `previous_context_selector` and `future_context_selector`,
     which are by default the immediate previous and current contexts from
     different speaker roles.
 
-    :param likelihood_model: Likelihood model to compute utterance likelihoods
+    :param likelihood_model: Likelihood model to compute utterance log-likelihoods
     :param previous_context_selector: Computes previous contexts
-    :param default_future_context_selector: Computes future contexts
+    :param future_context_selector: Computes future contexts
     :param likelihood_attribute_name: Name of meta-data attribute to
     save likelihoods
     """
