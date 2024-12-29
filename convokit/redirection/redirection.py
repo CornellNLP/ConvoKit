@@ -16,7 +16,7 @@ class Redirection(Transformer):
     and future contexts from different speaker roles.
 
     :param likelihood_model: Likelihood model to compute utterance likelihoods
-    :param previous_context_selector: Computes tuple of actual, reference contexts 
+    :param previous_context_selector: Computes tuple of actual, reference contexts
         used for redirection
     :param default_future_context_selector: Computes future contexts used for
         redirection
