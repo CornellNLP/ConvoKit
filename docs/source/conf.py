@@ -375,4 +375,5 @@ autodoc_mock_imports = [
     "yaml",
     "bson",
     "dnspython",
+    "datasets",
 ]

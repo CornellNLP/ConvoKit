@@ -9,19 +9,19 @@ import numpy as np
 
 class Redirection(Transformer):
     """
-    ConvoKit Transformer to compute Redirection scores, derived from
+    ConvoKit transformer to compute redirection scores, derived from
     utterance probabilities from `likelihood_model`. The contexts used
     to compute redirection can be defined using `previous_context_selector`
     and `future_context_selector`, which are by default the immediate previous
     and future contexts from different speaker roles.
 
     :param likelihood_model: Likelihood model to compute utterance likelihoods
-    :param previous_context_selector: Computes actual, reference contexts used
-    for redirection
+    :param previous_context_selector: Computes tuple of actual, reference contexts 
+        used for redirection
     :param default_future_context_selector: Computes future contexts used for
-    redirection
+        redirection
     :param redirection_attribute_name: Name of meta-data attribute to
-    save redirection scores
+        save redirection scores
     """
 
     def __init__(
@@ -39,7 +39,7 @@ class Redirection(Transformer):
 
     def fit(self, corpus, train_selector=lambda convo: True, val_selector=lambda convo: True):
         """
-        Fits the Redirection transformer to the corpus by generating the training
+        Fits the redirection transformer to the corpus by generating the training
         and validation data and fine-tuning the likelihood model.
 
         :param corpus: Corpus to fit transformer

@@ -7,3 +7,6 @@ Example usage: `redirection in supreme court oral arguments <https://github.com/
 
 .. automodule:: convokit.redirection.redirection
     :members:
+
+.. automodule:: convokit.redirection.likelihoodModel
+    :members:
