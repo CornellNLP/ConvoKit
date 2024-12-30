@@ -19,8 +19,7 @@ class Conversation(CorpusComponent):
     :param meta: Table of initial values for conversation-level metadata
 
     :ivar id: the ID of the Conversation
-    :ivar meta: A dictionary-like view object providing read-write access to
-        conversation-level metadata.
+    :ivar meta: A dictionary-like view object providing read-write access to conversation-level metadata.
     """
 
     def __init__(
@@ -67,9 +66,8 @@ class Conversation(CorpusComponent):
         """
         Get utterances in the Corpus, with an optional selector that filters for Utterances that should be included.
 
-        :param selector: a (lambda) function that takes an Utterance and returns True or False (i.e. include / exclude).
-                        By default, the selector includes all Utterances in the Conversation.
-                :return: a generator of Utterances
+        :param selector: a (lambda) function that takes an Utterance and returns True or False (i.e. include / exclude). By default, the selector includes all Utterances in the Conversation.
+        :return: a generator of Utterances
         """
         for ut_id in self._utterance_ids:
             utt = self._owner.get_utterance(ut_id)

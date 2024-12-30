@@ -10,6 +10,14 @@ General checks
 Issues
 ^^^^^^
 
+**Google Colab User Note**
+
+Running ConvoKit with Google Colab can trigger error with scipy package, which is likely due to Colab runtime preloading an older version that 
+is not compatible with other packages. When install ConvoKit in Colab environment, if the error occurs, a user warning message should display. 
+The error can be easily fixed by restarting the Colab runtime session and run the cells again.
+
+-----------------------------
+
 **Error Associated with Numpy 2.0.0**
 
 The release of `numpy 2.0.0 <https://numpy.org/devdocs/release/2.0.0-notes.html>`_ is exciting,

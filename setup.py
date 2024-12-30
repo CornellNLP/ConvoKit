@@ -6,7 +6,7 @@ setup(
     author_email="cristian@cs.cornell.edu",
     url="https://github.com/CornellNLP/ConvoKit",
     description="ConvoKit",
-    version="3.0.1",
+    version="3.0.2",
     packages=[
         "convokit",
         "convokit.bag_of_words",
@@ -43,6 +43,7 @@ setup(
     },
     install_requires=[
         "matplotlib>=3.0.0",
+        "scipy>1.14",
         "pandas>=1.5.0",
         "numpy>=2.0.0",
         "msgpack-numpy>=0.4.3.2",

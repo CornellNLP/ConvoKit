@@ -56,6 +56,7 @@ utterances.jsonl contains a list of such utterances. An example utterance is sho
 ::
 
  {'id': '200', 'speaker': 'mr. srinivasan', 'conversation_id': '145', 'reply_to': '199', 'timestamp': None, 'text': 'It -- it does.', 'meta': {'case': '02-1472', 'side': 'respondent'}}
+
 ::
 
 
@@ -121,6 +122,7 @@ As an example, the corpus-level metadata for the Reddit corpus (small) is shown 
 ::
 
 "overall-index": {"subreddit": "<class 'str'>", "num_posts": "<class 'int'>", "num_comments": "<class 'int'>", "num_speakers": "<class 'int'>"}
+
 :: 
  
 
