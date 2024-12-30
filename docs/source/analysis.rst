@@ -17,4 +17,5 @@ These are the transformers related to generating some analysis of the Corpus.
    PairedPrediction <pairedprediction.rst>
    Ranker <ranker.rst>
    SpeakerConvoDiversity <speakerConvoDiversity.rst>
-   Redirection <redirection.rst>
+   Redirection <redirectionAndUtteranceLikelihood.rst>
+   UtteranceLikelihood <redirectionAndUtteranceLikelihood.rst>

@@ -1,9 +1,12 @@
 from convokit import Transformer
-from .likelihoodModel import LikelihoodModel
-from .contextSelector import default_previous_context_selector, default_future_context_selector
+from convokit.redirection.likelihoodModel import LikelihoodModel
+from convokit.redirection.contextSelector import (
+    default_previous_context_selector,
+    default_future_context_selector,
+)
 import torch
 import random
-from .preprocessing import format_conversations, get_chunk_dataset
+from convokit.redirection.preprocessing import format_conversations, get_chunk_dataset
 import numpy as np
 
 
@@ -19,7 +22,7 @@ class UtteranceLikelihood(Transformer):
     :param previous_context_selector: Computes previous contexts
     :param future_context_selector: Computes future contexts
     :param likelihood_attribute_name: Name of meta-data attribute to
-    save likelihoods
+        save likelihoods
     """
 
     def __init__(
