@@ -10,7 +10,7 @@
 [![Discord Community](https://img.shields.io/static/v1?logo=discord&style=flat&color=red&label=discord&message=community)](https://discord.gg/WMFqMWgz6P)
 
 
-This toolkit contains tools to extract conversational features and analyze social phenomena in conversations, using a [single unified interface](https://convokit.cornell.edu/documentation/architecture.html) inspired by (and compatible with) scikit-learn.  Several large [conversational datasets](https://github.com/CornellNLP/ConvoKit#datasets) are included together with scripts exemplifying the use of the toolkit on these datasets. The latest version is [3.0.2](https://github.com/CornellNLP/ConvoKit/releases/tag/v3.0.2) (released December 27, 2024); follow the [project on GitHub](https://github.com/CornellNLP/ConvoKit) to keep track of updates.
+This toolkit contains tools to extract conversational features and analyze social phenomena in conversations, using a [single unified interface](https://convokit.cornell.edu/documentation/architecture.html) inspired by (and compatible with) scikit-learn.  Several large [conversational datasets](https://github.com/CornellNLP/ConvoKit#datasets) are included together with scripts exemplifying the use of the toolkit on these datasets. The latest version is [3.1.0](https://github.com/CornellNLP/ConvoKit/releases/tag/v3.1.0) (released December 30, 2024); follow the [project on GitHub](https://github.com/CornellNLP/ConvoKit) to keep track of updates.
 
 Join our [Discord community](https://discord.gg/WMFqMWgz6P) to stay informed, connect with fellow developers, and be part of an engaging space where we share progress, discuss features, and tackle issues together.
 
