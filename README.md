@@ -1,6 +1,6 @@
 # [ConvoKit](http://convokit.cornell.edu/)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-31-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-32-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![pypi](https://img.shields.io/pypi/v/convokit.svg)](https://pypi.org/pypi/convokit/)
@@ -277,6 +277,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/oscarso2000"><img src="https://avatars.githubusercontent.com/u/20172573?v=4?s=100" width="100px;" alt="Oscar So"/><br /><sub><b>Oscar So</b></sub></a><br /><a href="https://github.com/CornellNLP/ConvoKit/commits?author=oscarso2000" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://justin-cho.com"><img src="https://avatars.githubusercontent.com/u/31977186?v=4?s=100" width="100px;" alt="Justin Cho"/><br /><sub><b>Justin Cho</b></sub></a><br /><a href="#data-wise-east" title="Data">🔣</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/seanzhangkx8"><img src="https://avatars.githubusercontent.com/u/106214464?v=4?s=100" width="100px;" alt="seanzhangkx8"/><br /><sub><b>seanzhangkx8</b></sub></a><br /><a href="https://github.com/CornellNLP/ConvoKit/commits?author=seanzhangkx8" title="Code">💻</a> <a href="#ideas-seanzhangkx8" title="Ideas, Planning, & Feedback">🤔</a> <a href="#maintenance-seanzhangkx8" title="Maintenance">🚧</a> <a href="https://github.com/CornellNLP/ConvoKit/commits?author=seanzhangkx8" title="Documentation">📖</a> <a href="https://github.com/CornellNLP/ConvoKit/pulls?q=is%3Apr+reviewed-by%3Aseanzhangkx8" title="Reviewed Pull Requests">👀</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/vianxnguyen"><img src="https://avatars.githubusercontent.com/u/46759999?v=4?s=100" width="100px;" alt="vivian"/><br /><sub><b>vivian</b></sub></a><br /><a href="https://github.com/CornellNLP/ConvoKit/commits?author=vianxnguyen" title="Code">💻</a> <a href="https://github.com/CornellNLP/ConvoKit/commits?author=vianxnguyen" title="Documentation">📖</a> <a href="#example-vianxnguyen" title="Examples">💡</a> <a href="#ideas-vianxnguyen" title="Ideas, Planning, & Feedback">🤔</a></td>
     </tr>
   </tbody>
 </table>
