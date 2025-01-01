@@ -320,6 +320,16 @@
         "doc",
         "review"
       ]
+    },
+    {
+      "login": "laerdon",
+      "name": "Laerdon Kim",
+      "avatar_url": "https://avatars.githubusercontent.com/u/96972420?v=4",
+      "profile": "https://github.com/laerdon",
+      "contributions": [
+        "doc",
+        "example"
+      ]
     }
   ],
   "contributorsPerLine": 7,
