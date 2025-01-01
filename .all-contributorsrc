@@ -320,6 +320,16 @@
         "doc",
         "review"
       ]
+    },
+    {
+      "login": "ethanxia4",
+      "name": "Ethan Xia",
+      "avatar_url": "https://avatars.githubusercontent.com/u/96800594?v=4",
+      "profile": "https://github.com/ethanxia4",
+      "contributions": [
+        "code",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
