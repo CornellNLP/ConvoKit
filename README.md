@@ -53,6 +53,9 @@ Example: [speaker conversation attributes and diversity example on ChangeMyView]
 A neural model for forecasting future outcomes of conversations (e.g., derailment into personal attacks) as they develop.
 Available as an interactive notebook: [full version (fine-tuning + inference)](https://colab.research.google.com/drive/1SH4iMEHdoH4IovN-b9QOSK4kG4DhAwmb) or [inference-only](https://colab.research.google.com/drive/1GvICZN0VwZQSWw3pJaEVY-EQGoO-L5lH).
 
+### [Redirection and Utterance Likelihood](https://www.cs.cornell.edu/~cristian/Redirection_in_Therapy.html) <sub><sup>[(API)](https://convokit.cornell.edu/documentation/redirectionAndUtteranceLikelihood.html)</sup></sub>
+The methods to compute the extent to which utterances redirect the flow of the conversation (Redirection) and to measure the log-likelihoods of utterances given a defined conversation context (Utterance Likelihood).
+Example: [redirection in supreme court oral arguments](https://github.com/CornellNLP/ConvoKit/blob/master/convokit/redirection/redirectionDemo.ipynb)
 
 
 ## Datasets
