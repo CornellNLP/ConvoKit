@@ -330,6 +330,18 @@
         "code",
         "doc"
       ]
+    },
+    {
+      "login": "vianxnguyen",
+      "name": "vivian",
+      "avatar_url": "https://avatars.githubusercontent.com/u/46759999?v=4",
+      "profile": "https://github.com/vianxnguyen",
+      "contributions": [
+        "code",
+        "doc",
+        "example",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
