@@ -352,6 +352,16 @@
         "doc",
         "example"
       ]
+    },
+    {
+      "login": "yash-chatha",
+      "name": "Yash Chatha",
+      "avatar_url": "https://avatars.githubusercontent.com/u/62723967?v=4",
+      "profile": "https://github.com/yash-chatha",
+      "contributions": [
+        "doc",
+        "example"
+      ]
     }
   ],
   "contributorsPerLine": 7,
