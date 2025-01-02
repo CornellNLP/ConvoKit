@@ -1,3 +1,5 @@
+from typing import Callable, Optional, Union, Any, List, Iterator
+
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.model_selection import train_test_split, cross_val_score, KFold
@@ -5,6 +7,8 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
 from convokit import Transformer
+from .classifierModel import ClassifierModel
+from convokit.model.corpusComponent import CorpusComponent
 from convokit.classifier.util import *
 
 
@@ -20,7 +24,7 @@ class Classifier(Transformer):
         Each feature used should have a numeric/boolean type.
     :param labeller: a (lambda) function that takes a Corpus object and returns True (y=1) or False (y=0)
         - i.e. labeller defines the y value of the object for fitting
-    :param clf: optional sklearn classifier model. By default, clf is a Pipeline with StandardScaler and LogisticRegression.
+    :param clf_model: instance of a classifier model of type convokit.classifier.classifier.ClassifierModel
     :param clf_attribute_name: the metadata attribute name to store the classifier prediction value under; default: "prediction"
     :param clf_prob_attribute_name: the metadata attribute name to store the classifier prediction score under; default: "pred_score"
 
@@ -31,27 +35,49 @@ class Classifier(Transformer):
         obj_type: str,
         pred_feats: List[str],
         labeller: Callable[[CorpusComponent], bool] = lambda x: True,
-        clf=None,
+        clf_model = ClassifierModel,
+        # clf=None,
         clf_attribute_name: str = "prediction",
         clf_prob_attribute_name: str = "pred_score",
     ):
         self.pred_feats = pred_feats
         self.labeller = labeller
         self.obj_type = obj_type
-        if clf is None:
-            clf = Pipeline(
+        if clf_model is None:
+            clf_model = Pipeline(
                 [
                     ("standardScaler", StandardScaler(with_mean=False)),
                     ("logreg", LogisticRegression(solver="liblinear")),
                 ]
             )
             print("Initialized default classification model (standard scaled logistic regression).")
-        self.clf = clf
+        self.clf_model = clf_model
         self.clf_attribute_name = clf_attribute_name
         self.clf_prob_attribute_name = clf_prob_attribute_name
 
+    def _create_context_iterator(
+        self,
+        corpus: Corpus,
+        # NTS: not sure if this is a correct approach. `context_type` would be a string which would be interpreted into a specific subtype of
+        # CorpusComponent
+        context_type: str,
+        context_selector: Callable[[CorpusComponent], bool],
+    ) -> Iterator[CorpusComponent]:
+        """
+        Helper function that generates an iterator over conversational contexts that satisfy the provided context selector,
+        across the entire corpus.
+        """
+        for obj in corpus.iter_objs(context_type):
+            if not context_selector(obj):
+                continue
+
+        yield obj
+
     def fit(
-        self, corpus: Corpus, y=None, selector: Callable[[CorpusComponent], bool] = lambda x: True
+        self,
+        corpus: Corpus, y=None,
+        context_selector: Callable[[CorpusComponent], bool] = lambda context: True,
+        val_context_selector: Optional[Callable[[CorpusComponent], bool]] = None,
     ):
         """
         Trains the Transformer's classifier model, with an optional selector that filters for objects to be fit on.
@@ -61,12 +87,20 @@ class Classifier(Transformer):
             By default, the selector includes all objects of the specified type in the Corpus.
         :return: the fitted Classifier Transformer
         """
-        X, y = extract_feats_and_label(
-            corpus, self.obj_type, self.pred_feats, self.labeller, selector
+        contexts = self._create_context_iterator(
+            corpus, context_selector, include_future_context=True
         )
-        self.clf.fit(X, y)
+        val_contexts = None
+        if val_context_selector is not None:
+            val_contexts = self._create_context_iterator(
+                corpus, val_context_selector, include_future_context=True
+            )
+        self.clf_model.fit(contexts, val_contexts)
+
         return self
 
+
+    # TODO
     def transform(
         self, corpus: Corpus, selector: Callable[[CorpusComponent], bool] = lambda x: True
     ) -> Corpus:
@@ -87,11 +121,11 @@ class Classifier(Transformer):
         )
         X = csr_matrix(feats_df.values.astype("float64"))
         idx_to_id = {idx: obj_id for idx, obj_id in enumerate(list(obj_id_to_feats))}
-        clfs, clfs_probs = self.clf.predict(X), self.clf.predict_proba(X)[:, 1]
+        clfs, clfs_probs = self.clf_model.predict(X), self.clf_model.predict_proba(X)[:, 1]
 
-        for idx, (clf, clf_prob) in enumerate(list(zip(clfs, clfs_probs))):
+        for idx, (clf_model, clf_prob) in enumerate(list(zip(clfs, clfs_probs))):
             corpus_obj = corpus.get_object(self.obj_type, idx_to_id[idx])
-            corpus_obj.add_meta(self.clf_attribute_name, clf)
+            corpus_obj.add_meta(self.clf_attribute_name, clf_model)
             corpus_obj.add_meta(self.clf_prob_attribute_name, clf_prob)
 
         for obj in corpus.iter_objs(self.obj_type, selector):
