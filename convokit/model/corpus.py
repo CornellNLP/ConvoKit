@@ -405,30 +405,97 @@ class Corpus:
         :return: True if Speaker of specified id is present, False otherwise
         """
         return speaker_id in self.speakers
-
-    def random_utterance(self) -> Utterance:
+    def random_utterance(
+            corpus, selector : Optional[Callable[[Utterance],bool]] = lambda utt: True) -> Utterance:
         """
-        Get a random Utterance from the Corpus
+        Filters utterances based on specified criteria and returns a random utterance.
 
-        :return: a random Utterance
-        """
-        return random.choice(list(self.utterances.values()))
+        Args:
+            corpus (Corpus): The ConvoKit corpus object.
+            filter_function: A function to filter utterances based on criteria.
 
-    def random_conversation(self) -> Conversation:
+        Returns:
+            A random utterance object within the corpus that matches the filter.
         """
-        Get a random Conversation from the Corpus
 
-        :return: a random Conversation
-        """
-        return random.choice(list(self.conversations.values()))
+        count = 0
+        selected_utterance = None
 
-    def random_speaker(self) -> Speaker:
-        """
-        Get a random Speaker from the Corpus
+        # Iterate over utterances directly from the generator
+        for utterance in corpus.iter_utterances():
+            # Apply the filter function if provided
+            if selector(utterance):
+                count += 1
+                # Reservoir sampling: Replace the current selection with decreasing probability
+                if random.randint(1, count) == 1:
+                    selected_utterance = utterance
+        if selected_utterance is None:
+            raise ValueError("No matching utterance found in the corpus.")
 
-        :return: a random Speaker
+        return selected_utterance
+
+
+    def random_conversation(
+            corpus, selector : Optional[Callable[[Conversation],bool]] = lambda convo: True) -> Conversation:
         """
-        return random.choice(list(self.speakers.values()))
+        Filters conversations based on specified criteria and returns a random conversation.
+
+        Args:
+            corpus (Corpus): The ConvoKit corpus object.
+            filter_function: A function to filter conversations based on criteria.
+
+        Returns:
+            A random conversation object within the corpus that matches the filter.
+        """
+        count = 0
+        selected_conversation = None
+
+        # Iterate over conversations
+        for conversation in corpus.iter_conversations():
+            # Apply the filter function if provided
+            if selector(conversation):
+                count += 1
+                # Reservoir sampling: Replace the current selection with decreasing probability
+                if random.randint(1, count) == 1:
+                    selected_conversation = conversation
+        if selected_conversation is None:
+            raise ValueError("No matching utterance found in the corpus.")
+
+        return selected_conversation
+
+    def random_speaker(
+            corpus,selector: Optional[Callable[[Speaker], bool]] = lambda spk: True )-> Speaker:
+        """
+        Filter a random speaker based on specified criteria
+
+        Args:
+            corpus (Corpus): The ConvoKit corpus object.
+            filter_function: The filter function which provides given criteria to filter from
+
+        Returns:
+            a random speaker object within the corpus
+        """
+        count = 0
+        selected_speaker = None
+
+
+        # iterate over speakers
+        for speaker in corpus.iter_speakers():
+
+            # Apply the filter function if provided
+            if selector(speaker):
+                count += 1
+                # Reservoir sampling: Replace the current selection with decreasing probability
+                if random.randint(1,count) == 1:
+                    selected_speaker = speaker
+
+        if selected_speaker is None:
+            raise ValueError("No matching utterance found in the corpus.")
+
+
+        return selected_speaker
+
+    
 
     def iter_utterances(
         self, selector: Optional[Callable[[Utterance], bool]] = lambda utt: True
@@ -1585,6 +1652,7 @@ class Corpus:
             corpus.update_metadata_from_df("conversation", conversations_df)
 
         return corpus
+
 
 
 # def __repr__(self):
