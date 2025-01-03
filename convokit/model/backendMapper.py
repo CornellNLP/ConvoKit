@@ -66,12 +66,7 @@ class BackendMapper(metaclass=ABCMeta):
 
     @abstractmethod
     def update_data(
-        self,
-        component_type: str,
-        component_id: str,
-        property_name: str,
-        new_value,
-        index=None,
+        self, component_type: str, component_id: str, property_name: str, new_value, index=None,
     ):
         """
         Set or update the property data for the component of type component_type
@@ -179,12 +174,7 @@ class MemMapper(BackendMapper):
             return collection[component_id][property_name]
 
     def update_data(
-        self,
-        component_type: str,
-        component_id: str,
-        property_name: str,
-        new_value,
-        index=None,
+        self, component_type: str, component_id: str, property_name: str, new_value, index=None,
     ):
         collection = self.get_collection(component_type)
         # don't create new collections if the ID is not found; this is supposed to be handled in the
@@ -292,12 +282,7 @@ class DBMapper(BackendMapper):
             return result
 
     def update_data(
-        self,
-        component_type: str,
-        component_id: str,
-        property_name: str,
-        new_value,
-        index=None,
+        self, component_type: str, component_id: str, property_name: str, new_value, index=None,
     ):
         data = self.get_data(component_type, component_id)
         if index is not None and index.get(property_name, None) == ["bin"]:

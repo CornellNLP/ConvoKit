@@ -405,8 +405,10 @@ class Corpus:
         :return: True if Speaker of specified id is present, False otherwise
         """
         return speaker_id in self.speakers
+
     def random_utterance(
-            corpus, selector : Optional[Callable[[Utterance],bool]] = lambda utt: True) -> Utterance:
+        corpus, selector: Optional[Callable[[Utterance], bool]] = lambda utt: True
+    ) -> Utterance:
         """
         Filters utterances based on specified criteria and returns a random utterance.
 
@@ -434,9 +436,9 @@ class Corpus:
 
         return selected_utterance
 
-
     def random_conversation(
-            corpus, selector : Optional[Callable[[Conversation],bool]] = lambda convo: True) -> Conversation:
+        corpus, selector: Optional[Callable[[Conversation], bool]] = lambda convo: True
+    ) -> Conversation:
         """
         Filters conversations based on specified criteria and returns a random conversation.
 
@@ -464,7 +466,8 @@ class Corpus:
         return selected_conversation
 
     def random_speaker(
-            corpus,selector: Optional[Callable[[Speaker], bool]] = lambda spk: True )-> Speaker:
+        corpus, selector: Optional[Callable[[Speaker], bool]] = lambda spk: True
+    ) -> Speaker:
         """
         Filter a random speaker based on specified criteria
 
@@ -478,7 +481,6 @@ class Corpus:
         count = 0
         selected_speaker = None
 
-
         # iterate over speakers
         for speaker in corpus.iter_speakers():
 
@@ -486,16 +488,13 @@ class Corpus:
             if selector(speaker):
                 count += 1
                 # Reservoir sampling: Replace the current selection with decreasing probability
-                if random.randint(1,count) == 1:
+                if random.randint(1, count) == 1:
                     selected_speaker = speaker
 
         if selected_speaker is None:
             raise ValueError("No matching utterance found in the corpus.")
 
-
         return selected_speaker
-
-    
 
     def iter_utterances(
         self, selector: Optional[Callable[[Utterance], bool]] = lambda utt: True
@@ -1652,7 +1651,6 @@ class Corpus:
             corpus.update_metadata_from_df("conversation", conversations_df)
 
         return corpus
-
 
 
 # def __repr__(self):

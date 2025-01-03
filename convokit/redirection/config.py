@@ -3,9 +3,7 @@ from transformers import BitsAndBytesConfig
 import torch
 
 DEFAULT_BNB_CONFIG = BitsAndBytesConfig(
-    load_in_4bit=True,
-    bnb_4bit_quant_type="nf4",
-    bnb_4bit_compute_dtype=torch.bfloat16,
+    load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.bfloat16,
 )
 
 DEFAULT_LORA_CONFIG = LoraConfig(

@@ -486,9 +486,10 @@ class Coordination(Transformer):
                 target = utt1.speaker
                 if speaker == target:
                     continue
-                speaker, target = Coordination._annot_speaker(
-                    speaker, utt2, split_by_attribs
-                ), Coordination._annot_speaker(target, utt1, split_by_attribs)
+                speaker, target = (
+                    Coordination._annot_speaker(speaker, utt2, split_by_attribs),
+                    Coordination._annot_speaker(target, utt1, split_by_attribs),
+                )
 
                 speaker_filter = speaker_utterance_selector(utt2, utt1)
                 target_filter = target_utterance_selector(utt2, utt1)
