@@ -98,10 +98,16 @@ class GemmaLikelihoodModel(LikelihoodModel):
         future_context = "\n\n".join(future_context)
 
         context_ids = self.tokenizer.encode(
-            past_context, truncation=True, max_length=self.max_length, return_tensors="pt",
+            past_context,
+            truncation=True,
+            max_length=self.max_length,
+            return_tensors="pt",
         )
         future_ids = self.tokenizer.encode(
-            future_context, truncation=True, max_length=self.max_length, return_tensors="pt",
+            future_context,
+            truncation=True,
+            max_length=self.max_length,
+            return_tensors="pt",
         )
         input_ids = torch.cat([context_ids, future_ids], dim=1)
         if input_ids.shape[1] > self.max_length:

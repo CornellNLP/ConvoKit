@@ -24,7 +24,12 @@ class Speaker(CorpusComponent):
     """
 
     def __init__(
-        self, owner=None, id: str = None, utts=None, convos=None, meta: Optional[Dict] = None,
+        self,
+        owner=None,
+        id: str = None,
+        utts=None,
+        convos=None,
+        meta: Optional[Dict] = None,
     ):
         super().__init__(obj_type="speaker", owner=owner, id=id, meta=meta)
         self.utterances = utts if utts is not None else dict()

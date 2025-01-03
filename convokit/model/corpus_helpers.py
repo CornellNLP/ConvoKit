@@ -272,21 +272,37 @@ def unpack_all_binary_data(
 ):
     # unpack binary data for utterances
     unpack_binary_data_for_utts(
-        utterances, filename, meta_index.utterances_index, exclude_utterance_meta, KeyMeta,
+        utterances,
+        filename,
+        meta_index.utterances_index,
+        exclude_utterance_meta,
+        KeyMeta,
     )
     # unpack binary data for speakers
     unpack_binary_data(
-        filename, speakers_data, meta_index.speakers_index, "speaker", exclude_speaker_meta,
+        filename,
+        speakers_data,
+        meta_index.speakers_index,
+        "speaker",
+        exclude_speaker_meta,
     )
 
     # unpack binary data for conversations
     unpack_binary_data(
-        filename, convos_data, meta_index.conversations_index, "convo", exclude_conversation_meta,
+        filename,
+        convos_data,
+        meta_index.conversations_index,
+        "convo",
+        exclude_conversation_meta,
     )
 
     # unpack binary data for overall corpus
     unpack_binary_data(
-        filename, meta, meta_index.overall_index, "overall", exclude_overall_meta,
+        filename,
+        meta,
+        meta_index.overall_index,
+        "overall",
+        exclude_overall_meta,
     )
 
 
