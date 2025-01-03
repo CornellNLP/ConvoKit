@@ -406,7 +406,7 @@ class Corpus:
         """
         return speaker_id in self.speakers
     def random_utterance(
-            corpus, selector : Optional[Callable[[Utterance],bool]] = lambda utt: True) -> Utterance:
+            self, selector : Optional[Callable[[Utterance],bool]] = lambda utt: True) -> Utterance:
         """
         Filters utterances based on specified criteria and returns a random utterance.
 
@@ -421,8 +421,10 @@ class Corpus:
         count = 0
         selected_utterance = None
 
+        if selector == None:
+             return random.choice(list(self.utterances.values()))
         # Iterate over utterances directly from the generator
-        for utterance in corpus.iter_utterances():
+        for utterance in self.iter_utterances():
             # Apply the filter function if provided
             if selector(utterance):
                 count += 1
@@ -436,7 +438,7 @@ class Corpus:
 
 
     def random_conversation(
-            corpus, selector : Optional[Callable[[Conversation],bool]] = lambda convo: True) -> Conversation:
+            self, selector : Optional[Callable[[Conversation],bool]] = lambda convo: True) -> Conversation:
         """
         Filters conversations based on specified criteria and returns a random conversation.
 
@@ -449,9 +451,12 @@ class Corpus:
         """
         count = 0
         selected_conversation = None
+        # if selector is not provided return random object
+        if selector == None:
+            return random.choice(list(self.conversations.values()))
 
         # Iterate over conversations
-        for conversation in corpus.iter_conversations():
+        for conversation in self.iter_conversations():
             # Apply the filter function if provided
             if selector(conversation):
                 count += 1
@@ -464,7 +469,7 @@ class Corpus:
         return selected_conversation
 
     def random_speaker(
-            corpus,selector: Optional[Callable[[Speaker], bool]] = lambda spk: True )-> Speaker:
+            self,selector: Optional[Callable[[Speaker], bool]] = lambda spk: True )-> Speaker:
         """
         Filter a random speaker based on specified criteria
 
@@ -477,10 +482,12 @@ class Corpus:
         """
         count = 0
         selected_speaker = None
-
-
+        # if selector is not provided return random object
+        if selector == None:
+            return random.choice(list(self.speakers.values()))
+    
         # iterate over speakers
-        for speaker in corpus.iter_speakers():
+        for speaker in self.iter_speakers():
 
             # Apply the filter function if provided
             if selector(speaker):
