@@ -407,7 +407,7 @@ class Corpus:
         return speaker_id in self.speakers
 
     def random_utterance(
-        self, selector: Optional[Callable[[Utterance], bool]] = lambda utt: True
+        self, selector: Optional[Callable[[Utterance], bool]] = None
     ) -> Utterance:
         """
         Filters utterances based on specified criteria and returns a random utterance.
@@ -434,12 +434,12 @@ class Corpus:
                 if random.randint(1, count) == 1:
                     selected_utterance = utterance
         if selected_utterance is None:
-            raise ValueError("No matching utterance found in the corpus.")
+            raise ValueError("No matching Utterance found in the Corpus.")
 
         return selected_utterance
 
     def random_conversation(
-        self, selector: Optional[Callable[[Conversation], bool]] = lambda convo: True
+        self, selector: Optional[Callable[[Conversation], bool]] = None
     ) -> Conversation:
         """
         Filters conversations based on specified criteria and returns a random conversation.
@@ -466,22 +466,19 @@ class Corpus:
                 if random.randint(1, count) == 1:
                     selected_conversation = conversation
         if selected_conversation is None:
-            raise ValueError("No matching utterance found in the corpus.")
+            raise ValueError("No matching Conversation found in the Corpus.")
 
         return selected_conversation
 
     def random_speaker(
-        self, selector: Optional[Callable[[Speaker], bool]] = lambda spk: True
+        self, selector: Optional[Callable[[Speaker], bool]] = None
     ) -> Speaker:
         """
-        Filter a random speaker based on specified criteria
+        Get a random Speaker from the Corpus, with an optional selector that filters for Speakers that should be considered.
 
-        Args:
-            corpus (Corpus): The ConvoKit corpus object.
-            filter_function: The filter function which provides given criteria to filter from
-
-        Returns:
-            a random speaker object within the corpus
+        :param selector: a (lambda) function that takes an Speaker and returns True or False (i.e. consider / not consider).
+            By default, the selector considers all Speakers in the Corpus.
+        :return: a random Speaker that in the Corpus that is considered based on the selector.
         """
         count = 0
         selected_speaker = None
@@ -500,7 +497,7 @@ class Corpus:
                     selected_speaker = speaker
 
         if selected_speaker is None:
-            raise ValueError("No matching utterance found in the corpus.")
+            raise ValueError("No matching Speaker found in the Corpus.")
 
         return selected_speaker
 
