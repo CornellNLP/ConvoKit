@@ -406,9 +406,7 @@ class Corpus:
         """
         return speaker_id in self.speakers
 
-    def random_utterance(
-        self, selector: Optional[Callable[[Utterance], bool]] = None
-    ) -> Utterance:
+    def random_utterance(self, selector: Optional[Callable[[Utterance], bool]] = None) -> Utterance:
         """
         Filters utterances based on specified criteria and returns a random utterance.
 
@@ -470,9 +468,7 @@ class Corpus:
 
         return selected_conversation
 
-    def random_speaker(
-        self, selector: Optional[Callable[[Speaker], bool]] = None
-    ) -> Speaker:
+    def random_speaker(self, selector: Optional[Callable[[Speaker], bool]] = None) -> Speaker:
         """
         Get a random Speaker from the Corpus, with an optional selector that filters for Speakers that should be considered.
 
