@@ -410,8 +410,8 @@ class Corpus:
         """
         Get a random Utterance from the Corpus, with an optional selector that filters for Utterances that should be considered.
 
-        :param selector: a (lambda) function that takes an Speaker and returns True or False (i.e. consider / not consider).
-            By default, the selector considers all Utterance in the Corpus.
+        :param selector: a (lambda) function that takes an Utterance and returns True or False (i.e. consider / not consider).
+            By default, the selector considers all Utterances in the Corpus.
         :return: a random Utterance that in the Corpus that is considered based on the selector.
         """
         count = 0
@@ -439,7 +439,7 @@ class Corpus:
         Get a random speaker object within the corpus that matches the filter.
 
         :param selecter: a (lamda) function that takes a Conversation and returns True or False.(i.e. consider / not consider).
-            By default, the selector considers all Speakers in the Corpus.
+            By default, the selector considers all Conversations in the Corpus.
         :return: a random Conversation that in the Corpus that is considered based on the selector
         """
         count = 0
