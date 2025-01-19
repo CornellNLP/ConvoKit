@@ -410,16 +410,12 @@ class Corpus:
         self, selector: Optional[Callable[[Utterance], bool]] = None
     ) -> Utterance:
         """
-        Filters utterances based on specified criteria and returns a random utterance.
+        Get a random Utterance from the Corpus, with an optional selector that filters for Utterances that should be considered.
 
-        Args:
-            corpus (Corpus): The ConvoKit corpus object.
-            filter_function: A function to filter utterances based on criteria.
-
-        Returns:
-            A random utterance object within the corpus that matches the filter.
+        :param selector: a (lambda) function that takes an Speaker and returns True or False (i.e. consider / not consider).
+            By default, the selector considers all Utterance in the Corpus.
+        :return: a random Utterance that in the Corpus that is considered based on the selector.
         """
-
         count = 0
         selected_utterance = None
 
@@ -442,14 +438,11 @@ class Corpus:
         self, selector: Optional[Callable[[Conversation], bool]] = None
     ) -> Conversation:
         """
-        Filters conversations based on specified criteria and returns a random conversation.
+        Get a random speaker object within the corpus that matches the filter.
 
-        Args:
-            corpus (Corpus): The ConvoKit corpus object.
-            filter_function: A function to filter conversations based on criteria.
-
-        Returns:
-            A random conversation object within the corpus that matches the filter.
+        :param selecter: a (lamda) function that takes a Conversation and returns True or False.(i.e. consider / not consider).
+            By default, the selector considers all Speakers in the Corpus.
+        :return: a random Conversation that in the Corpus that is considered based on the selector
         """
         count = 0
         selected_conversation = None
