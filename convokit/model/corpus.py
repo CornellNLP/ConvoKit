@@ -436,7 +436,7 @@ class Corpus:
         self, selector: Optional[Callable[[Conversation], bool]] = None
     ) -> Conversation:
         """
-        Get a random speaker object within the corpus that matches the filter.
+        Get a random Conversation from the Corpus, with an optional selector that filters for Conversations that should be considered.
 
         :param selecter: a (lamda) function that takes a Conversation and returns True or False.(i.e. consider / not consider).
             By default, the selector considers all Conversations in the Corpus.
