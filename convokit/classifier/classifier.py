@@ -35,6 +35,7 @@ class Classifier(Transformer):
         self,
         obj_type: str,
         labeller: Callable[[CorpusComponent], bool] = lambda x: True,
+        clf_model: ClassifierModel = None,
         clf_attribute_name: str = "prediction",
         clf_prob_attribute_name: str = "probability",
         pred_feats: List[str] = None,
@@ -80,9 +81,11 @@ class Classifier(Transformer):
         """
         Trains the Transformer's classifier model, with an optional selector that filters for objects to be fit on.
 
+        :param context_type: type of Corpus object to classify: 'conversation', 'speaker', or 'utterance'
         :param corpus: target Corpus
-        :param selector: a (lambda) function that takes a Corpus object and returns True or False (i.e. include / exclude).
-            By default, the selector includes all objects of the specified type in the Corpus.
+        :param context_selector: a (lambda) function that takes a Corpus object and returns True or False (i.e. include / exclude).
+            By default, the context_selector includes all objects of the specified type in the Corpus.
+            
         :return: the fitted Classifier Transformer
         """
         contexts = self._create_context_iterator(
