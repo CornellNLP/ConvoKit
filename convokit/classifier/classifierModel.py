@@ -10,15 +10,15 @@ class ClassifierModel(ABC):
     """
 
     def __init__(self):
-        self._labeler = None
+        self._labeller = None
 
     @property
-    def labeler(self):
-        return self._labeler
+    def labeller(self):
+        return self._labeller
 
-    @labeler.setter
-    def labeler(self, value: Callable):
-        self._labeler = value
+    @labeller.setter
+    def labeller(self, value: Callable):
+        self._labeller = value
 
     @abstractmethod
     def fit(self, contexts, val_contexts=None):

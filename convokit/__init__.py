@@ -12,7 +12,7 @@ try:
     from .text_processing import *
     from .phrasing_motifs import *
     from .prompt_types import *
-    from .classifier import *
+    from .classifier.classifier import *
     from .ranker import *
     from .forecaster import *
     from .fighting_words import *
