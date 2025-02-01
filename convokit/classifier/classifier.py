@@ -69,12 +69,13 @@ class Classifier(Transformer):
         for obj in corpus.iter_objs(context_type):
             if not context_selector(obj):
                 continue
-            yield obj # this needed to be indented...
+            yield obj  # this needed to be indented...
 
     def fit(
         self,
         context_type: str,
-        corpus: Corpus, y=None,
+        corpus: Corpus,
+        y=None,
         context_selector: Callable[[CorpusComponent], bool] = lambda context: True,
         val_context_selector: Optional[Callable[[CorpusComponent], bool]] = None,
     ):
@@ -87,7 +88,7 @@ class Classifier(Transformer):
             By default, the context_selector includes all objects of the specified type in the Corpus.
         :param context_selector: a (lambda) function that takes a Corpus object and returns True or False (i.e. include / exclude).
             By default, the val_context_selector is None.
-            
+
         :return: the fitted Classifier Transformer
         """
         contexts = self._create_context_iterator(
@@ -101,7 +102,6 @@ class Classifier(Transformer):
         self.clf_model.fit(contexts, val_contexts)
 
         return self
-
 
     # TODO
     def transform(
@@ -121,11 +121,11 @@ class Classifier(Transformer):
         contexts = self._create_context_iterator(
             corpus, context_type=self.obj_type, context_selector=selector
         )
-        
+
         outputs = self.clf_model.transform(contexts)
         # NTS: outputs is a dataframe
-        preds = outputs['predictions'].tolist()
-        probs = outputs['probabilities'].tolist()
+        preds = outputs["predictions"].tolist()
+        probs = outputs["probabilities"].tolist()
         for obj, pred, prob in zip(corpus.iter_objs(self.obj_type, selector), preds, probs):
             obj.add_meta(self.clf_attribute_name, pred)
             obj.add_meta(self.clf_prob_attribute_name, prob)
@@ -138,9 +138,11 @@ class Classifier(Transformer):
         self.fit(corpus, selector=selector)
         return self.transform(corpus, selector=selector)
 
-    def transform_objs(self,
-                       objs: List[CorpusComponent],
-                       selector: Callable[[CorpusComponent], bool] = lambda x: True) -> List[CorpusComponent]:
+    def transform_objs(
+        self,
+        objs: List[CorpusComponent],
+        selector: Callable[[CorpusComponent], bool] = lambda x: True,
+    ) -> List[CorpusComponent]:
         """
         Run classifier on list of Corpus objects and annotate them with the predictions and prediction scores
 
