@@ -85,6 +85,8 @@ class Classifier(Transformer):
         :param corpus: target Corpus
         :param context_selector: a (lambda) function that takes a Corpus object and returns True or False (i.e. include / exclude).
             By default, the context_selector includes all objects of the specified type in the Corpus.
+        :param context_selector: a (lambda) function that takes a Corpus object and returns True or False (i.e. include / exclude).
+            By default, the val_context_selector is None.
             
         :return: the fitted Classifier Transformer
         """
