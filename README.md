@@ -1,6 +1,6 @@
 # [ConvoKit](http://convokit.cornell.edu/)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-31-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-35-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![pypi](https://img.shields.io/pypi/v/convokit.svg)](https://pypi.org/pypi/convokit/)
@@ -53,6 +53,9 @@ Example: [speaker conversation attributes and diversity example on ChangeMyView]
 A neural model for forecasting future outcomes of conversations (e.g., derailment into personal attacks) as they develop.
 Available as an interactive notebook: [full version (fine-tuning + inference)](https://colab.research.google.com/drive/1SH4iMEHdoH4IovN-b9QOSK4kG4DhAwmb) or [inference-only](https://colab.research.google.com/drive/1GvICZN0VwZQSWw3pJaEVY-EQGoO-L5lH).
 
+### [Redirection and Utterance Likelihood](https://www.cs.cornell.edu/~cristian/Redirection_in_Therapy.html) <sub><sup>[(API)](https://convokit.cornell.edu/documentation/redirectionAndUtteranceLikelihood.html)</sup></sub>
+The methods to compute the extent to which utterances redirect the flow of the conversation (Redirection) and to measure the log-likelihoods of utterances given a defined conversation context (Utterance Likelihood).
+Example: [redirection in supreme court oral arguments](https://github.com/CornellNLP/ConvoKit/blob/master/convokit/redirection/redirectionDemo.ipynb)
 
 
 ## Datasets
@@ -277,6 +280,10 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/oscarso2000"><img src="https://avatars.githubusercontent.com/u/20172573?v=4?s=100" width="100px;" alt="Oscar So"/><br /><sub><b>Oscar So</b></sub></a><br /><a href="https://github.com/CornellNLP/ConvoKit/commits?author=oscarso2000" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://justin-cho.com"><img src="https://avatars.githubusercontent.com/u/31977186?v=4?s=100" width="100px;" alt="Justin Cho"/><br /><sub><b>Justin Cho</b></sub></a><br /><a href="#data-wise-east" title="Data">🔣</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/seanzhangkx8"><img src="https://avatars.githubusercontent.com/u/106214464?v=4?s=100" width="100px;" alt="seanzhangkx8"/><br /><sub><b>seanzhangkx8</b></sub></a><br /><a href="https://github.com/CornellNLP/ConvoKit/commits?author=seanzhangkx8" title="Code">💻</a> <a href="#ideas-seanzhangkx8" title="Ideas, Planning, & Feedback">🤔</a> <a href="#maintenance-seanzhangkx8" title="Maintenance">🚧</a> <a href="https://github.com/CornellNLP/ConvoKit/commits?author=seanzhangkx8" title="Documentation">📖</a> <a href="https://github.com/CornellNLP/ConvoKit/pulls?q=is%3Apr+reviewed-by%3Aseanzhangkx8" title="Reviewed Pull Requests">👀</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ethanxia4"><img src="https://avatars.githubusercontent.com/u/96800594?v=4?s=100" width="100px;" alt="Ethan Xia"/><br /><sub><b>Ethan Xia</b></sub></a><br /><a href="https://github.com/CornellNLP/ConvoKit/commits?author=ethanxia4" title="Code">💻</a> <a href="https://github.com/CornellNLP/ConvoKit/commits?author=ethanxia4" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/vianxnguyen"><img src="https://avatars.githubusercontent.com/u/46759999?v=4?s=100" width="100px;" alt="vivian"/><br /><sub><b>vivian</b></sub></a><br /><a href="https://github.com/CornellNLP/ConvoKit/commits?author=vianxnguyen" title="Code">💻</a> <a href="https://github.com/CornellNLP/ConvoKit/commits?author=vianxnguyen" title="Documentation">📖</a> <a href="#example-vianxnguyen" title="Examples">💡</a> <a href="#ideas-vianxnguyen" title="Ideas, Planning, & Feedback">🤔</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/laerdon"><img src="https://avatars.githubusercontent.com/u/96972420?v=4?s=100" width="100px;" alt="Laerdon Kim"/><br /><sub><b>Laerdon Kim</b></sub></a><br /><a href="https://github.com/CornellNLP/ConvoKit/commits?author=laerdon" title="Documentation">📖</a> <a href="#example-laerdon" title="Examples">💡</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/yash-chatha"><img src="https://avatars.githubusercontent.com/u/62723967?v=4?s=100" width="100px;" alt="Yash Chatha"/><br /><sub><b>Yash Chatha</b></sub></a><br /><a href="https://github.com/CornellNLP/ConvoKit/commits?author=yash-chatha" title="Documentation">📖</a> <a href="#example-yash-chatha" title="Examples">💡</a></td>
     </tr>
   </tbody>
 </table>

@@ -320,6 +320,48 @@
         "doc",
         "review"
       ]
+    },
+    {
+      "login": "ethanxia4",
+      "name": "Ethan Xia",
+      "avatar_url": "https://avatars.githubusercontent.com/u/96800594?v=4",
+      "profile": "https://github.com/ethanxia4",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "vianxnguyen",
+      "name": "vivian",
+      "avatar_url": "https://avatars.githubusercontent.com/u/46759999?v=4",
+      "profile": "https://github.com/vianxnguyen",
+      "contributions": [
+        "code",
+        "doc",
+        "example",
+        "ideas"
+      ]
+    },
+    {
+      "login": "laerdon",
+      "name": "Laerdon Kim",
+      "avatar_url": "https://avatars.githubusercontent.com/u/96972420?v=4",
+      "profile": "https://github.com/laerdon",
+      "contributions": [
+        "doc",
+        "example"
+      ]
+    },
+    {
+      "login": "yash-chatha",
+      "name": "Yash Chatha",
+      "avatar_url": "https://avatars.githubusercontent.com/u/62723967?v=4",
+      "profile": "https://github.com/yash-chatha",
+      "contributions": [
+        "doc",
+        "example"
+      ]
     }
   ],
   "contributorsPerLine": 7,
