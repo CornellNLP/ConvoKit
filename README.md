@@ -1,16 +1,18 @@
 # [ConvoKit](http://convokit.cornell.edu/)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-31-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-35-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![pypi](https://img.shields.io/pypi/v/convokit.svg)](https://pypi.org/pypi/convokit/)
-[![py\_versions](https://img.shields.io/badge/python-3.8%2B-blue)](https://pypi.org/pypi/convokit/)
+[![py\_versions](https://img.shields.io/badge/python-3.10%2B-blue)](https://pypi.org/pypi/convokit/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![license](https://img.shields.io/badge/license-MIT-green)](https://github.com/CornellNLP/ConvoKit/blob/master/LICENSE.md)
 [![Discord Community](https://img.shields.io/static/v1?logo=discord&style=flat&color=red&label=discord&message=community)](https://discord.gg/WMFqMWgz6P)
 
 
-This toolkit contains tools to extract conversational features and analyze social phenomena in conversations, using a [single unified interface](https://convokit.cornell.edu/documentation/architecture.html) inspired by (and compatible with) scikit-learn.  Several large [conversational datasets](https://github.com/CornellNLP/ConvoKit#datasets) are included together with scripts exemplifying the use of the toolkit on these datasets. The latest version is [3.0.0](https://github.com/CornellNLP/ConvoKit/releases/tag/v3.0.0) (released July 17, 2023); follow the [project on GitHub](https://github.com/CornellNLP/ConvoKit) to keep track of updates.
+This toolkit contains tools to extract conversational features and analyze social phenomena in conversations, using a [single unified interface](https://convokit.cornell.edu/documentation/architecture.html) inspired by (and compatible with) scikit-learn.  Several large [conversational datasets](https://github.com/CornellNLP/ConvoKit#datasets) are included together with scripts exemplifying the use of the toolkit on these datasets. The latest version is [3.1.0](https://github.com/CornellNLP/ConvoKit/releases/tag/v3.1.0) (released December 30, 2024); follow the [project on GitHub](https://github.com/CornellNLP/ConvoKit) to keep track of updates.
+
+Join our [Discord community](https://discord.gg/WMFqMWgz6P) to stay informed, connect with fellow developers, and be part of an engaging space where we share progress, discuss features, and tackle issues together.
 
 Read our [documentation](https://convokit.cornell.edu/documentation) or try ConvoKit in our [interactive tutorial](https://colab.research.google.com/github/CornellNLP/ConvoKit/blob/master/examples/Introduction_to_ConvoKit.ipynb).
 
@@ -51,6 +53,9 @@ Example: [speaker conversation attributes and diversity example on ChangeMyView]
 A neural model for forecasting future outcomes of conversations (e.g., derailment into personal attacks) as they develop.
 Available as an interactive notebook: [full version (fine-tuning + inference)](https://colab.research.google.com/drive/1SH4iMEHdoH4IovN-b9QOSK4kG4DhAwmb) or [inference-only](https://colab.research.google.com/drive/1GvICZN0VwZQSWw3pJaEVY-EQGoO-L5lH).
 
+### [Redirection and Utterance Likelihood](https://www.cs.cornell.edu/~cristian/Redirection_in_Therapy.html) <sub><sup>[(API)](https://convokit.cornell.edu/documentation/redirectionAndUtteranceLikelihood.html)</sup></sub>
+The methods to compute the extent to which utterances redirect the flow of the conversation (Redirection) and to measure the log-likelihoods of utterances given a defined conversation context (Utterance Likelihood).
+Example: [redirection in supreme court oral arguments](https://github.com/CornellNLP/ConvoKit/blob/master/convokit/redirection/redirectionDemo.ipynb)
 
 
 ## Datasets
@@ -198,7 +203,7 @@ Name for download: `spolin-corpus`
 In addition to the provided datasets, you may also use ConvoKit with your own custom datasets by loading them into a `convokit.Corpus` object. [This example script](https://github.com/CornellNLP/ConvoKit/blob/master/examples/converting_movie_corpus.ipynb) shows how to construct a Corpus from custom data.
 
 ## Installation
-This toolkit requires Python >= 3.8.
+This toolkit requires Python >= 3.10.
 
 1. Download the toolkit: `pip3 install convokit`
 2. Download Spacy's English model: `python3 -m spacy download en`
@@ -275,6 +280,10 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/oscarso2000"><img src="https://avatars.githubusercontent.com/u/20172573?v=4?s=100" width="100px;" alt="Oscar So"/><br /><sub><b>Oscar So</b></sub></a><br /><a href="https://github.com/CornellNLP/ConvoKit/commits?author=oscarso2000" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://justin-cho.com"><img src="https://avatars.githubusercontent.com/u/31977186?v=4?s=100" width="100px;" alt="Justin Cho"/><br /><sub><b>Justin Cho</b></sub></a><br /><a href="#data-wise-east" title="Data">🔣</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/seanzhangkx8"><img src="https://avatars.githubusercontent.com/u/106214464?v=4?s=100" width="100px;" alt="seanzhangkx8"/><br /><sub><b>seanzhangkx8</b></sub></a><br /><a href="https://github.com/CornellNLP/ConvoKit/commits?author=seanzhangkx8" title="Code">💻</a> <a href="#ideas-seanzhangkx8" title="Ideas, Planning, & Feedback">🤔</a> <a href="#maintenance-seanzhangkx8" title="Maintenance">🚧</a> <a href="https://github.com/CornellNLP/ConvoKit/commits?author=seanzhangkx8" title="Documentation">📖</a> <a href="https://github.com/CornellNLP/ConvoKit/pulls?q=is%3Apr+reviewed-by%3Aseanzhangkx8" title="Reviewed Pull Requests">👀</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ethanxia4"><img src="https://avatars.githubusercontent.com/u/96800594?v=4?s=100" width="100px;" alt="Ethan Xia"/><br /><sub><b>Ethan Xia</b></sub></a><br /><a href="https://github.com/CornellNLP/ConvoKit/commits?author=ethanxia4" title="Code">💻</a> <a href="https://github.com/CornellNLP/ConvoKit/commits?author=ethanxia4" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/vianxnguyen"><img src="https://avatars.githubusercontent.com/u/46759999?v=4?s=100" width="100px;" alt="vivian"/><br /><sub><b>vivian</b></sub></a><br /><a href="https://github.com/CornellNLP/ConvoKit/commits?author=vianxnguyen" title="Code">💻</a> <a href="https://github.com/CornellNLP/ConvoKit/commits?author=vianxnguyen" title="Documentation">📖</a> <a href="#example-vianxnguyen" title="Examples">💡</a> <a href="#ideas-vianxnguyen" title="Ideas, Planning, & Feedback">🤔</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/laerdon"><img src="https://avatars.githubusercontent.com/u/96972420?v=4?s=100" width="100px;" alt="Laerdon Kim"/><br /><sub><b>Laerdon Kim</b></sub></a><br /><a href="https://github.com/CornellNLP/ConvoKit/commits?author=laerdon" title="Documentation">📖</a> <a href="#example-laerdon" title="Examples">💡</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/yash-chatha"><img src="https://avatars.githubusercontent.com/u/62723967?v=4?s=100" width="100px;" alt="Yash Chatha"/><br /><sub><b>Yash Chatha</b></sub></a><br /><a href="https://github.com/CornellNLP/ConvoKit/commits?author=yash-chatha" title="Documentation">📖</a> <a href="#example-yash-chatha" title="Examples">💡</a></td>
     </tr>
   </tbody>
 </table>

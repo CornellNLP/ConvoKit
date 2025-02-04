@@ -7,7 +7,7 @@ This is a Convokit-formatted version of the dataset originally distributed with 
 
 Bodhisattwa Prasad Majumder, Shuyang Li, Jianmo Ni, and Julian McAuley. 2020. `Interview: Large-Scale Modeling of Media Dialog with Discourse Patterns and Knowledge Grounding. <https://www.aclweb.org/anthology/2020.emnlp-main.653>`_ In Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP), 8129–41.
 
-Please cite this paper when using this corpus in your research.
+Please cite this paper when using NPR-2P corpus in your research.
 
 Dataset Details
 ---------------
@@ -42,8 +42,6 @@ Conversations are indexed by the id of the first utterance that appears in the c
 Usage
 -----
 
-Convert the NPR-2P Corpus into ConvoKit format using this notebook `Converting NPR-2P Corpus to ConvoKit Format <https://github.com/CornellNLP/ConvoKit/blob/master/examples/dataset-examples/NPR-2P/npr_to_convokit.ipynb>`_
-
 To download directly with ConvoKit:
 
 >>> from convokit import Corpus, download
@@ -53,10 +51,11 @@ To download directly with ConvoKit:
 For some quick stats:
 
 >>> corpus.print_summary_stats()
-Number of Speakers: 22267  
+Number of Speakers: 22267
 Number of Utterances: 428624
-Number of Conversations: 22149 
+Number of Conversations: 22149
 
+Additionally, if you want to process the original NPR-2P data into ConvoKit format you can use the following script `Converting NPR-2P Corpus to ConvoKit Format <https://github.com/CornellNLP/ConvoKit/blob/master/examples/dataset-examples/NPR-2P/npr_to_convokit.ipynb>`_
 
 Additional note
 ---------------

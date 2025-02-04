@@ -127,11 +127,8 @@ class PromptTypes(Transformer):
         Fits a PromptTypes model for a corpus -- that is, learns latent representations of prompt and response terms, as well as prompt types.
 
         :param corpus: Corpus
-        :param prompt_selector: a boolean function of signature `filter(utterance)` that determines which
-        utterances will be considered as prompts in the fit step. defaults to using all utterances which have a response.
-        :param reference_selector: a boolean function of signature `filter(utterance)` that determines which utterances
-            will be considered as responses in the fit step. defaults to using all utterances which are responses to a
-            prompt.
+        :param prompt_selector: a boolean function of signature `filter(utterance)` that determines which utterances will be considered as prompts in the fit step. defaults to using all utterances which have a response.
+        :param reference_selector: a boolean function of signature `filter(utterance)` that determines which utterances will be considered as responses in the fit step. defaults to using all utterances which are responses to a prompt.
 
         :return: None
         """

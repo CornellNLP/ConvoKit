@@ -10,9 +10,40 @@ General checks
 Issues
 ^^^^^^
 
-**Error associated with Numpy**
+**Google Colab User Note**
 
-ConvoKit currently requires Numpy 1.x.x, as Numpy 2.x is known to cause compatibility issues. Please verify your Numpy version. We are working on supporting Numpy 2.x and appreciate your understanding.
+Running ConvoKit with Google Colab can trigger error with scipy package, which is likely due to Colab runtime preloading an older version that 
+is not compatible with other packages. When install ConvoKit in Colab environment, if the error occurs, a user warning message should display. 
+The error can be easily fixed by restarting the Colab runtime session and run the cells again.
+
+-----------------------------
+
+**Error Associated with Numpy 2.0.0**
+
+The release of `numpy 2.0.0 <https://numpy.org/devdocs/release/2.0.0-notes.html>`_ is exciting,
+yet it breaks backward compatibility for packages that are built with numpy 1.x.
+While our new release (ConvoKit 3.0.1) addresses the problem and is built against the new numpy,
+there are ConvoKit dependency packages that still experience issues with numpy 2.0.0+.
+We have fixed known errors from testing, but the tests are far from exhaustive.
+Therefore, if you face an error likely triggered by adapting to numpy 2.0.0+ versions,
+we encourage you to please submit an issue on our GitHub, so we can address the problem as soon as possible. Thank you!
+
+For explanations of what errors numpy 2.0 could cause on packages that are not built against it,
+check the `numpy 2.0 migration guide <https://numpy.org/devdocs/numpy_2_0_migration_guide.html>`_.
+
+An example of an issue that we fixed is demonstrated below:
+
+Pre-Spacy 3.8.2 is not compatible with numpy 2.0.0+ due to compatibility issues with thinc.
+Spacy 3.8.2 is compatible with numpy 2.0.0+ but currently requires thinc to be >=8.3.0, <8.4.0.
+As a temporary solution, ConvoKit now enforces spacy>=3.8.2, thinc >=8.3.0, <8.4.0.
+We will continue to monitor spacy releases and update the requirements if there are new releases targeting this issue.
+
+For additional information about the issue, see:
+`spaCy issue <https://github.com/explosion/spaCy/issues/13528>`_,
+`thinc issue <https://github.com/explosion/thinc/issues/939>`_.
+
+The issues are more likely to appear when you install ConvoKit in an existing environment where other packages have already been pre-installed.
+Installing ConvoKit in a new environment following our installation guide should result in no errors.
 
 -----------------------------
 
@@ -65,9 +96,9 @@ The two recommended fixes are to run:
 
 and if that doesn't fix the issue, then run:
 
->>> open /Applications/Python\ 3.8/Install\ Certificates.command
+>>> open /Applications/Python\ 3.10/Install\ Certificates.command
 
-(Substitute 3.8 in the above command with your current Python version (e.g. 3.9 or 3.10) if necessary.)
+(Substitute 3.10 in the above command with your current Python version (e.g. 3.11 or 3.12 or 3.13) if necessary.)
 
 Immutability of Metadata Fields
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
