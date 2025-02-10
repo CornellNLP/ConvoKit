@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split, cross_val_score, KFold
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
-from convokit import Transformer
+from convokit.transformer import Transformer
 from .classifierModel import ClassifierModel
 from convokit.model.corpusComponent import CorpusComponent
 from convokit.classifier.util import *
