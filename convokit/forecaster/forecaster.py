@@ -216,6 +216,7 @@ class Forecaster(Transformer):
             "label": [],
             "score": [],
             "forecast": [],
+            "last_utterance_forecast": [],
         }
         for convo in corpus.iter_conversations():
             if selector(convo):
@@ -237,6 +238,7 @@ class Forecaster(Transformer):
                 )
                 conversational_forecasts_df["score"].append(np.max(forecast_scores))
                 conversational_forecasts_df["forecast"].append(np.max(forecasts))
+                conversational_forecasts_df["last_utterance_forecast"].append(forecasts[-1])
         conversational_forecasts_df = pd.DataFrame(conversational_forecasts_df).set_index(
             "conversation_id"
         )
@@ -260,6 +262,19 @@ class Forecaster(Transformer):
             (conversational_forecasts_df["label"] == 1)
             & (conversational_forecasts_df["forecast"] == 0)
         ).sum()
+        # Correct Adjustments
+        ca = (
+            (conversational_forecasts_df["label"] == 0)
+            & (conversational_forecasts_df["forecast"] == 1)
+            & (conversational_forecasts_df["last_utterance_forecast"] == 0)
+        ).mean()
+        # Incorrect Adjustments
+        ia = (
+            (conversational_forecasts_df["label"] == 1)
+            & (conversational_forecasts_df["forecast"] == 1)
+            & (conversational_forecasts_df["last_utterance_forecast"] == 0)
+        ).mean()
+
         p = tp / (tp + fp)
         r = tp / (tp + fn)
         fpr = fp / (fp + tn)
@@ -274,6 +289,14 @@ class Forecaster(Transformer):
         print(
             f"Mean = {np.mean(comments_until_end_vals) - 1}, Median = {np.median(comments_until_end_vals) - 1}"
         )
-        metrics = {"Accuracy": acc, "Precision": p, "Recall": r, "FPR": fpr, "F1": f1, "Mean H": np.mean(comments_until_end_vals) - 1}
+        metrics = {"Accuracy": acc, 
+                   "Precision": p, 
+                   "Recall": r, 
+                   "FPR": fpr, 
+                   "F1": f1, 
+                   "Mean H": np.mean(comments_until_end_vals) - 1,
+                   "Correct Adjustment": ca,
+                   "Incorrect Adjustment": ia,
+                   "Recovery": ca - ia}
         print(pd.Series(metrics))
         return conversational_forecasts_df, metrics
