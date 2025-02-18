@@ -293,5 +293,5 @@ class CRAFTModel(ForecasterModel):
             forecast_attribute_name,
             forecast_prob_attribute_name,
         )
-
+        
         return forecasts_df
