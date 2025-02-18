@@ -264,9 +264,7 @@ class Forecaster(Transformer):
         r = tp / (tp + fn)
         fpr = fp / (fp + tn)
         f1 = 2 / (((tp + fp) / tp) + ((tp + fn) / tp))
-        metrics = {"Accuracy": acc, "Precision": p, "Recall": r, "FPR": fpr, "F1": f1}
 
-        print(pd.Series(metrics))
 
         comments_until_end = self._draw_horizon_plot(corpus, selector)
         comments_until_end_vals = list(comments_until_end.values())
@@ -274,7 +272,8 @@ class Forecaster(Transformer):
             "Horizon statistics (# of comments between first positive forecast and conversation end):"
         )
         print(
-            f"Mean = {np.mean(comments_until_end_vals)}, Median = {np.median(comments_until_end_vals)}"
+            f"Mean = {np.mean(comments_until_end_vals) - 1}, Median = {np.median(comments_until_end_vals) - 1}"
         )
-
+        metrics = {"Accuracy": acc, "Precision": p, "Recall": r, "FPR": fpr, "F1": f1, "Mean H": np.mean(comments_until_end_vals) - 1}
+        print(pd.Series(metrics))
         return conversational_forecasts_df, metrics
