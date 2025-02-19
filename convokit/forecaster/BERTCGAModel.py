@@ -20,15 +20,14 @@ import shutil
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 DEFAULT_CONFIG = {
-    "output_dir": "BERTForCGA", 
+    "output_dir": "BERTCGAModel", 
     "per_device_batch_size": 4, 
     "num_train_epochs": 2, 
     "learning_rate": 6.7e-6,
     "random_seed": 1,
-    "context_mode": "full",
     "device": "cuda"
     }
-class BERTForCGA(ForecasterModel):
+class BERTCGAModel(ForecasterModel):
     """
     Wrapper for Huggingface Transformers AutoModel
     """
@@ -74,11 +73,7 @@ class BERTForCGA(ForecasterModel):
             convo = context.current_utterance.get_conversation()
             label = self.labeler(convo)
 
-            if self.config['context_mode'] == "nocontext":
-                # This context_mode is used for testing the No-Context setting in the paper.
-                context_utts = [context.current_utterance]
-            elif self.config['context_mode'] == "full":
-                context_utts = context.context
+            context_utts = context.context
             
             tokenized_context = self._tokenize(context_utts)
             pairs['input_ids'].append(tokenized_context['input_ids'])
