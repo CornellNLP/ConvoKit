@@ -283,20 +283,24 @@ class Forecaster(Transformer):
 
         comments_until_end = self._draw_horizon_plot(corpus, selector)
         comments_until_end_vals = list(comments_until_end.values())
+        mean_h = np.mean(comments_until_end_vals) - 1
         print(
             "Horizon statistics (# of comments between first positive forecast and conversation end):"
         )
         print(
-            f"Mean = {np.mean(comments_until_end_vals) - 1}, Median = {np.median(comments_until_end_vals) - 1}"
+            f"Mean = {mean_h}, Median = {np.median(comments_until_end_vals) - 1}"
         )
+        
+        leaderboard_string = f"| MODEL_NAME     | {acc:.1f}   | {p:.1f}  | {r:.1f} | {f1:.1f}  | {fpr:.1f}   | {mean_h:.2f} | {ca-ia:.1f} ({ca:.1f} - {ia:.1f})  |"
         metrics = {"Accuracy": acc, 
                    "Precision": p, 
                    "Recall": r, 
                    "FPR": fpr, 
                    "F1": f1, 
-                   "Mean H": np.mean(comments_until_end_vals) - 1,
+                   "Mean H": mean_h,
                    "Correct Adjustment": ca,
                    "Incorrect Adjustment": ia,
-                   "Recovery": ca - ia}
+                   "Recovery": ca - ia,
+                   "Leaderboard String": leaderboard_string}
         print(pd.Series(metrics))
         return conversational_forecasts_df, metrics
