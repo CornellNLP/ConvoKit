@@ -57,6 +57,8 @@ class BERTCGAModel(ForecasterModel):
                                                                 model_name_or_path,
                                                                 ignore_mismatched_sizes=True,
                                                                 config = model_config).to(config["device"])
+        if not os.path.exists(config['output_dir']):
+            os.makedirs(config['output_dir'])
         self.config = config
         return 
         
