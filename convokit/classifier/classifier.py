@@ -103,7 +103,6 @@ class Classifier(Transformer):
 
         return self
 
-    # TODO
     def transform(
         self, corpus: Corpus, selector: Callable[[CorpusComponent], bool] = lambda x: True
     ) -> Corpus:
