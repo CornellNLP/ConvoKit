@@ -50,10 +50,13 @@ class BERTCGAModel(ForecasterModel):
                         original_model, model_max_length=512, truncation_side="left", padding_side="right"
                         )
             
-        model_config = AutoConfig.from_pretrained(model_name_or_path, num_labels=2, problem_type ="single_label_classification")
-        self.model = AutoModelForSequenceClassification.from_pretrained(model_name_or_path,
-                                                                        ignore_mismatched_sizes=True,
-                                                                        config = model_config).to(config["device"])
+        model_config = AutoConfig.from_pretrained(model_name_or_path, 
+                                                  num_labels=2, 
+                                                  problem_type ="single_label_classification")
+        self.model = AutoModelForSequenceClassification.from_pretrained(
+                                                                model_name_or_path,
+                                                                ignore_mismatched_sizes=True,
+                                                                config = model_config).to(config["device"])
         self.config = config
         return 
         
@@ -73,7 +76,10 @@ class BERTCGAModel(ForecasterModel):
             convo = context.current_utterance.get_conversation()
             label = self.labeler(convo)
 
-            context_utts = context.context
+            if ('context_mode' not in self.config) or self.config['context_mode'] == "normal":
+                context_utts = context.context
+            elif self.config['context_mode'] == "no-context":
+                context_utts = [context.current_utterance]
             
             tokenized_context = self._tokenize(context_utts)
             pairs['input_ids'].append(tokenized_context['input_ids'])
@@ -100,7 +106,8 @@ class BERTCGAModel(ForecasterModel):
         scores = []
         for data in tqdm(dataset):
             input_ids = data['input_ids'].to(self.config['device'], dtype = torch.long).reshape([1,-1])
-            attention_mask = data['attention_mask'].to(self.config['device'], dtype = torch.long).reshape([1,-1])
+            attention_mask = data['attention_mask']\
+                .to(self.config['device'], dtype = torch.long).reshape([1,-1])
             outputs = model(input_ids=input_ids, attention_mask=attention_mask)
             probs = F.softmax(outputs.logits, dim=-1)
             utt_ids.append(data["id"])
@@ -108,7 +115,8 @@ class BERTCGAModel(ForecasterModel):
             preds.append(int(raw_score > threshold))
             scores.append(raw_score)
 
-        return pd.DataFrame({forecast_attribute_name: preds, forecast_prob_attribute_name: scores}, index=utt_ids)
+        return pd.DataFrame({forecast_attribute_name: preds, forecast_prob_attribute_name: scores}, 
+                            index=utt_ids)
 
     def _tune_best_val_accuracy(self, val_dataset, val_contexts):
         """
@@ -129,7 +137,8 @@ class BERTCGAModel(ForecasterModel):
         val_convo_ids = list(val_convo_ids)
         for cp in checkpoints:
             full_model_path = os.path.join(self.config["output_dir"], cp)
-            finetuned_model = AutoModelForSequenceClassification.from_pretrained(full_model_path).to(self.config['device'])
+            finetuned_model = AutoModelForSequenceClassification.from_pretrained(full_model_path)\
+                                .to(self.config['device'])
             val_scores = self._predict(val_dataset, model=finetuned_model)
             # for each CONVERSATION, whether or not it triggers will be effectively determined by what the highest score it ever got was
             highest_convo_scores = {convo_id: -1 for convo_id in val_convo_ids}
