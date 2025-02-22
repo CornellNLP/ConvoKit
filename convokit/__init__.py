@@ -2,14 +2,16 @@ import warnings
 import sys
 import types
 
+
 class LazyModule(types.ModuleType):
     def __init__(self, module_name):
         self._module_name = module_name
 
     def __getattr__(self, attr):
         raise ImportError(
-            f"{self._module_name} requires spaCy, which is not installed. Please install it with \"pip install convokit[spacy]\""
+            f'{self._module_name} requires spaCy, which is not installed. Please install it with "pip install convokit[spacy]"'
         )
+
 
 try:
     from .model import *
@@ -27,7 +29,7 @@ try:
     from .bag_of_words import *
     from .surprise import *
     from .convokitConfig import *
-    
+
     try:
         import spacy
         from .politenessStrategies import *
@@ -40,7 +42,9 @@ try:
         sys.modules["convokit.politenessStrategies"] = LazyModule("politenessStrategies")
         sys.modules["convokit.text_processing"] = LazyModule("text_processing")
         sys.modules["convokit.phrasing_motifs"] = LazyModule("phrasing_motifs")
-        sys.modules["convokit.expected_context_framework"] = LazyModule("expected_context_framework")
+        sys.modules["convokit.expected_context_framework"] = LazyModule(
+            "expected_context_framework"
+        )
         sys.modules["convokit.prompt_types"] = LazyModule("prompt_types")
 
 except Exception as e:

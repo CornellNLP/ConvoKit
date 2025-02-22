@@ -3,7 +3,7 @@ import sys
 
 import warnings
 
-try: 
+try:
     import spacy
 except ImportError:
     raise Exception("Spacy is required to use TextParser or TextParser dependent subpackages")
