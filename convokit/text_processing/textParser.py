@@ -1,8 +1,14 @@
 import nltk
-import spacy
 import sys
 
 import warnings
+
+try:
+    import spacy
+except ImportError:
+    raise Exception("Spacy is required to use TextParser or TextParser dependent subpackages")
+
+
 from spacy.pipeline import Sentencizer
 
 

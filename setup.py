@@ -47,7 +47,6 @@ setup(
         "pandas>=1.5.0",
         "numpy>=2.0.0",
         "msgpack-numpy>=0.4.3.2",
-        "spacy>=3.8.2",
         "scipy>=1.1.0",
         "scikit-learn>=1.0",
         "nltk>=3.4",
@@ -74,6 +73,7 @@ setup(
     ],
     extras_require={
         "craft": ["torch>=0.12"],
+        "spacy": ["spacy>=3.8.2"],
     },
     classifiers=[
         "Programming Language :: Python",
