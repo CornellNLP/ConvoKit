@@ -2,7 +2,10 @@ import json
 import os
 from tqdm import tqdm
 import pandas as pd
-from unsloth import FastLanguageModel
+from transformers import TrainingArguments
+from datasets import Dataset
+from trl import SFTTrainer
+from unsloth import FastLanguageModel, is_bfloat16_supported
 from unsloth.chat_templates import get_chat_template
 from .forecasterModel import ForecasterModel
 
@@ -29,12 +32,12 @@ class LLMCGAModel(ForecasterModel):
             raise ValueError(
                     f"Model {model_name_or_path} is not supported."
                 )
-        max_seq_length = 4_096 * 4
+        self.max_seq_length = 4_096 * 4
         dtype = None
         load_in_4bit = True
         self.model, tokenizer = FastLanguageModel.from_pretrained(
             model_name=model_name_or_path,
-            max_seq_length=max_seq_length,
+            max_seq_length=self.max_seq_length,
             dtype=dtype,
             load_in_4bit=load_in_4bit,
             # token=os.environ["HF_TOKEN"],         #Question, Is this important?
@@ -55,7 +58,7 @@ class LLMCGAModel(ForecasterModel):
         self.config = config
         return
     
-    def _tokenize(self, context):
+    def _tokenize(self, context, label=None, return_tensors='pt'):
         # convo = context.current_utterance.get_conversation()
         # label = self.labeler(convo)
         context_utts = context.context
@@ -66,13 +69,95 @@ class LLMCGAModel(ForecasterModel):
             )
         messages.append(self.question_msg)
         final_message = [{"from": "human", "value":"\n\n".join(messages)}]
+        if label != None:
+            label = (
+                    f'Yes. The next comment, utt-{len(context_utts) + 1}, was removed by a moderator as it included a personal attack."'
+                    if label
+                    else "No. The conversation remained civil throughout."
+                )
+            messages.append({"from": "model", "value": label})
         #TO-DO: apply padding.
         tokenized_context = self.tokenizer.apply_chat_template(
-        final_message, tokenize=True, add_generation_prompt=True, return_tensors="pt"
+        final_message, tokenize=True, add_generation_prompt=True, return_tensors=return_tensors
         )
         return tokenized_context
     
     def fit(self, train_contexts, val_contexts):
+        """
+        Description: Train the conversational forecasting model on the given data
+        Parameters:
+        contexts: an iterator over context tuples, as defined by the above data format
+        val_contexts: an optional second iterator over context tuples to be used as a separate held-out validation set. 
+                        The generator for this must be the same as test generator
+        """
+        # Processing Data
+        train_dataset, val_dataset = [], []
+        for context in train_contexts:
+            inputs = self._tokenize(context)
+            train_dataset.append({"input": inputs})
+        for context in val_contexts:
+            inputs = self._tokenize(context)
+            val_dataset.append({"input": inputs})
+        train_dataset = Dataset.from_list(train_dataset)
+        val_dataset = Dataset.from_list(val_dataset)
+        # LORA
+        model = FastLanguageModel.get_peft_model(
+                    model,
+                    r=64,
+                    target_modules=[
+                        "q_proj",
+                        "k_proj",
+                        "v_proj",
+                        "o_proj",
+                        "gate_proj",
+                        "up_proj",
+                        "down_proj",
+                    ],
+                    lora_alpha=128,
+                    lora_dropout=0,  # supports any, but = 0 is optimized
+                    bias="none",  # supports any, but = "none" is optimized
+                    use_gradient_checkpointing="unsloth",  # True or "unsloth" for very long context
+                    random_state=0,
+                    use_rslora=False,  # rank stabilized LoRA (True for new_cmv3/new_cmv4, False for new_cmv/new_cmv2)
+                    loftq_config=None,  # and LoftQ
+                )
+        
+        # Training
+        trainer = SFTTrainer(
+            model=model,
+            tokenizer=self.tokenizer,
+            train_dataset=train_dataset,
+            eval_dataset=val_dataset,
+            dataset_text_field="text",
+            max_seq_length=self.max_seq_length,
+            args=TrainingArguments(
+                        per_device_train_batch_size=self.config['per_device_batch_size'],
+                        per_device_eval_batch_size=self.config['per_device_batch_size'],
+                        metric_for_best_model="eval_loss",
+                        greater_is_better=False,
+                        load_best_model_at_end=True,
+                        gradient_accumulation_steps=self.config['gradient_accumulation_steps'],  # 32 for new_cmv, 16 for new_cmv2/new_cmv3, 6 for new_cmv4
+                        warmup_steps=10,
+                        num_train_epochs=self.config["num_train_epochs"],
+                        logging_strategy="epoch",
+                        eval_strategy="no",
+                        learning_rate=self.config["learning_rate"],  # 1e-4 for new_cmv, 1e-5 for new_cmv2/new_cmv3/new_cmv4
+                        fp16=not is_bfloat16_supported(),
+                        bf16=is_bfloat16_supported(),
+                        optim="adamw_8bit",  # "adamw_8bit" for new_cmv/new_cmv2, "galore_adamw" for new_cmv3/new_cmv4
+                        optim_target_modules=["attn", "mlp"],
+                        weight_decay=0.01,
+                        lr_scheduler_type="linear",
+                        seed=0,
+                        output_dir=self.config["output_dir"],
+                    ),
+                )
+        trainer.train()
+
+        # Save the finetuned model and tokenizer.
+        model.save_pretrained(self.config["output_dir"])
+        self.tokenizer.save_pretrained(self.config["output_dir"])
+
         return
     def transform(self, contexts, forecast_attribute_name, forecast_prob_attribute_name):
         FastLanguageModel.for_inference(self.model)
