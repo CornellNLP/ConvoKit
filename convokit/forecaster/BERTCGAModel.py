@@ -62,7 +62,7 @@ class BERTCGAModel(ForecasterModel):
         self.config = config
         return 
         
-    def _tokenize(self, context, mode = 'normal'):
+    def _tokenize(self, context):
         tokenized_context = self.tokenizer.encode_plus(
             text=f" {self.tokenizer.sep_token} ".join([u.text for u in context]), 
             add_special_tokens=True,
