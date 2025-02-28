@@ -43,8 +43,16 @@ def construct_non_overlapping_corpus():
 def construct_overlapping_corpus():
     return Corpus(
         utterances=[
-            Utterance(id="2", text="this is a test", speaker=Speaker(id="charlie"),),
-            Utterance(id="4", text="this is a sentence", speaker=Speaker(id="echo"),),
+            Utterance(
+                id="2",
+                text="this is a test",
+                speaker=Speaker(id="charlie"),
+            ),
+            Utterance(
+                id="4",
+                text="this is a sentence",
+                speaker=Speaker(id="echo"),
+            ),
             Utterance(id="5", text="goodbye", speaker=Speaker(id="foxtrot")),
         ]
     )
