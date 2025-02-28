@@ -290,7 +290,7 @@ class Forecaster(Transformer):
         print(
             f"Mean = {mean_h}, Median = {np.median(comments_until_end_vals) - 1}"
         )
-        
+
         leaderboard_string = (f"| MODEL_NAME     | "
                               f"{acc*100:.1f}   | "
                               f"{p*100:.1f}  | "
@@ -299,11 +299,11 @@ class Forecaster(Transformer):
                               f"{fpr*100:.1f}   | "
                               f"{mean_h:.2f} | "
                               f"{(ca-ia)*100:.1f} ({ca*100:.1f} - {ia*100:.1f})  |")
-        metrics = {"Accuracy": acc, 
-                   "Precision": p, 
-                   "Recall": r, 
-                   "FPR": fpr, 
-                   "F1": f1, 
+        metrics = {"Accuracy": acc,
+                   "Precision": p,
+                   "Recall": r,
+                   "FPR": fpr,
+                   "F1": f1,
                    "Mean H": mean_h,
                    "Correct Adjustment": ca,
                    "Incorrect Adjustment": ia,

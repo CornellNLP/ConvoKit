@@ -20,9 +20,9 @@ import shutil
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 DEFAULT_CONFIG = {
-    "output_dir": "BERTCGAModel", 
-    "per_device_batch_size": 4, 
-    "num_train_epochs": 2, 
+    "output_dir": "BERTCGAModel",
+    "per_device_batch_size": 4,
+    "num_train_epochs": 2,
     "learning_rate": 6.7e-6,
     "random_seed": 1,
     "device": "cuda"
@@ -64,10 +64,10 @@ class BERTCGAModel(ForecasterModel):
         if not os.path.exists(config['output_dir']):
             os.makedirs(config['output_dir'])
         self.config = config
-        return 
+        return
     def _tokenize(self, context):
         tokenized_context = self.tokenizer.encode_plus(
-            text=f" {self.tokenizer.sep_token} ".join([u.text for u in context]), 
+            text=f" {self.tokenizer.sep_token} ".join([u.text for u in context]),
             add_special_tokens=True,
             padding="max_length",
             truncation=True,
@@ -90,7 +90,7 @@ class BERTCGAModel(ForecasterModel):
             pairs['labels'].append(label)
             pairs['id'].append(context.current_utterance.id)
         return Dataset.from_dict(pairs)
-    
+
     @torch.inference_mode
     @torch.no_grad
     def _predict(self, dataset, model=None, threshold=0.5,
@@ -120,7 +120,7 @@ class BERTCGAModel(ForecasterModel):
             scores.append(raw_score)
 
         return pd.DataFrame({forecast_attribute_name: preds,
-                             forecast_prob_attribute_name: scores}, 
+                             forecast_prob_attribute_name: scores},
                             index=utt_ids)
 
     def _tune_best_val_accuracy(self, val_dataset, val_contexts):
@@ -187,36 +187,36 @@ class BERTCGAModel(ForecasterModel):
         with open(config_file, 'w') as outfile:
             json_object = json.dumps(best_config, indent=4)
             outfile.write(json_object)
-        
+
         # Clean other checkpoints to save disk space.
         for root, _, _ in os.walk(self.config['output_dir']):
             if ("checkpoint" in root) and (best_checkpoint not in root):
                 print("Deleting:", root)
                 shutil.rmtree(root)
         return
-        
+
     def fit(self, contexts, val_contexts):
         """
         Description: Train the conversational forecasting model on the given data
         Parameters:
         contexts: an iterator over context tuples, as defined by the above data format
-        val_contexts: an optional second iterator over context tuples to be used as a separate held-out validation set. 
+        val_contexts: an optional second iterator over context tuples to be used as a separate held-out validation set.
                         The generator for this must be the same as test generator
         """
         val_contexts = list(val_contexts)
         train_pairs = self._context_to_bert_data(contexts)
         val_for_tuning_pairs = self._context_to_bert_data(val_contexts)
         dataset = DatasetDict({
-            "train": train_pairs, 
+            "train": train_pairs,
             "val_for_tuning": val_for_tuning_pairs
         })
         dataset.set_format("torch")
-        
+
         training_args = TrainingArguments(
             output_dir=self.config["output_dir"],
             per_device_train_batch_size=self.config["per_device_batch_size"],
             num_train_epochs=self.config["num_train_epochs"],
-            learning_rate=self.config["learning_rate"], 
+            learning_rate=self.config["learning_rate"],
             logging_strategy="epoch",
             weight_decay=0.01,
             eval_strategy="no",
@@ -232,7 +232,7 @@ class BERTCGAModel(ForecasterModel):
         trainer.train()
 
         self._tune_best_val_accuracy(dataset['val_for_tuning'], val_contexts)
-        return 
+        return
 
     def transform(self, contexts, forecast_attribute_name, forecast_prob_attribute_name):
         test_pairs = self._context_to_bert_data(contexts)
@@ -241,10 +241,10 @@ class BERTCGAModel(ForecasterModel):
         })
         dataset.set_format("torch")
         forecasts_df = self._predict(dataset["test"], threshold=self.best_threshold,
-                                    forecast_attribute_name = forecast_attribute_name, 
+                                    forecast_attribute_name = forecast_attribute_name,
                                     forecast_prob_attribute_name=forecast_prob_attribute_name)
-        
+
         prediction_file = os.path.join(self.config["output_dir"], "test_predictions.csv")
         forecasts_df.to_csv(prediction_file)
-        
+
         return forecasts_df
