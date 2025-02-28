@@ -39,29 +39,32 @@ class BERTCGAModel(ForecasterModel):
         super().__init__()
         try:
             self.tokenizer = AutoTokenizer.from_pretrained(
-                        model_name_or_path, model_max_length=512, truncation_side="left", padding_side="right"
-                        )
+                        model_name_or_path,
+                        model_max_length=512,
+                        truncation_side="left",
+                        padding_side="right")
         except:
             # The checkpoint didn't save tokenizer
             model_config_file = os.path.join(model_name_or_path, "config.json")
             with open(model_config_file, 'r') as file:
                 original_model = json.load(file)['_name_or_path']
             self.tokenizer = AutoTokenizer.from_pretrained(
-                        original_model, model_max_length=512, truncation_side="left", padding_side="right"
-                        )
-            
-        model_config = AutoConfig.from_pretrained(model_name_or_path, 
-                                                  num_labels=2, 
+                                                    original_model,
+                                                    model_max_length=512,
+                                                    truncation_side="left",
+                                                    padding_side="right")
+        self.best_threshold = None
+        model_config = AutoConfig.from_pretrained(model_name_or_path,
+                                                  num_labels=2,
                                                   problem_type ="single_label_classification")
         self.model = AutoModelForSequenceClassification.from_pretrained(
-                                                                model_name_or_path,
-                                                                ignore_mismatched_sizes=True,
-                                                                config = model_config).to(config["device"])
+                                                model_name_or_path,
+                                                ignore_mismatched_sizes=True,
+                                                config = model_config).to(config["device"])
         if not os.path.exists(config['output_dir']):
             os.makedirs(config['output_dir'])
         self.config = config
         return 
-        
     def _tokenize(self, context):
         tokenized_context = self.tokenizer.encode_plus(
             text=f" {self.tokenizer.sep_token} ".join([u.text for u in context]), 
@@ -71,7 +74,6 @@ class BERTCGAModel(ForecasterModel):
             max_length=512,
             )
         return tokenized_context
-    
     def _context_to_bert_data(self, contexts):
         pairs = {"id": [], "input_ids": [], "attention_mask": [], "labels": []}
         for context in contexts:
@@ -82,7 +84,6 @@ class BERTCGAModel(ForecasterModel):
                 context_utts = context.context
             elif self.config['context_mode'] == "no-context":
                 context_utts = [context.current_utterance]
-            
             tokenized_context = self._tokenize(context_utts)
             pairs['input_ids'].append(tokenized_context['input_ids'])
             pairs['attention_mask'].append(tokenized_context['attention_mask'])
@@ -107,9 +108,10 @@ class BERTCGAModel(ForecasterModel):
         preds = []
         scores = []
         for data in tqdm(dataset):
-            input_ids = data['input_ids'].to(self.config['device'], dtype = torch.long).reshape([1,-1])
-            attention_mask = data['attention_mask']\
-                .to(self.config['device'], dtype = torch.long).reshape([1,-1])
+            input_ids = data['input_ids'].to(self.config['device'],
+                                             dtype = torch.long).reshape([1,-1])
+            attention_mask = data['attention_mask'].to(self.config['device'],
+                                                       dtype = torch.long).reshape([1,-1])
             outputs = model(input_ids=input_ids, attention_mask=attention_mask)
             probs = F.softmax(outputs.logits, dim=-1)
             utt_ids.append(data["id"])
@@ -117,7 +119,8 @@ class BERTCGAModel(ForecasterModel):
             preds.append(int(raw_score > threshold))
             scores.append(raw_score)
 
-        return pd.DataFrame({forecast_attribute_name: preds, forecast_prob_attribute_name: scores}, 
+        return pd.DataFrame({forecast_attribute_name: preds,
+                             forecast_prob_attribute_name: scores}, 
                             index=utt_ids)
 
     def _tune_best_val_accuracy(self, val_dataset, val_contexts):
@@ -186,13 +189,13 @@ class BERTCGAModel(ForecasterModel):
             outfile.write(json_object)
         
         # Clean other checkpoints to save disk space.
-        for root, dirs, files in os.walk(self.config['output_dir']):
+        for root, _, _ in os.walk(self.config['output_dir']):
             if ("checkpoint" in root) and (best_checkpoint not in root):
                 print("Deleting:", root)
                 shutil.rmtree(root)
         return
         
-    def fit(self, train_contexts, val_contexts):
+    def fit(self, contexts, val_contexts):
         """
         Description: Train the conversational forecasting model on the given data
         Parameters:
@@ -201,7 +204,7 @@ class BERTCGAModel(ForecasterModel):
                         The generator for this must be the same as test generator
         """
         val_contexts = list(val_contexts)
-        train_pairs = self._context_to_bert_data(train_contexts)
+        train_pairs = self._context_to_bert_data(contexts)
         val_for_tuning_pairs = self._context_to_bert_data(val_contexts)
         dataset = DatasetDict({
             "train": train_pairs, 
