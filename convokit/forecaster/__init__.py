@@ -5,5 +5,6 @@ import sys
 
 if "torch" in sys.modules:
     from .CRAFTModel import *
-    from .BERTCGAModel import *
     from .CRAFT import *
+    from .BERTCGAModel import *
+    from .LLMCGAModel import *
