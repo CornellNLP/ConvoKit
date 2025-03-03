@@ -280,34 +280,35 @@ class Forecaster(Transformer):
         fpr = fp / (fp + tn)
         f1 = 2 / (((tp + fp) / tp) + ((tp + fn) / tp))
 
-
         comments_until_end = self._draw_horizon_plot(corpus, selector)
         comments_until_end_vals = list(comments_until_end.values())
         mean_h = np.mean(comments_until_end_vals) - 1
         print(
             "Horizon statistics (# of comments between first positive forecast and conversation end):"
         )
-        print(
-            f"Mean = {mean_h}, Median = {np.median(comments_until_end_vals) - 1}"
-        )
+        print(f"Mean = {mean_h}, Median = {np.median(comments_until_end_vals) - 1}")
 
-        leaderboard_string = (f"| MODEL_NAME     | "
-                              f"{acc*100:.1f}   | "
-                              f"{p*100:.1f}  | "
-                              f"{r*100:.1f} | "
-                              f"{f1*100:.1f}  | "
-                              f"{fpr*100:.1f}   | "
-                              f"{mean_h:.2f} | "
-                              f"{(ca-ia)*100:.1f} ({ca*100:.1f} - {ia*100:.1f})  |")
-        metrics = {"Accuracy": acc,
-                   "Precision": p,
-                   "Recall": r,
-                   "FPR": fpr,
-                   "F1": f1,
-                   "Mean H": mean_h,
-                   "Correct Adjustment": ca,
-                   "Incorrect Adjustment": ia,
-                   "Recovery": ca - ia,
-                   "Leaderboard String": leaderboard_string}
+        leaderboard_string = (
+            f"| MODEL_NAME     | "
+            f"{acc*100:.1f}   | "
+            f"{p*100:.1f}  | "
+            f"{r*100:.1f} | "
+            f"{f1*100:.1f}  | "
+            f"{fpr*100:.1f}   | "
+            f"{mean_h:.2f} | "
+            f"{(ca-ia)*100:.1f} ({ca*100:.1f} - {ia*100:.1f})  |"
+        )
+        metrics = {
+            "Accuracy": acc,
+            "Precision": p,
+            "Recall": r,
+            "FPR": fpr,
+            "F1": f1,
+            "Mean H": mean_h,
+            "Correct Adjustment": ca,
+            "Incorrect Adjustment": ia,
+            "Recovery": ca - ia,
+            "Leaderboard String": leaderboard_string,
+        }
         print(pd.Series(metrics))
         return conversational_forecasts_df, metrics
