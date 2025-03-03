@@ -147,9 +147,7 @@ class BERTCGAModel(ForecasterModel):
             val_scores = self._predict(val_dataset, model=finetuned_model)
             # for each CONVERSATION, whether or not it triggers will be effectively determined by what the highest score it ever got was
             highest_convo_scores = {convo_id: -1 for convo_id in val_convo_ids}
-            count_correct = 0
             for utt_id in val_scores.index:
-                count_correct += 1
                 convo_id = utt2convo[utt_id]
                 utt_score = val_scores.loc[utt_id].score
                 if utt_score > highest_convo_scores[convo_id]:
