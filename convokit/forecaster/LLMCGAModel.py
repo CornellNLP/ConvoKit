@@ -1,0 +1,268 @@
+import torch
+import torch.nn.functional as F
+import json
+import os
+from tqdm import tqdm
+import pandas as pd
+import numpy as np
+from sklearn.metrics import roc_curve
+from datasets import Dataset
+from trl import SFTTrainer, SFTConfig
+from unsloth import FastLanguageModel, is_bfloat16_supported
+from unsloth.chat_templates import get_chat_template
+from .forecasterModel import ForecasterModel
+
+TEMPLATE_MAP = {
+    "google/gemma-2-2b-it":"gemma2",
+    "google/gemma-2-9b-it":"gemma2",
+    "google/gemma-2-27b-it":"gemma2",
+    "mistralai/Mistral-7B-Instruct-v0.3":"mistral",
+    "mistralai/Mistral-7B-Instruct-v0.2":"mistral",
+    "HuggingFaceH4/zephyr-7b-beta":"zephyr",
+    "meta-llama/Llama-3.2-3B-Instruct":"llama3",
+    "meta-llama/Llama-3.2-1B-Instruct":"llama3",
+    "meta-llama/Llama-3.1-8B-Instruct":"llama3",
+}
+DEFAULT_CONFIG = {
+    "output_dir": "LLMCGAModel",
+    "per_device_batch_size": 2,
+    "gradient_accumulation_steps":32,
+    "num_train_epochs": 1,
+    "learning_rate": 1e-4,
+    "random_seed": 1,
+    "do_finetune": False,
+    "do_tune_threshold": True,
+    "device": "cuda"
+}
+class LLMCGAModel(ForecasterModel):
+    def __init__(
+        self,
+        model_name_or_path,
+        config = DEFAULT_CONFIG
+    ):
+        if model_name_or_path not in TEMPLATE_MAP:
+            raise ValueError(
+                    f"Model {model_name_or_path} is not supported."
+                )
+        self.max_seq_length = 4_096 * 2
+        dtype = None
+        load_in_4bit = True
+        self.model, tokenizer = FastLanguageModel.from_pretrained(
+            model_name=model_name_or_path,
+            max_seq_length=self.max_seq_length,
+            dtype=dtype,
+            load_in_4bit=load_in_4bit,
+        )
+
+        self.tokenizer = get_chat_template(
+            tokenizer,
+            chat_template=TEMPLATE_MAP[model_name_or_path],                 #TO-DO: Define this
+            mapping={"role": "from", "content": "value", "user": "human", "assistant": "model"},
+        )
+
+        # Prompt for CGA tasks
+        self.system_msg = "Here is an ongoing conversation and you are the moderator. Observe the conversational and speaker dynamics to see if the conversation will derail into a personal attack. Be careful, not all sensitive topics lead to a personal attack."
+        self.question_msg = "Will the above conversation derail into a personal attack now or at any point in the future? Strictly start your answer with Yes or No, otherwise the answer is invalid."
+        self.best_threshold = 0.5
+
+        if not os.path.exists(config['output_dir']):
+            os.makedirs(config['output_dir'])
+        self.config = config
+        for key in self.config:
+            print(key, type(self.config[key]), self.config[key])
+        return
+
+    def _tokenize(self, context,
+                  label=None,
+                  tokenize=True,
+                  add_generation_prompt=True,
+                  return_tensors='pt'):
+
+        context_utts = context.context
+        messages = [self.system_msg]
+        for idx, utt in enumerate(context_utts):
+            messages.append(
+                    f"[utt-{idx + 1}] {utt.speaker_.id}: {utt.text}"
+            )
+        messages.append(self.question_msg)
+
+        # Truncation
+        human_message = "\n\n".join(messages)
+        tokenized_message = self.tokenizer(human_message)['input_ids']
+        if len(tokenized_message) > self.max_seq_length-100:
+            human_message = self.tokenizer.decode(tokenized_message[-self.max_seq_length+100:])
+        final_message = [{"from": "human", "value":human_message}]
+
+        if label != None:
+            label = "Yes" if label else "No"
+            final_message.append({"from": "model", "value": label})
+
+        tokenized_context = self.tokenizer.apply_chat_template(
+        final_message,
+        tokenize=tokenize,
+        add_generation_prompt=add_generation_prompt,
+        return_tensors=return_tensors
+        )
+        return tokenized_context
+
+    def _context_to_llm_data(self, contexts):
+        dataset = []
+        for context in contexts:
+            convo = context.current_utterance.get_conversation()
+            label = self.labeler(convo)
+            inputs = self._tokenize(context,
+                                    label=label,
+                                    tokenize=False,
+                                    add_generation_prompt=False,
+                                    return_tensors=None)
+            dataset.append({"text": inputs})
+        print(f"There are {len(dataset)} samples")
+        return Dataset.from_list(dataset)
+
+    def fit(self, train_contexts, val_contexts):
+        """
+        Description: Train the conversational forecasting model on the given data
+        Parameters:
+        contexts: an iterator over context tuples, as defined by the above data format
+        val_contexts: an optional second iterator over context tuples to be used as a separate held-out validation set.
+                        The generator for this must be the same as test generator
+        """
+        if (not self.config['do_finetune']) and (not self.config['do_tune_threshold']):
+            return
+        if self.config['do_finetune']:
+
+            # LORA
+            self.model = FastLanguageModel.get_peft_model(
+                        self.model,
+                        r=64,
+                        target_modules=[
+                            "q_proj",
+                            "k_proj",
+                            "v_proj",
+                            "o_proj",
+                            "gate_proj",
+                            "up_proj",
+                            "down_proj",
+                        ],
+                        lora_alpha=128,
+                        lora_dropout=0,  # supports any, but = 0 is optimized
+                        bias="none",  # supports any, but = "none" is optimized
+                        use_gradient_checkpointing="unsloth",  # True or "unsloth" for very long context
+                        random_state=0,
+                        use_rslora=False,  # rank stabilized LoRA (True for new_cmv3/new_cmv4, False for new_cmv/new_cmv2)
+                        loftq_config=None,  # and LoftQ
+                    )
+            # Processing Data
+            train_dataset = self._context_to_llm_data(train_contexts)
+            print(train_dataset)
+            # val_dataset = self._context_to_llm_data(train_contexts)
+
+            # Training
+            trainer = SFTTrainer(
+                model=self.model,
+                tokenizer=self.tokenizer,
+                train_dataset=train_dataset,
+                args=SFTConfig(
+                            dataset_text_field="text",
+                            max_seq_length=self.max_seq_length,
+                            per_device_train_batch_size=self.config['per_device_batch_size'],
+                            gradient_accumulation_steps=self.config['gradient_accumulation_steps'],
+                            warmup_steps=10,
+                            num_train_epochs=self.config["num_train_epochs"],
+                            logging_strategy="epoch",
+                            save_strategy="epoch",
+                            learning_rate=self.config["learning_rate"],
+                            fp16=not is_bfloat16_supported(),
+                            bf16=is_bfloat16_supported(),
+                            optim="adamw_8bit",
+                            optim_target_modules=["attn", "mlp"],
+                            weight_decay=0.01,
+                            lr_scheduler_type="linear",
+                            seed=0,
+                            output_dir=self.config["output_dir"],
+                            report_to="none",
+                            )
+                            )
+            trainer.train()
+
+            # Save the finetuned model and tokenizer.
+            self.model.save_pretrained(self.config["output_dir"])
+            self.tokenizer.save_pretrained(self.config["output_dir"])
+        if self.config['do_tune_threshold']:
+            FastLanguageModel.for_inference(self.model)
+            val_convo_ids = set()
+            utt2convo = {}
+            utt2score = {}
+            val_labels_dict = {}
+            for context in tqdm(val_contexts):
+                utt_score, _ = self._predict(context)
+                convo_id = context.conversation_id
+                utt_id = context.current_utterance.id
+                label = self.labeler(context.current_utterance.get_conversation())
+
+                utt2convo[utt_id] = convo_id
+                val_labels_dict[convo_id] = label
+                val_convo_ids.add(convo_id)
+                utt2score[utt_id] = utt_score
+            highest_convo_scores = {convo_id: -1 for convo_id in val_convo_ids}
+            for utt_id in utt2convo:
+                convo_id = utt2convo[utt_id]
+                utt_score = utt2score[utt_id]
+                if utt_score > highest_convo_scores[convo_id]:
+                    highest_convo_scores[convo_id] = utt_score
+            val_labels = np.asarray([int(val_labels_dict[c]) for c in val_convo_ids])
+            val_scores = np.asarray([highest_convo_scores[c] for c in val_convo_ids])
+            _, _, thresholds = roc_curve(val_labels, val_scores)
+
+            def acc_with_threshold(y_true, y_score, thresh):
+                y_pred = (y_score > thresh).astype(int)
+                return (y_pred == y_true).mean()
+
+            accs = [acc_with_threshold(val_labels, val_scores, t) for t in thresholds]
+            best_acc_idx = np.argmax(accs)
+            self.best_threshold = thresholds[best_acc_idx]
+
+            best_config = {'best_threshold':self.best_threshold,
+                        'best_val_accuracy':accs[best_acc_idx]}
+            config_file = os.path.join(self.config['output_dir'], "dev_config.json")
+            with open(config_file, 'w') as outfile:
+                json_object = json.dumps(best_config, indent=4)
+                outfile.write(json_object)
+        return
+
+    def _predict(self, context):
+        inputs = self._tokenize(context).to(self.config['device'])
+        model_response = self.model.generate(
+                            input_ids=inputs,
+                            streamer=None,
+                            max_new_tokens=1,
+                            pad_token_id=self.tokenizer.eos_token_id,
+                            output_scores = True,
+                            return_dict_in_generate=True
+                        )
+        scores = model_response['scores'][0][0]
+
+        yes_id = self.tokenizer.convert_tokens_to_ids('Yes')
+        no_id = self.tokenizer.convert_tokens_to_ids('No')
+        yes_logit = scores[yes_id].item()
+        no_logit = scores[no_id].item()
+        utt_score = F.softmax(torch.tensor([yes_logit,no_logit], dtype=torch.float32), dim=0)[0].item()
+        utt_pred = utt_score > self.best_threshold
+        return utt_score, utt_pred
+    def transform(self, contexts, forecast_attribute_name, forecast_prob_attribute_name):
+        FastLanguageModel.for_inference(self.model)
+        utt_ids = []
+        preds = []
+        scores = []
+        for context in tqdm(contexts):
+            utt_score, utt_pred = self._predict(context)
+
+            utt_ids.append(context.current_utterance.id)
+            preds.append(utt_pred)
+            scores.append(utt_score)
+            forecasts_df = pd.DataFrame({forecast_attribute_name: preds,
+                                        forecast_prob_attribute_name: scores},
+                                        index=utt_ids)
+            prediction_file = os.path.join(self.config["output_dir"], "test_predictions.csv")
+            forecasts_df.to_csv(prediction_file)
+        return forecasts_df
