@@ -22,7 +22,6 @@ from convokit import LLMCGAModel
 from convokit import download, Corpus, Utterance, Forecaster
 import json, os
 from functools import partial
-from utils import *
 args = parseargs([['-model', '--model_name_or_path', 'model_name', str],
                      ['-corpus_name', '--corpus_name', 'corpus_name', str],
                      ['-finetune', '--do_finetune', 'finetune_before_evaluate', bool],

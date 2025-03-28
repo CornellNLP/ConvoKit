@@ -159,7 +159,6 @@ class LLMCGAModel(ForecasterModel):
             # Processing Data
             train_dataset = self._context_to_llm_data(train_contexts)
             print(train_dataset)
-            # val_dataset = self._context_to_llm_data(train_contexts)
 
             # Training
             trainer = SFTTrainer(
@@ -189,9 +188,6 @@ class LLMCGAModel(ForecasterModel):
                             )
             trainer.train()
 
-            # Save the tokenizer.
-            self.model.save_pretrained(self.config["output_dir"])
-            self.tokenizer.save_pretrained(self.config["output_dir"])
         if self.config['do_tune_threshold']:
             best_config = self._tune_best_val_accuracy(val_contexts)
         if self.config['do_finetune']:
@@ -260,7 +256,7 @@ class LLMCGAModel(ForecasterModel):
                 best_checkpoint = cp
                 best_val_accuracy = accs[best_acc_idx]
                 self.best_threshold = thresholds[best_acc_idx]
-                self.model = finetuned_model
+                self.model = model
 
         # Save the best config
         best_config = {}
