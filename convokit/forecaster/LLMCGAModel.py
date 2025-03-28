@@ -203,7 +203,9 @@ class LLMCGAModel(ForecasterModel):
         """
         Save the tuned model to self.best_threshold and self.model
         """
-        checkpoints = os.listdir(self.config["output_dir"])
+        checkpoints = [cp for cp in os.listdir(self.config["output_dir"]) if 'checkpoint-' in cp]
+        if not checkpoints:
+            checkpoints.append("zero-shot")
         best_val_accuracy = 0
         val_convo_ids = set()
         utt2convo = {}
@@ -217,13 +219,16 @@ class LLMCGAModel(ForecasterModel):
             val_convo_ids.add(convo_id)
         val_convo_ids = list(val_convo_ids)
         for cp in checkpoints:
-            full_model_path = os.path.join(self.config["output_dir"], cp)
-            finetuned_model, _ = FastLanguageModel.from_pretrained(
-                    model_name=full_model_path,
-                    max_seq_length=self.max_seq_length,
-                    load_in_4bit=True,
-                    ).to(self.config["device"])
-            FastLanguageModel.for_inference(finetuned_model)
+            if cp == "zero-shot":
+                model = self.model
+            else:
+                full_model_path = os.path.join(self.config["output_dir"], cp)
+                model, _ = FastLanguageModel.from_pretrained(
+                        model_name=full_model_path,
+                        max_seq_length=self.max_seq_length,
+                        load_in_4bit=True,
+                        ).to(self.config["device"])
+            FastLanguageModel.for_inference(model)
             utt2score = {}
             for context in tqdm(val_contexts):
                 utt_score, _ = self._predict(context)
