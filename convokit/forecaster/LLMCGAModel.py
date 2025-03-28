@@ -16,12 +16,9 @@ import shutil
 TEMPLATE_MAP = {
     "google/gemma-2-2b-it":"gemma2",
     "google/gemma-2-9b-it":"gemma2",
-    "google/gemma-2-27b-it":"gemma2",
     "mistralai/Mistral-7B-Instruct-v0.3":"mistral",
-    "mistralai/Mistral-7B-Instruct-v0.2":"mistral",
     "HuggingFaceH4/zephyr-7b-beta":"zephyr",
     "meta-llama/Llama-3.2-3B-Instruct":"llama3",
-    "meta-llama/Llama-3.2-1B-Instruct":"llama3",
     "meta-llama/Llama-3.1-8B-Instruct":"llama3",
 }
 DEFAULT_CONFIG = {
@@ -66,8 +63,7 @@ class LLMCGAModel(ForecasterModel):
         if not os.path.exists(config['output_dir']):
             os.makedirs(config['output_dir'])
         self.config = config
-        for key in self.config:
-            print(key, type(self.config[key]), self.config[key])
+
         return
 
     def _tokenize(self, context_utts,
@@ -91,8 +87,8 @@ class LLMCGAModel(ForecasterModel):
         final_message = [{"from": "human", "value":human_message}]
 
         if label != None:
-            label = "Yes" if label else "No"
-            final_message.append({"from": "model", "value": label})
+            text_label = "Yes" if label else "No"
+            final_message.append({"from": "model", "value": text_label})
 
         tokenized_context = self.tokenizer.apply_chat_template(
         final_message,
@@ -200,12 +196,13 @@ class LLMCGAModel(ForecasterModel):
         Save the tuned model to self.best_threshold and self.model
         """
         checkpoints = [cp for cp in os.listdir(self.config["output_dir"]) if 'checkpoint-' in cp]
-        if not checkpoints:
+        if checkpoints == []:
             checkpoints.append("zero-shot")
         best_val_accuracy = 0
         val_convo_ids = set()
         utt2convo = {}
         val_labels_dict = {}
+        val_contexts = list(val_contexts)
         for context in val_contexts:
             convo_id = context.conversation_id
             utt_id = context.current_utterance.id
@@ -223,11 +220,12 @@ class LLMCGAModel(ForecasterModel):
                         model_name=full_model_path,
                         max_seq_length=self.max_seq_length,
                         load_in_4bit=True,
-                        ).to(self.config["device"])
+                        )
+                model.to(self.config["device"])
             FastLanguageModel.for_inference(model)
             utt2score = {}
             for context in tqdm(val_contexts):
-                utt_score, _ = self._predict(context)
+                utt_score, _ = self._predict(context, model=model)
                 utt_id = context.current_utterance.id
                 utt2score[utt_id] = utt_score
             # for each CONVERSATION, whether or not it triggers will be effectively determined by what the highest score it ever got was
@@ -285,7 +283,11 @@ class LLMCGAModel(ForecasterModel):
         if not threshold:
             threshold = self.best_threshold
         FastLanguageModel.for_inference(model)
-        inputs = self._tokenize(context).to(self.config['device'])
+        if ("context_mode" not in self.config) or self.config["context_mode"] == "normal":
+            context_utts = context.context
+        elif self.config["context_mode"] == "no-context":
+            context_utts = [context.current_utterance]
+        inputs = self._tokenize(context_utts).to(self.config['device'])
         model_response = model.generate(
                             input_ids=inputs,
                             streamer=None,
