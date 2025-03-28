@@ -72,13 +72,12 @@ class LLMCGAModel(ForecasterModel):
             print(key, type(self.config[key]), self.config[key])
         return
 
-    def _tokenize(self, context,
+    def _tokenize(self, context_utts,
                   label=None,
                   tokenize=True,
                   add_generation_prompt=True,
                   return_tensors='pt'):
 
-        context_utts = context.context
         messages = [self.system_msg]
         for idx, utt in enumerate(context_utts):
             messages.append(
@@ -110,7 +109,11 @@ class LLMCGAModel(ForecasterModel):
         for context in contexts:
             convo = context.current_utterance.get_conversation()
             label = self.labeler(convo)
-            inputs = self._tokenize(context,
+            if ("context_mode" not in self.config) or self.config["context_mode"] == "normal":
+                context_utts = context.context
+            elif self.config["context_mode"] == "no-context":
+                context_utts = [context.current_utterance]
+            inputs = self._tokenize(context_utts,
                                     label=label,
                                     tokenize=False,
                                     add_generation_prompt=False,
