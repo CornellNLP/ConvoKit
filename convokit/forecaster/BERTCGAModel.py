@@ -51,7 +51,7 @@ class BERTCGAModel(ForecasterModel):
             self.tokenizer = AutoTokenizer.from_pretrained(
                 original_model, model_max_length=512, truncation_side="left", padding_side="right"
             )
-        self.best_threshold = None
+        self.best_threshold = 0.5
         model_config = AutoConfig.from_pretrained(
             model_name_or_path, num_labels=2, problem_type="single_label_classification"
         )
@@ -199,7 +199,7 @@ class BERTCGAModel(ForecasterModel):
             if ("checkpoint" in root) and (best_checkpoint not in root):
                 print("Deleting:", root)
                 shutil.rmtree(root)
-        return
+        return best_config
 
     def fit(self, contexts, val_contexts):
         """
@@ -230,7 +230,10 @@ class BERTCGAModel(ForecasterModel):
         trainer = Trainer(model=self.model, args=training_args, train_dataset=dataset["train"])
         trainer.train()
 
-        self._tune_best_val_accuracy(dataset["val_for_tuning"], val_contexts)
+        best_config = self._tune_best_val_accuracy(dataset["val_for_tuning"], val_contexts)
+
+        # Save the tokenizer.
+        self.tokenizer.save_pretrained(os.path.join(self.config["output_dir"], best_config['best_checkpoint']))
         return
 
     def transform(self, contexts, forecast_attribute_name, forecast_prob_attribute_name):

@@ -11,6 +11,7 @@ from trl import SFTTrainer, SFTConfig
 from unsloth import FastLanguageModel, is_bfloat16_supported
 from unsloth.chat_templates import get_chat_template
 from .forecasterModel import ForecasterModel
+import shutil
 
 TEMPLATE_MAP = {
     "google/gemma-2-2b-it":"gemma2",
@@ -45,13 +46,10 @@ class LLMCGAModel(ForecasterModel):
                     f"Model {model_name_or_path} is not supported."
                 )
         self.max_seq_length = 4_096 * 2
-        dtype = None
-        load_in_4bit = True
         self.model, tokenizer = FastLanguageModel.from_pretrained(
             model_name=model_name_or_path,
             max_seq_length=self.max_seq_length,
-            dtype=dtype,
-            load_in_4bit=load_in_4bit,
+            load_in_4bit=True,
         )
 
         self.tokenizer = get_chat_template(
@@ -132,8 +130,11 @@ class LLMCGAModel(ForecasterModel):
         """
         if (not self.config['do_finetune']) and (not self.config['do_tune_threshold']):
             return
+        if (self.config['do_finetune']) and (not self.config['do_tune_threshold']):
+            raise ValueError(
+                    f"When do_finetune is True, do_tune_threshold must also be True."
+                )
         if self.config['do_finetune']:
-
             # LORA
             self.model = FastLanguageModel.get_peft_model(
                         self.model,
@@ -188,33 +189,58 @@ class LLMCGAModel(ForecasterModel):
                             )
             trainer.train()
 
-            # Save the finetuned model and tokenizer.
+            # Save the tokenizer.
             self.model.save_pretrained(self.config["output_dir"])
             self.tokenizer.save_pretrained(self.config["output_dir"])
         if self.config['do_tune_threshold']:
-            FastLanguageModel.for_inference(self.model)
-            val_convo_ids = set()
-            utt2convo = {}
+            best_config = self._tune_best_val_accuracy(val_contexts)
+        if self.config['do_finetune']:
+            # Save the tokenizer.
+            self.tokenizer.save_pretrained(os.path.join(self.config["output_dir"], best_config['best_checkpoint']))
+        return
+
+    def _tune_best_val_accuracy(self, val_contexts):
+        """
+        Save the tuned model to self.best_threshold and self.model
+        """
+        checkpoints = os.listdir(self.config["output_dir"])
+        best_val_accuracy = 0
+        val_convo_ids = set()
+        utt2convo = {}
+        val_labels_dict = {}
+        for context in val_contexts:
+            convo_id = context.conversation_id
+            utt_id = context.current_utterance.id
+            label = self.labeler(context.current_utterance.get_conversation())
+            utt2convo[utt_id] = convo_id
+            val_labels_dict[convo_id] = label
+            val_convo_ids.add(convo_id)
+        val_convo_ids = list(val_convo_ids)
+        for cp in checkpoints:
+            full_model_path = os.path.join(self.config["output_dir"], cp)
+            finetuned_model, _ = FastLanguageModel.from_pretrained(
+                    model_name=full_model_path,
+                    max_seq_length=self.max_seq_length,
+                    load_in_4bit=True,
+                    ).to(self.config["device"])
+            FastLanguageModel.for_inference(finetuned_model)
             utt2score = {}
-            val_labels_dict = {}
             for context in tqdm(val_contexts):
                 utt_score, _ = self._predict(context)
-                convo_id = context.conversation_id
                 utt_id = context.current_utterance.id
-                label = self.labeler(context.current_utterance.get_conversation())
-
-                utt2convo[utt_id] = convo_id
-                val_labels_dict[convo_id] = label
-                val_convo_ids.add(convo_id)
                 utt2score[utt_id] = utt_score
+            # for each CONVERSATION, whether or not it triggers will be effectively determined by what the highest score it ever got was
             highest_convo_scores = {convo_id: -1 for convo_id in val_convo_ids}
+
             for utt_id in utt2convo:
                 convo_id = utt2convo[utt_id]
                 utt_score = utt2score[utt_id]
                 if utt_score > highest_convo_scores[convo_id]:
                     highest_convo_scores[convo_id] = utt_score
+
             val_labels = np.asarray([int(val_labels_dict[c]) for c in val_convo_ids])
             val_scores = np.asarray([highest_convo_scores[c] for c in val_convo_ids])
+            # use scikit learn to find candidate threshold cutoffs
             _, _, thresholds = roc_curve(val_labels, val_scores)
 
             def acc_with_threshold(y_true, y_score, thresh):
@@ -223,19 +249,43 @@ class LLMCGAModel(ForecasterModel):
 
             accs = [acc_with_threshold(val_labels, val_scores, t) for t in thresholds]
             best_acc_idx = np.argmax(accs)
-            self.best_threshold = thresholds[best_acc_idx]
 
-            best_config = {'best_threshold':self.best_threshold,
-                        'best_val_accuracy':accs[best_acc_idx]}
-            config_file = os.path.join(self.config['output_dir'], "dev_config.json")
-            with open(config_file, 'w') as outfile:
-                json_object = json.dumps(best_config, indent=4)
-                outfile.write(json_object)
-        return
+            print("Accuracy:", cp, accs[best_acc_idx])
+            if accs[best_acc_idx] > best_val_accuracy:
+                best_checkpoint = cp
+                best_val_accuracy = accs[best_acc_idx]
+                self.best_threshold = thresholds[best_acc_idx]
+                self.model = finetuned_model
 
-    def _predict(self, context):
+        # Save the best config
+        best_config = {}
+        best_config["best_checkpoint"] = best_checkpoint
+        best_config["best_threshold"] = self.best_threshold
+        best_config["best_val_accuracy"] = best_val_accuracy
+        config_file = os.path.join(self.config["output_dir"], "dev_config.json")
+        with open(config_file, "w") as outfile:
+            json_object = json.dumps(best_config, indent=4)
+            outfile.write(json_object)
+
+        # Clean other checkpoints to save disk space.
+        for root, _, _ in os.walk(self.config["output_dir"]):
+            if ("checkpoint" in root) and (best_checkpoint not in root):
+                print("Deleting:", root)
+                shutil.rmtree(root)
+        return best_config
+
+    def _predict(self,
+                context,
+                model=None,
+                threshold=None):
+        # Enabling inference with different checkpoints to _tune_best_val_accuracy
+        if not model:
+            model = self.model.to(self.config["device"])
+        if not threshold:
+            threshold = self.best_threshold
+        FastLanguageModel.for_inference(model)
         inputs = self._tokenize(context).to(self.config['device'])
-        model_response = self.model.generate(
+        model_response = model.generate(
                             input_ids=inputs,
                             streamer=None,
                             max_new_tokens=1,
@@ -250,8 +300,9 @@ class LLMCGAModel(ForecasterModel):
         yes_logit = scores[yes_id].item()
         no_logit = scores[no_id].item()
         utt_score = F.softmax(torch.tensor([yes_logit,no_logit], dtype=torch.float32), dim=0)[0].item()
-        utt_pred = utt_score > self.best_threshold
+        utt_pred = int(utt_score > threshold)
         return utt_score, utt_pred
+
     def transform(self, contexts, forecast_attribute_name, forecast_prob_attribute_name):
         FastLanguageModel.for_inference(self.model)
         utt_ids = []
