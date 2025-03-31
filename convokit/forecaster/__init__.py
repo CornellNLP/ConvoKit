@@ -8,3 +8,4 @@ if "torch" in sys.modules:
     from .CRAFT import *
     from .BERTCGAModel import *
     from .LLMCGAModel import *
+    from .LLMCGAModelDebug import *

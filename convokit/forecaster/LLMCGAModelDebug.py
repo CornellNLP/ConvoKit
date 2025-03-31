@@ -34,7 +34,7 @@ DEFAULT_CONFIG = {
     "do_tune_threshold": True,
     "device": "cuda"
 }
-class LLMCGAModel(ForecasterModel):
+class LLMCGAModelDebug(ForecasterModel):
     def __init__(
         self,
         model_name_or_path,
@@ -215,19 +215,19 @@ class LLMCGAModel(ForecasterModel):
         val_convo_ids = list(val_convo_ids)
         for cp in checkpoints:
             if cp == "zero-shot":
-                model = self.model
+                print("Performing Zero-shot Inference.")
             else:
                 full_model_path = os.path.join(self.config["output_dir"], cp)
-                model, _ = FastLanguageModel.from_pretrained(
+                self.model, _ = FastLanguageModel.from_pretrained(
                         model_name=full_model_path,
                         max_seq_length=self.max_seq_length,
                         load_in_4bit=True,
                         )
-                model.to(self.config["device"])
-            FastLanguageModel.for_inference(model)
+                self.model.to(self.config["device"])
+            FastLanguageModel.for_inference(self.model)
             utt2score = {}
             for context in tqdm(val_contexts):
-                utt_score, _ = self._predict(context, model=model)
+                utt_score, _ = self._predict(context)
                 utt_id = context.current_utterance.id
                 utt2score[utt_id] = utt_score
             # for each CONVERSATION, whether or not it triggers will be effectively determined by what the highest score it ever got was
@@ -277,20 +277,17 @@ class LLMCGAModel(ForecasterModel):
 
     def _predict(self,
                 context,
-                model=None,
                 threshold=None):
         # Enabling inference with different checkpoints to _tune_best_val_accuracy
-        if not model:
-            model = self.model.to(self.config["device"])
         if not threshold:
             threshold = self.best_threshold
-        FastLanguageModel.for_inference(model)
+        FastLanguageModel.for_inference(self.model)
         if ("context_mode" not in self.config) or self.config["context_mode"] == "normal":
             context_utts = context.context
         elif self.config["context_mode"] == "no-context":
             context_utts = [context.current_utterance]
         inputs = self._tokenize(context_utts).to(self.config['device'])
-        model_response = model.generate(
+        model_response = self.model.generate(
                             input_ids=inputs,
                             streamer=None,
                             max_new_tokens=1,
