@@ -1,9 +1,8 @@
 Pivotal Measure
 ====================================
 
-The `PIV` transformer identifes pivotal moments in conversations as described in 
-this paper: Hanging in the Balance: Pivotal Moments in Crisis 
-Counseling Conversations. 
+The `PIV` transformer identifies pivotal moments in conversations as described in 
+this `paper <http://www.cs.cornell.edu/~cristian/>`_. 
 
 We consider a moment in a conversation *pivotal* if the next response is expected 
 to have a large impact on the conversation’s eventual outcome. Our method relies on 
@@ -14,7 +13,7 @@ We also provide a general `utteranceSimulator` interface to `utteranceSimulatorM
 models that abstracts away the implementation details into a standard fit-transform 
 interface.
 
-Example usage: `pivotal moments in conversations gone awry <https://github.com/CornellNLP/ConvoKit/tree/master/convokit/pivotal_framework/pivotal_demo.ipynb>`_
+Example usage: `pivotal moments demo in conversations gone awry <https://github.com/CornellNLP/ConvoKit/tree/master/convokit/pivotal_framework/pivotal_demo.ipynb>`_
 
 .. automodule:: convokit.pivotal_framework.pivotal
     :members:
