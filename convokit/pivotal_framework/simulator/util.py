@@ -1,5 +1,9 @@
+from collections import namedtuple
 from datasets import Dataset
-from .utteranceSimulator import ContextTuple
+
+ContextTuple = namedtuple(
+    "ContextTuple", ["context", "current_utterance", "future_context", "conversation_id"]
+)
 
 
 def default_prompt_fn(

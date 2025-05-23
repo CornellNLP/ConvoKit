@@ -12,9 +12,9 @@ from typing import Callable, Optional, Union, Any, List, Iterator
 from tqdm import tqdm
 import pandas as pd
 
-from .utteranceSimulator import UtteranceSimulator, ContextTuple
+from .utteranceSimulator import UtteranceSimulator
 from .utteranceSimulatorModel import UtteranceSimulatorModel
-from .util import contexts_to_dataset, default_prompt_fn
+from .util import contexts_to_dataset, default_prompt_fn, ContextTuple
 
 from .config import (
     DEFAULT_MODEL_CONFIG,

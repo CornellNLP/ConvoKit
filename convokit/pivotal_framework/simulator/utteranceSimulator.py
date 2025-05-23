@@ -3,11 +3,7 @@ from collections import namedtuple
 
 from convokit import Transformer, Corpus
 from .utteranceSimulatorModel import UtteranceSimulatorModel
-
-# Define a namedtuple template to represent conversational context tuples
-ContextTuple = namedtuple(
-    "ContextTuple", ["context", "current_utterance", "future_context", "conversation_id"]
-)
+from .util import ContextTuple
 
 
 class UtteranceSimulator(Transformer):

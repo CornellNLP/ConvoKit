@@ -8,11 +8,7 @@ from convokit.forecaster.forecasterModel import ForecasterModel
 from convokit.forecaster.forecaster import Forecaster
 from .simulator.utteranceSimulatorModel import UtteranceSimulatorModel
 from .simulator.utteranceSimulator import UtteranceSimulator
-
-DEFAULT_LABELER = "has_removed_comment"
-ContextTuple = namedtuple(
-    "ContextTuple", ["context", "current_utterance", "future_context", "conversation_id"]
-)
+from .util import ContextTuple, DEFAULT_LABELER
 
 
 class PIV(Transformer):
