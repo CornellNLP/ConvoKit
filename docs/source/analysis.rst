@@ -19,3 +19,4 @@ These are the transformers related to generating some analysis of the Corpus.
    SpeakerConvoDiversity <speakerConvoDiversity.rst>
    Redirection <redirectionAndUtteranceLikelihood.rst>
    UtteranceLikelihood <redirectionAndUtteranceLikelihood.rst>
+   PivotalMeasure <pivotal.rst>
