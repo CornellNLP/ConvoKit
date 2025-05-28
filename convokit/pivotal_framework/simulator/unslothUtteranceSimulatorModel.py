@@ -1,4 +1,8 @@
-import unsloth
+try:
+    import unsloth
+except NotImplementedError as e:
+    raise ImportError("Unsloth GPU requirement not met") from e
+
 from unsloth import FastLanguageModel
 from unsloth import is_bfloat16_supported
 from unsloth.chat_templates import get_chat_template
