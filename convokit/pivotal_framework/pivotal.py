@@ -6,7 +6,10 @@ import numpy as np
 
 from convokit.forecaster.forecasterModel import ForecasterModel
 from convokit.forecaster.forecaster import Forecaster
-from .simulator.utteranceSimulatorModel import UtteranceSimulatorModel
+try:
+    from .simulator.utteranceSimulatorModel import UtteranceSimulatorModel
+except NotImplementedError as e:
+    raise ImportError("Unsloth GPU requirement not met") from e
 from .simulator.utteranceSimulator import UtteranceSimulator
 from .util import ContextTuple, DEFAULT_LABELER
 
