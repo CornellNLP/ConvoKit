@@ -6,6 +6,7 @@ import numpy as np
 
 from convokit.forecaster.forecasterModel import ForecasterModel
 from convokit.forecaster.forecaster import Forecaster
+
 try:
     from .simulator.utteranceSimulatorModel import UtteranceSimulatorModel
 except NotImplementedError as e:
