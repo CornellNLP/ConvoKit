@@ -34,6 +34,7 @@ setup(
         "convokit.expected_context_framework",
         "convokit.surprise",
         "convokit.pivotal_framework",
+        "convokit.utterance_simulator",
     ],
     package_data={
         "convokit": [
