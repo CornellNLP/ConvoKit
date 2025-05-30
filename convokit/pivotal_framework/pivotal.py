@@ -24,7 +24,7 @@ class PivotalMomentMeasure(Transformer):
     based on these potential responses.
 
     :param simulator_model: UtteranceSimulatorModel to simulate next utterances
-        in the conversation given a conversation context, ConvoKit provides 
+        in the conversation given a conversation context, ConvoKit provides
         implementation for models supported by Unsloth via unslothUtteranceSimulatorModel
     :param forecaster_model: ForecasterModel to forecast the likelihood of the
         conversation's outcome given a conversation context
@@ -174,7 +174,7 @@ class PivotalMomentMeasure(Transformer):
         annotate_high_low_scores: bool = False,
     ):
         """
-        Apply the PivotalMomentMeasure transformer to the selected contexts 
+        Apply the PivotalMomentMeasure transformer to the selected contexts
         and annotates the corpus with the pivotal scores.
 
         :param corpus: Corpus containing the data
@@ -198,7 +198,7 @@ class PivotalMomentMeasure(Transformer):
             corpus=corpus,
             contexts=contexts,
         )
-        
+
         if annotate_high_low_scores:
             self._annotate_high_low_pivotal_scores()
 
@@ -344,55 +344,53 @@ class PivotalMomentMeasure(Transformer):
                         context + [simulated_utt], simulated_utt, None, convo.id
                     )
                     yield context_tuple
-                    
+
     def _annotate_high_low_pivotal_scores(
-        self, 
+        self,
         percentile: float = 10,
     ):
         """
-        Annotates utterances with high and low pivotal scores based on 
+        Annotates utterances with high and low pivotal scores based on
         top/bottom percentile.
         """
         utts = [
-            utt for utt in corpus.iter_utterances() if self.piv_attribute_name 
-            in utt.meta and utt.meta[self.piv_attribute_name] is not None
+            utt
+            for utt in corpus.iter_utterances()
+            if self.piv_attribute_name in utt.meta and utt.meta[self.piv_attribute_name] is not None
         ]
-        pivotal_scores = [
-            utt.meta[self.piv_attribute_name] for utt in utts
-        ]
-        
+        pivotal_scores = [utt.meta[self.piv_attribute_name] for utt in utts]
+
         low_threshold = np.percentile(pivotal_scores, percentile)
         high_threshold = np.percentile(pivotal_scores, 100 - percentile)
-        
+
         for utt in utts:
             if utt.meta[self.piv_attribute_name] >= high_threshold:
                 utt.add_meta("high_pivotal", True)
             elif utt.meta[self.piv_attribute_name] <= low_threshold:
                 utt.add_meta("low_pivotal", True)
-                    
+
     def summarize(
-        self, 
+        self,
         corpus: Corpus,
     ):
         """
-        Summarizes PivotalMomentMeasure transformer with distribution of pivotal 
+        Summarizes PivotalMomentMeasure transformer with distribution of pivotal
         scores.
-        
+
         :param corpus: Corpus to analyze
         """
         utts = [
-            utt for utt in corpus.iter_utterances() if self.piv_attribute_name 
-            in utt.meta and utt.meta[self.piv_attribute_name] is not None
+            utt
+            for utt in corpus.iter_utterances()
+            if self.piv_attribute_name in utt.meta and utt.meta[self.piv_attribute_name] is not None
         ]
-        pivotal_scores = [
-            utt.meta[self.piv_attribute_name] for utt in utts
-        ]
-        
+        pivotal_scores = [utt.meta[self.piv_attribute_name] for utt in utts]
+
         plt.hist(pivotal_scores)
         plt.title("Distribution of Pivotal Scores")
         plt.xlabel("Pivotal Score")
         plt.ylabel("Frequency")
         plt.grid(True)
         plt.show()
-        
+
         return self
