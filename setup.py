@@ -74,6 +74,7 @@ setup(
     ],
     extras_require={
         "craft": ["torch>=0.12"],
+        "forecaster": ["torch>=0.12", "datasets"],
     },
     classifiers=[
         "Programming Language :: Python",
