@@ -3,19 +3,20 @@ from convokit import Corpus, Conversation, Utterance, Transformer, Speaker
 from typing import Callable, Optional, Union, Any, List, Iterator
 from collections import namedtuple
 import numpy as np
+import matplotlib.pyplot as plt
 
 from convokit.forecaster.forecasterModel import ForecasterModel
 from convokit.forecaster.forecaster import Forecaster
 
 try:
-    from .simulator.utteranceSimulatorModel import UtteranceSimulatorModel
+    from convokit.utterance_simulator.utteranceSimulatorModel import UtteranceSimulatorModel
 except NotImplementedError as e:
     raise ImportError("Unsloth GPU requirement not met") from e
-from .simulator.utteranceSimulator import UtteranceSimulator
+from convokit.utterance_simulator.utteranceSimulator import UtteranceSimulator
 from .util import ContextTuple, DEFAULT_LABELER
 
 
-class PIV(Transformer):
+class PivotalMomentMeasure(Transformer):
     """
     ConvoKit transformer to compute pivotal scores. The pivotal framework
     consists of two main components: (1) `simulator_model` to simulate potential
@@ -23,7 +24,8 @@ class PIV(Transformer):
     based on these potential responses.
 
     :param simulator_model: UtteranceSimulatorModel to simulate next utterances
-        in the conversation given a conversation context
+        in the conversation given a conversation context, ConvoKit provides 
+        implementation for models supported by Unsloth via unslothUtteranceSimulatorModel
     :param forecaster_model: ForecasterModel to forecast the likelihood of the
         conversation's outcome given a conversation context
     :param piv_attribute_name: Name of metadata field to save pivotal scores
@@ -133,7 +135,7 @@ class PIV(Transformer):
         simulator_val_context_selector: Optional[Callable[[ContextTuple], bool]] = None,
     ):
         """
-        Fit the PIV transformer by fitting the underlying Forecaster
+        Fit the PivotalMomentMeasure transformer by fitting the underlying Forecaster
         and UtteranceSimulator components using the selected contexts for each
         component.
 
@@ -149,7 +151,7 @@ class PIV(Transformer):
         :param simulator_val_context_selector: Function to select context
             tuples for simulator validation
 
-        :return: fitted PIV Transformer
+        :return: fitted PivotalMomentMeasure Transformer
         """
         self.fit_forecaster(
             corpus=corpus,
@@ -169,13 +171,16 @@ class PIV(Transformer):
         self,
         corpus: Corpus,
         context_selector: Callable[[ContextTuple], bool] = lambda convo: True,
+        annotate_high_low_scores: bool = False,
     ):
         """
-        Apply the PIV transformer to the selected contexts and annotates the
-        corpus with the pivotal scores.
+        Apply the PivotalMomentMeasure transformer to the selected contexts 
+        and annotates the corpus with the pivotal scores.
 
         :param corpus: Corpus containing the data
         :param context_selector: Function to select context tuples to run on
+        :param annotate_high_low_scores: Whether to annotate utterances with
+            high and low pivotal scores based on top/bottom percentile
 
         :return: annotated Corpus
         """
@@ -193,6 +198,9 @@ class PIV(Transformer):
             corpus=corpus,
             contexts=contexts,
         )
+        
+        if annotate_high_low_scores:
+            self._annotate_high_low_pivotal_scores()
 
         return corpus
 
@@ -207,7 +215,7 @@ class PIV(Transformer):
         transform_context_selector: Callable[[ContextTuple], bool] = lambda context: True,
     ):
         """
-        Fit and transform the PIV transformer.
+        Fit and transform the PivotalMomentMeasure transformer.
 
         :param corpus: Corpus containing the data
         :param forecaster_train_context_selector: Function to select context
@@ -336,3 +344,55 @@ class PIV(Transformer):
                         context + [simulated_utt], simulated_utt, None, convo.id
                     )
                     yield context_tuple
+                    
+    def _annotate_high_low_pivotal_scores(
+        self, 
+        percentile: float = 10,
+    ):
+        """
+        Annotates utterances with high and low pivotal scores based on 
+        top/bottom percentile.
+        """
+        utts = [
+            utt for utt in corpus.iter_utterances() if self.piv_attribute_name 
+            in utt.meta and utt.meta[self.piv_attribute_name] is not None
+        ]
+        pivotal_scores = [
+            utt.meta[self.piv_attribute_name] for utt in utts
+        ]
+        
+        low_threshold = np.percentile(pivotal_scores, percentile)
+        high_threshold = np.percentile(pivotal_scores, 100 - percentile)
+        
+        for utt in utts:
+            if utt.meta[self.piv_attribute_name] >= high_threshold:
+                utt.add_meta("high_pivotal", True)
+            elif utt.meta[self.piv_attribute_name] <= low_threshold:
+                utt.add_meta("low_pivotal", True)
+                    
+    def summarize(
+        self, 
+        corpus: Corpus,
+    ):
+        """
+        Summarizes PivotalMomentMeasure transformer with distribution of pivotal 
+        scores.
+        
+        :param corpus: Corpus to analyze
+        """
+        utts = [
+            utt for utt in corpus.iter_utterances() if self.piv_attribute_name 
+            in utt.meta and utt.meta[self.piv_attribute_name] is not None
+        ]
+        pivotal_scores = [
+            utt.meta[self.piv_attribute_name] for utt in utts
+        ]
+        
+        plt.hist(pivotal_scores)
+        plt.title("Distribution of Pivotal Scores")
+        plt.xlabel("Pivotal Score")
+        plt.ylabel("Frequency")
+        plt.grid(True)
+        plt.show()
+        
+        return self
