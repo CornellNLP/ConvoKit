@@ -42,7 +42,7 @@ DEFAULT_CONFIG = {
     "do_tune_threshold": True,
     "device": "cuda"
 }
-class LLMCGAModel(ForecasterModel):
+class TransformerDecoderCGA(ForecasterModel):
     def __init__(
         self,
         model_name_or_path,

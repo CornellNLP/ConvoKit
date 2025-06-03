@@ -20,7 +20,7 @@ import shutil
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 DEFAULT_CONFIG = {
-    "output_dir": "BERTCGAModel",
+    "output_dir": "TransformerEncoderCGA",
     "per_device_batch_size": 4,
     "gradient_accumulation_steps":1,
     "num_train_epochs": 2,
@@ -30,7 +30,7 @@ DEFAULT_CONFIG = {
 }
 
 
-class BERTCGAModel(ForecasterModel):
+class TransformerEncoderCGA(ForecasterModel):
     """
     Wrapper for Huggingface Transformers AutoModel
     """
