@@ -8,3 +8,4 @@ if "torch" in sys.modules:
     from .CRAFT import *
     from .TransformerEncoderCGA import *
     from .TransformerDecoderCGA import *
+    from .CGAModelArgument import *

@@ -12,6 +12,7 @@ from sklearn.metrics import roc_curve
 from datasets import Dataset
 from trl import SFTTrainer, SFTConfig
 from .forecasterModel import ForecasterModel
+from .CGAModelArgument import CGAModelArgument
 import shutil
 
 def get_templet_map(model_name_or_path):
@@ -31,18 +32,32 @@ def get_templet_map(model_name_or_path):
     raise ValueError(
             f"Model {model_name_or_path} is not supported."
         )
-DEFAULT_CONFIG = {
-    "output_dir": "LLMCGAModel",
-    "per_device_batch_size": 2,
-    "gradient_accumulation_steps":32,
-    "num_train_epochs": 1,
-    "learning_rate": 1e-4,
-    "random_seed": 1,
-    "do_finetune": False,
-    "do_tune_threshold": True,
-    "device": "cuda"
-}
+
+DEFAULT_CONFIG = CGAModelArgument(
+    output_dir= "LLMCGAModel",
+    gradient_accumulation_steps= 32,
+    per_device_batch_size= 2,
+    num_train_epochs= 1,
+    learning_rate= 1e-4,
+    random_seed= 1,
+    do_finetune= False,
+    context_mode= "normal",
+    do_tune_threshold= True,
+    device= "cuda"
+)
+
 class TransformerDecoderCGA(ForecasterModel):
+    """
+    A ConvoKit Forecaster-adherent implementation of conversational forecasting model based on Transformer Decoder Model (e.g. LlaMA, Gemma, GPT).
+    This class is first used in the paper "Conversations Gone Awry, But Then? Evaluating Conversational Forecasting Models"
+    (Tran et al., 2025).
+
+    :param model_name_or_path: The name or local path of the pretrained transformer model to load.
+    :param config (object, optional): CGAModelArgument object containing parameters for training and evaluation.
+    :param system_msg (str, optional): Custom system-level message guiding the forecaster's behavior. If not provided, a default prompt tailored for CGA (Conversation Gone Awry) moderation tasks is used.
+    :param question_msg (str, optional): Custom question prompt posed to the transformer model. If not provided, defaults to a standard CGA question asking about potential conversation derailment.
+    """
+
     def __init__(
         self,
         model_name_or_path,
@@ -79,12 +94,22 @@ class TransformerDecoderCGA(ForecasterModel):
             )
         self.best_threshold = 0.5
 
-        if not os.path.exists(config['output_dir']):
-            os.makedirs(config['output_dir'])
+        if not os.path.exists(config.output_dir):
+            os.makedirs(config.output_dir)
         self.config = config
 
         return
 
+    def _context_mode(self, context):
+        if self.config.context_mode == "normal":
+            context_utts = context.context
+        elif self.config.context_mode == "no-context":
+            context_utts = [context.current_utterance]
+        else:
+            raise ValueError(
+                f"Context mode {self.config.context_mode} is not defined. Valid value must be either 'normal' or 'no-context'."
+            )
+        return context_utts
     def _tokenize(self, context_utts,
                   label=None,
                   tokenize=True,
@@ -122,10 +147,7 @@ class TransformerDecoderCGA(ForecasterModel):
         for context in contexts:
             convo = context.current_utterance.get_conversation()
             label = self.labeler(convo)
-            if ("context_mode" not in self.config) or self.config["context_mode"] == "normal":
-                context_utts = context.context
-            elif self.config["context_mode"] == "no-context":
-                context_utts = [context.current_utterance]
+            context_utts = self._context_mode(context)
             inputs = self._tokenize(context_utts,
                                     label=label,
                                     tokenize=False,
@@ -143,13 +165,13 @@ class TransformerDecoderCGA(ForecasterModel):
         val_contexts: an optional second iterator over context tuples to be used as a separate held-out validation set.
                         The generator for this must be the same as test generator
         """
-        if (not self.config['do_finetune']) and (not self.config['do_tune_threshold']):
+        if (not self.config.do_finetune) and (not self.config.do_tune_threshold):
             return
-        if (self.config['do_finetune']) and (not self.config['do_tune_threshold']):
+        if (self.config.do_finetune) and (not self.config.do_tune_threshold):
             raise ValueError(
                     f"When do_finetune is True, do_tune_threshold must also be True."
                 )
-        if self.config['do_finetune']:
+        if self.config.do_finetune:
             # LORA
             self.model = FastLanguageModel.get_peft_model(
                         self.model,
@@ -183,13 +205,13 @@ class TransformerDecoderCGA(ForecasterModel):
                 args=SFTConfig(
                             dataset_text_field="text",
                             max_seq_length=self.max_seq_length,
-                            per_device_train_batch_size=self.config['per_device_batch_size'],
-                            gradient_accumulation_steps=self.config['gradient_accumulation_steps'],
+                            per_device_train_batch_size=self.config.per_device_batch_size,
+                            gradient_accumulation_steps=self.config.gradient_accumulation_steps,
                             warmup_steps=10,
-                            num_train_epochs=self.config["num_train_epochs"],
+                            num_train_epochs=self.config.num_train_epochs,
                             logging_strategy="epoch",
                             save_strategy="epoch",
-                            learning_rate=self.config["learning_rate"],
+                            learning_rate=self.config.learning_rate,
                             fp16=not is_bfloat16_supported(),
                             bf16=is_bfloat16_supported(),
                             optim="adamw_8bit",
@@ -197,24 +219,24 @@ class TransformerDecoderCGA(ForecasterModel):
                             weight_decay=0.01,
                             lr_scheduler_type="linear",
                             seed=0,
-                            output_dir=self.config["output_dir"],
+                            output_dir=self.config.output_dir,
                             report_to="none",
                             )
                             )
             trainer.train()
 
-        if self.config['do_tune_threshold']:
+        if self.config.do_tune_threshold:
             best_config = self._tune_best_val_accuracy(val_contexts)
-        if self.config['do_finetune']:
-            # Save the tokenizer.
-            self.tokenizer.save_pretrained(os.path.join(self.config["output_dir"], best_config['best_checkpoint']))
+        if self.config.do_finetune:
+            # Save the tokenizer to best checkpoint.
+            self.tokenizer.save_pretrained(os.path.join(self.config.output_dir, best_config['best_checkpoint']))
         return
 
     def _tune_best_val_accuracy(self, val_contexts):
         """
         Save the tuned model to self.best_threshold and self.model
         """
-        checkpoints = [cp for cp in os.listdir(self.config["output_dir"]) if 'checkpoint-' in cp]
+        checkpoints = [cp for cp in os.listdir(self.config.output_dir) if 'checkpoint-' in cp]
         if checkpoints == []:
             checkpoints.append("zero-shot")
         best_val_accuracy = 0
@@ -232,7 +254,7 @@ class TransformerDecoderCGA(ForecasterModel):
         val_convo_ids = list(val_convo_ids)
         for cp in checkpoints:
             if cp != "zero-shot":
-                full_model_path = os.path.join(self.config["output_dir"], cp)
+                full_model_path = os.path.join(self.config.output_dir, cp)
                 self.model, _ = FastLanguageModel.from_pretrained(
                         model_name=full_model_path,
                         max_seq_length=self.max_seq_length,
@@ -276,12 +298,12 @@ class TransformerDecoderCGA(ForecasterModel):
         best_config["best_checkpoint"] = best_checkpoint
         best_config["best_threshold"] = self.best_threshold
         best_config["best_val_accuracy"] = best_val_accuracy
-        config_file = os.path.join(self.config["output_dir"], "dev_config.json")
+        config_file = os.path.join(self.config.output_dir, "dev_config.json")
         with open(config_file, "w") as outfile:
             json_object = json.dumps(best_config, indent=4)
             outfile.write(json_object)
         # Load best model
-        best_model_path = os.path.join(self.config["output_dir"], best_checkpoint)
+        best_model_path = os.path.join(self.config.output_dir, best_checkpoint)
         self.model, _ = FastLanguageModel.from_pretrained(
                 model_name=best_model_path,
                 max_seq_length=self.max_seq_length,
@@ -289,7 +311,7 @@ class TransformerDecoderCGA(ForecasterModel):
                 )
 
         # Clean other checkpoints to save disk space.
-        for root, _, _ in os.walk(self.config["output_dir"]):
+        for root, _, _ in os.walk(self.config.output_dir):
             if ("checkpoint" in root) and (best_checkpoint not in root):
                 print("Deleting:", root)
                 shutil.rmtree(root)
@@ -302,11 +324,8 @@ class TransformerDecoderCGA(ForecasterModel):
         if not threshold:
             threshold = self.best_threshold
         FastLanguageModel.for_inference(self.model)
-        if ("context_mode" not in self.config) or self.config["context_mode"] == "normal":
-            context_utts = context.context
-        elif self.config["context_mode"] == "no-context":
-            context_utts = [context.current_utterance]
-        inputs = self._tokenize(context_utts).to(self.config['device'])
+        context_utts = self._context_mode(context)
+        inputs = self._tokenize(context_utts).to(self.config.device)
         model_response = self.model.generate(
                             input_ids=inputs,
                             streamer=None,
@@ -339,6 +358,6 @@ class TransformerDecoderCGA(ForecasterModel):
         forecasts_df = pd.DataFrame({forecast_attribute_name: preds,
                                     forecast_prob_attribute_name: scores},
                                     index=utt_ids)
-        prediction_file = os.path.join(self.config["output_dir"], "test_predictions.csv")
+        prediction_file = os.path.join(self.config.output_dir, "test_predictions.csv")
         forecasts_df.to_csv(prediction_file)
         return forecasts_df
