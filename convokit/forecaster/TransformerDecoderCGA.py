@@ -40,9 +40,7 @@ DEFAULT_CONFIG = CGAModelArgument(
     num_train_epochs= 1,
     learning_rate= 1e-4,
     random_seed= 1,
-    do_finetune= False,
     context_mode= "normal",
-    do_tune_threshold= True,
     device= "cuda"
 )
 
@@ -110,6 +108,7 @@ class TransformerDecoderCGA(ForecasterModel):
                 f"Context mode {self.config.context_mode} is not defined. Valid value must be either 'normal' or 'no-context'."
             )
         return context_utts
+
     def _tokenize(self, context_utts,
                   label=None,
                   tokenize=True,
@@ -165,74 +164,62 @@ class TransformerDecoderCGA(ForecasterModel):
         val_contexts: an optional second iterator over context tuples to be used as a separate held-out validation set.
                         The generator for this must be the same as test generator
         """
-        if (not self.config.do_finetune) and (not self.config.do_tune_threshold):
-            return
-        if (self.config.do_finetune) and (not self.config.do_tune_threshold):
-            raise ValueError(
-                    f"When do_finetune is True, do_tune_threshold must also be True."
+        # LORA
+        self.model = FastLanguageModel.get_peft_model(
+                    self.model,
+                    r=64,
+                    target_modules=[
+                        "q_proj",
+                        "k_proj",
+                        "v_proj",
+                        "o_proj",
+                        "gate_proj",
+                        "up_proj",
+                        "down_proj",
+                    ],
+                    lora_alpha=128,
+                    lora_dropout=0,  # supports any, but = 0 is optimized
+                    bias="none",  # supports any, but = "none" is optimized
+                    use_gradient_checkpointing="unsloth",  # True or "unsloth" for very long context
+                    random_state=0,
+                    use_rslora=False,  # rank stabilized LoRA (True for new_cmv3/new_cmv4, False for new_cmv/new_cmv2)
+                    loftq_config=None,  # and LoftQ
                 )
-        if self.config.do_finetune:
-            # LORA
-            self.model = FastLanguageModel.get_peft_model(
-                        self.model,
-                        r=64,
-                        target_modules=[
-                            "q_proj",
-                            "k_proj",
-                            "v_proj",
-                            "o_proj",
-                            "gate_proj",
-                            "up_proj",
-                            "down_proj",
-                        ],
-                        lora_alpha=128,
-                        lora_dropout=0,  # supports any, but = 0 is optimized
-                        bias="none",  # supports any, but = "none" is optimized
-                        use_gradient_checkpointing="unsloth",  # True or "unsloth" for very long context
-                        random_state=0,
-                        use_rslora=False,  # rank stabilized LoRA (True for new_cmv3/new_cmv4, False for new_cmv/new_cmv2)
-                        loftq_config=None,  # and LoftQ
-                    )
-            # Processing Data
-            train_dataset = self._context_to_llm_data(train_contexts)
-            print(train_dataset)
+        # Processing Data
+        train_dataset = self._context_to_llm_data(train_contexts)
+        print(train_dataset)
 
-            # Training
-            trainer = SFTTrainer(
-                model=self.model,
-                tokenizer=self.tokenizer,
-                train_dataset=train_dataset,
-                args=SFTConfig(
-                            dataset_text_field="text",
-                            max_seq_length=self.max_seq_length,
-                            per_device_train_batch_size=self.config.per_device_batch_size,
-                            gradient_accumulation_steps=self.config.gradient_accumulation_steps,
-                            warmup_steps=10,
-                            num_train_epochs=self.config.num_train_epochs,
-                            logging_strategy="epoch",
-                            save_strategy="epoch",
-                            learning_rate=self.config.learning_rate,
-                            fp16=not is_bfloat16_supported(),
-                            bf16=is_bfloat16_supported(),
-                            optim="adamw_8bit",
-                            optim_target_modules=["attn", "mlp"],
-                            weight_decay=0.01,
-                            lr_scheduler_type="linear",
-                            seed=0,
-                            output_dir=self.config.output_dir,
-                            report_to="none",
-                            )
-                            )
-            trainer.train()
-
-        if self.config.do_tune_threshold:
-            best_config = self._tune_best_val_accuracy(val_contexts)
-        if self.config.do_finetune:
-            # Save the tokenizer to best checkpoint.
-            self.tokenizer.save_pretrained(os.path.join(self.config.output_dir, best_config['best_checkpoint']))
+        # Training
+        trainer = SFTTrainer(
+            model=self.model,
+            tokenizer=self.tokenizer,
+            train_dataset=train_dataset,
+            args=SFTConfig(
+                        dataset_text_field="text",
+                        max_seq_length=self.max_seq_length,
+                        per_device_train_batch_size=self.config.per_device_batch_size,
+                        gradient_accumulation_steps=self.config.gradient_accumulation_steps,
+                        warmup_steps=10,
+                        num_train_epochs=self.config.num_train_epochs,
+                        logging_strategy="epoch",
+                        save_strategy="epoch",
+                        learning_rate=self.config.learning_rate,
+                        fp16=not is_bfloat16_supported(),
+                        bf16=is_bfloat16_supported(),
+                        optim="adamw_8bit",
+                        optim_target_modules=["attn", "mlp"],
+                        weight_decay=0.01,
+                        lr_scheduler_type="linear",
+                        seed=0,
+                        output_dir=self.config.output_dir,
+                        report_to="none",
+                        )
+                        )
+        trainer.train()
+        _ = self.tune_threshold(self, val_contexts)
         return
 
-    def _tune_best_val_accuracy(self, val_contexts):
+    def tune_threshold(self, val_contexts):
         """
         Save the tuned model to self.best_threshold and self.model
         """
@@ -315,6 +302,8 @@ class TransformerDecoderCGA(ForecasterModel):
             if ("checkpoint" in root) and (best_checkpoint not in root):
                 print("Deleting:", root)
                 shutil.rmtree(root)
+        # Save the tokenizer.
+        self.tokenizer.save_pretrained(os.path.join(self.config.output_dir, best_config['best_checkpoint']))
         return best_config
 
     def _predict(self,

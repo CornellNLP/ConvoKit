@@ -28,12 +28,6 @@ class CGAModelArgument:
         default=True,
         metadata={"help": "Whether to fine-tune the model on the provided dataset (True) or use it as-is (False). Only False for TransformerDecoderCGA Model"},
     )
-    do_tune_threshold: bool = field(
-        default=None,
-        metadata={
-            "help": "Whether to perform decision threshold tuning based to maximize the accuracy on validation split."
-        },
-    )
     device: str = field(
         default="cuda",
         metadata={
