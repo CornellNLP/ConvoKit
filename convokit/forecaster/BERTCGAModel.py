@@ -22,6 +22,7 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 DEFAULT_CONFIG = {
     "output_dir": "BERTCGAModel",
     "per_device_batch_size": 4,
+    "gradient_accumulation_steps":1,
     "num_train_epochs": 2,
     "learning_rate": 6.7e-6,
     "random_seed": 1,
@@ -218,6 +219,7 @@ class BERTCGAModel(ForecasterModel):
         training_args = TrainingArguments(
             output_dir=self.config["output_dir"],
             per_device_train_batch_size=self.config["per_device_batch_size"],
+            gradient_accumulation_steps=self.config['gradient_accumulation_steps'],
             num_train_epochs=self.config["num_train_epochs"],
             learning_rate=self.config["learning_rate"],
             logging_strategy="epoch",

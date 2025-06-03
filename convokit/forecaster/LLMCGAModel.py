@@ -14,15 +14,23 @@ from trl import SFTTrainer, SFTConfig
 from .forecasterModel import ForecasterModel
 import shutil
 
-TEMPLATE_MAP = {
-    "google/gemma-2-2b-it":"gemma2",
-    "google/gemma-2-9b-it":"gemma2",
-    "unsloth/gemma-3-12b-it":"gemma3",
-    "mistralai/Mistral-7B-Instruct-v0.3":"mistral",
-    "HuggingFaceH4/zephyr-7b-beta":"zephyr",
-    "microsoft/phi-4":"phi-4",
-    "meta-llama/Llama-3.1-8B-Instruct":"llama3",
-}
+def get_templet_map(model_name_or_path):
+    TEMPLATE_MAP = {
+        "google/gemma-2-2b-it":"gemma2",
+        "google/gemma-2-9b-it":"gemma2",
+        "google/gemma-3-12b-it":"gemma3",
+        "mistralai/Mistral-7B-Instruct-v0.3":"mistral",
+        "HuggingFaceH4/zephyr-7b-beta":"zephyr",
+        "microsoft/phi-4":"phi-4",
+        "meta-llama/Llama-3.1-8B-Instruct":"llama3",
+        "meta-llama/Llama-3.2-3B-Instruct":"llama3",
+    }
+    for model in TEMPLATE_MAP:
+        if model in model_name_or_path:
+            return TEMPLATE_MAP[model]
+    raise ValueError(
+            f"Model {model_name_or_path} is not supported."
+        )
 DEFAULT_CONFIG = {
     "output_dir": "LLMCGAModel",
     "per_device_batch_size": 2,
@@ -38,12 +46,10 @@ class LLMCGAModel(ForecasterModel):
     def __init__(
         self,
         model_name_or_path,
-        config = DEFAULT_CONFIG
+        config = DEFAULT_CONFIG,
+        system_msg = None,
+        question_msg = None,
     ):
-        if model_name_or_path not in TEMPLATE_MAP:
-            raise ValueError(
-                    f"Model {model_name_or_path} is not supported."
-                )
         self.max_seq_length = 4_096 * 2
         self.model, tokenizer = FastLanguageModel.from_pretrained(
             model_name=model_name_or_path,
@@ -53,13 +59,24 @@ class LLMCGAModel(ForecasterModel):
 
         self.tokenizer = get_chat_template(
             tokenizer,
-            chat_template=TEMPLATE_MAP[model_name_or_path],                 #TO-DO: Define this
+            chat_template=get_templet_map(model_name_or_path),                 #TO-DO: Define this
             mapping={"role": "from", "content": "value", "user": "human", "assistant": "model"},
         )
-
-        # Prompt for CGA tasks
-        self.system_msg = "Here is an ongoing conversation and you are the moderator. Observe the conversational and speaker dynamics to see if the conversation will derail into a personal attack. Be careful, not all sensitive topics lead to a personal attack."
-        self.question_msg = "Will the above conversation derail into a personal attack now or at any point in the future? Strictly start your answer with Yes or No, otherwise the answer is invalid."
+        # Custom prompt
+        if system_msg and question_msg:
+            self.system_msg = system_msg
+            self.question_msg = question_msg
+        # Default Prompt for CGA tasks
+        if system_msg == question_msg == None:
+            self.system_msg = (
+                "Here is an ongoing conversation and you are the moderator. "
+                "Observe the conversational and speaker dynamics to see if the conversation will derail into a personal attack. "
+                "Be careful, not all sensitive topics lead to a personal attack."
+            )
+            self.question_msg = (
+                "Will the above conversation derail into a personal attack now or at any point in the future? "
+                "Strictly start your answer with Yes or No, otherwise the answer is invalid."
+            )
         self.best_threshold = 0.5
 
         if not os.path.exists(config['output_dir']):
@@ -86,11 +103,11 @@ class LLMCGAModel(ForecasterModel):
         tokenized_message = self.tokenizer(human_message)['input_ids']
         if len(tokenized_message) > self.max_seq_length-100:
             human_message = self.tokenizer.decode(tokenized_message[-self.max_seq_length+100:])
-        final_message = [{"from": "human", "value":human_message}]
+        final_message = [{"type": "text", "from": "human", "value":human_message}]
 
         if label != None:
             text_label = "Yes" if label else "No"
-            final_message.append({"from": "model", "value": text_label})
+            final_message.append({"type": "text", "from": "model", "value": text_label})
 
         tokenized_context = self.tokenizer.apply_chat_template(
         final_message,
@@ -214,20 +231,17 @@ class LLMCGAModel(ForecasterModel):
             val_convo_ids.add(convo_id)
         val_convo_ids = list(val_convo_ids)
         for cp in checkpoints:
-            if cp == "zero-shot":
-                model = self.model
-            else:
+            if cp != "zero-shot":
                 full_model_path = os.path.join(self.config["output_dir"], cp)
-                model, _ = FastLanguageModel.from_pretrained(
+                self.model, _ = FastLanguageModel.from_pretrained(
                         model_name=full_model_path,
                         max_seq_length=self.max_seq_length,
                         load_in_4bit=True,
                         )
-                model.to(self.config["device"])
-            FastLanguageModel.for_inference(model)
+            FastLanguageModel.for_inference(self.model)
             utt2score = {}
             for context in tqdm(val_contexts):
-                utt_score, _ = self._predict(context, model=model)
+                utt_score, _ = self._predict(context)
                 utt_id = context.current_utterance.id
                 utt2score[utt_id] = utt_score
             # for each CONVERSATION, whether or not it triggers will be effectively determined by what the highest score it ever got was
@@ -256,7 +270,6 @@ class LLMCGAModel(ForecasterModel):
                 best_checkpoint = cp
                 best_val_accuracy = accs[best_acc_idx]
                 self.best_threshold = thresholds[best_acc_idx]
-                self.model = model
 
         # Save the best config
         best_config = {}
@@ -267,6 +280,13 @@ class LLMCGAModel(ForecasterModel):
         with open(config_file, "w") as outfile:
             json_object = json.dumps(best_config, indent=4)
             outfile.write(json_object)
+        # Load best model
+        best_model_path = os.path.join(self.config["output_dir"], best_checkpoint)
+        self.model, _ = FastLanguageModel.from_pretrained(
+                model_name=best_model_path,
+                max_seq_length=self.max_seq_length,
+                load_in_4bit=True,
+                )
 
         # Clean other checkpoints to save disk space.
         for root, _, _ in os.walk(self.config["output_dir"]):
@@ -277,20 +297,17 @@ class LLMCGAModel(ForecasterModel):
 
     def _predict(self,
                 context,
-                model=None,
                 threshold=None):
         # Enabling inference with different checkpoints to _tune_best_val_accuracy
-        if not model:
-            model = self.model.to(self.config["device"])
         if not threshold:
             threshold = self.best_threshold
-        FastLanguageModel.for_inference(model)
+        FastLanguageModel.for_inference(self.model)
         if ("context_mode" not in self.config) or self.config["context_mode"] == "normal":
             context_utts = context.context
         elif self.config["context_mode"] == "no-context":
             context_utts = [context.current_utterance]
         inputs = self._tokenize(context_utts).to(self.config['device'])
-        model_response = model.generate(
+        model_response = self.model.generate(
                             input_ids=inputs,
                             streamer=None,
                             max_new_tokens=1,
@@ -319,9 +336,9 @@ class LLMCGAModel(ForecasterModel):
             utt_ids.append(context.current_utterance.id)
             preds.append(utt_pred)
             scores.append(utt_score)
-            forecasts_df = pd.DataFrame({forecast_attribute_name: preds,
-                                        forecast_prob_attribute_name: scores},
-                                        index=utt_ids)
-            prediction_file = os.path.join(self.config["output_dir"], "test_predictions.csv")
-            forecasts_df.to_csv(prediction_file)
+        forecasts_df = pd.DataFrame({forecast_attribute_name: preds,
+                                    forecast_prob_attribute_name: scores},
+                                    index=utt_ids)
+        prediction_file = os.path.join(self.config["output_dir"], "test_predictions.csv")
+        forecasts_df.to_csv(prediction_file)
         return forecasts_df
