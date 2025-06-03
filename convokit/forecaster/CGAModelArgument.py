@@ -24,10 +24,6 @@ class CGAModelArgument:
         default=1,
         metadata={"help": "Seed for reproducibility and deterministic behavior during training."},
     )
-    do_finetune: bool = field(
-        default=True,
-        metadata={"help": "Whether to fine-tune the model on the provided dataset (True) or use it as-is (False). Only False for TransformerDecoderCGA Model"},
-    )
     device: str = field(
         default="cuda",
         metadata={

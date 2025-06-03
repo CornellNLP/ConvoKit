@@ -28,7 +28,6 @@ DEFAULT_CONFIG = CGAModelArgument(
     num_train_epochs= 1,
     learning_rate= 6.7e-6,
     random_seed= 1,
-    do_finetune= False,
     context_mode= "normal",
     device= "cuda"
 )
@@ -203,6 +202,8 @@ class TransformerEncoderCGA(ForecasterModel):
             if ("checkpoint" in root) and (best_checkpoint not in root):
                 print("Deleting:", root)
                 shutil.rmtree(root)
+        # Save the tokenizer.
+        self.tokenizer.save_pretrained(os.path.join(self.config.output_dir, best_config['best_checkpoint']))
         return best_config
 
     def fit(self, contexts, val_contexts):
@@ -232,16 +233,9 @@ class TransformerEncoderCGA(ForecasterModel):
             prediction_loss_only=False,
             seed=self.config.random_seed,
         )
-        if self.config.do_finetune:
-            trainer = Trainer(model=self.model, args=training_args, train_dataset=dataset["train"])
-            trainer.train()
-        else:
-            print("Fine-tuning process is disabled. This is not expected if your model is not fine-tuned previously.")
-        if self.config.do_tune_threshold:
-            best_config = self._tune_best_val_accuracy(dataset["val_for_tuning"], val_contexts)
-
-            # Save the tokenizer.
-            self.tokenizer.save_pretrained(os.path.join(self.config.output_dir, best_config['best_checkpoint']))
+        trainer = Trainer(model=self.model, args=training_args, train_dataset=dataset["train"])
+        trainer.train()
+        _ = self._tune_best_val_accuracy(dataset["val_for_tuning"], val_contexts)
         return
 
     def transform(self, contexts, forecast_attribute_name, forecast_prob_attribute_name):
