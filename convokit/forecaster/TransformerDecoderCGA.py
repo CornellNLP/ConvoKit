@@ -34,7 +34,7 @@ def get_templet_map(model_name_or_path):
         )
 
 DEFAULT_CONFIG = CGAModelArgument(
-    output_dir= "LLMCGAModel",
+    output_dir= "TransformerDecoderCGA",
     gradient_accumulation_steps= 32,
     per_device_batch_size= 2,
     num_train_epochs= 1,

@@ -15,19 +15,23 @@ from transformers import (
     Trainer,
 )
 from .forecasterModel import ForecasterModel
+from .CGAModelArgument import CGAModelArgument
 import shutil
 
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
-DEFAULT_CONFIG = {
-    "output_dir": "TransformerEncoderCGA",
-    "per_device_batch_size": 4,
-    "gradient_accumulation_steps":1,
-    "num_train_epochs": 2,
-    "learning_rate": 6.7e-6,
-    "random_seed": 1,
-    "device": "cuda",
-}
+
+DEFAULT_CONFIG = CGAModelArgument(
+    output_dir= "TransformerEncoderCGA",
+    gradient_accumulation_steps= 1,
+    per_device_batch_size= 4,
+    num_train_epochs= 1,
+    learning_rate= 6.7e-6,
+    random_seed= 1,
+    do_finetune= False,
+    context_mode= "normal",
+    device= "cuda"
+)
 
 
 class TransformerEncoderCGA(ForecasterModel):
@@ -37,32 +41,34 @@ class TransformerEncoderCGA(ForecasterModel):
 
     def __init__(self, model_name_or_path, config=DEFAULT_CONFIG):
         super().__init__()
-        try:
-            self.tokenizer = AutoTokenizer.from_pretrained(
-                model_name_or_path,
-                model_max_length=512,
-                truncation_side="left",
-                padding_side="right",
-            )
-        except:
-            # The checkpoint didn't save tokenizer
-            model_config_file = os.path.join(model_name_or_path, "config.json")
-            with open(model_config_file, "r") as file:
-                original_model = json.load(file)["_name_or_path"]
-            self.tokenizer = AutoTokenizer.from_pretrained(
-                original_model, model_max_length=512, truncation_side="left", padding_side="right"
-            )
+        self.tokenizer = AutoTokenizer.from_pretrained(
+            model_name_or_path,
+            model_max_length=512,
+            truncation_side="left",
+            padding_side="right",
+        )
         self.best_threshold = 0.5
         model_config = AutoConfig.from_pretrained(
             model_name_or_path, num_labels=2, problem_type="single_label_classification"
         )
         self.model = AutoModelForSequenceClassification.from_pretrained(
             model_name_or_path, ignore_mismatched_sizes=True, config=model_config
-        ).to(config["device"])
-        if not os.path.exists(config["output_dir"]):
-            os.makedirs(config["output_dir"])
+        ).to(config.device)
+        if not os.path.exists(config.output_dir):
+            os.makedirs(config.output_dir)
         self.config = config
         return
+
+    def _context_mode(self, context):
+        if self.config.context_mode == "normal":
+            context_utts = context.context
+        elif self.config.context_mode == "no-context":
+            context_utts = [context.current_utterance]
+        else:
+            raise ValueError(
+                f"Context mode {self.config.context_mode} is not defined. Valid value must be either 'normal' or 'no-context'."
+            )
+        return context_utts
 
     def _tokenize(self, context):
         tokenized_context = self.tokenizer.encode_plus(
@@ -80,10 +86,7 @@ class TransformerEncoderCGA(ForecasterModel):
             convo = context.current_utterance.get_conversation()
             label = self.labeler(convo)
 
-            if ("context_mode" not in self.config) or self.config["context_mode"] == "normal":
-                context_utts = context.context
-            elif self.config["context_mode"] == "no-context":
-                context_utts = [context.current_utterance]
+            context_utts = self._context_mode(context)
             tokenized_context = self._tokenize(context_utts)
             pairs["input_ids"].append(tokenized_context["input_ids"])
             pairs["attention_mask"].append(tokenized_context["attention_mask"])
@@ -109,16 +112,16 @@ class TransformerEncoderCGA(ForecasterModel):
         if not forecast_attribute_name:
             forecast_attribute_name = "pred"
         if not model:
-            model = self.model.to(self.config["device"])
+            model = self.model.to(self.config.device)
         utt_ids = []
         preds = []
         scores = []
         for data in tqdm(dataset):
             input_ids = (
-                data["input_ids"].to(self.config["device"], dtype=torch.long).reshape([1, -1])
+                data["input_ids"].to(self.config.device, dtype=torch.long).reshape([1, -1])
             )
             attention_mask = (
-                data["attention_mask"].to(self.config["device"], dtype=torch.long).reshape([1, -1])
+                data["attention_mask"].to(self.config.device, dtype=torch.long).reshape([1, -1])
             )
             outputs = model(input_ids=input_ids, attention_mask=attention_mask)
             probs = F.softmax(outputs.logits, dim=-1)
@@ -135,7 +138,7 @@ class TransformerEncoderCGA(ForecasterModel):
         """
         Save the tuned model to self.best_threshold and self.model
         """
-        checkpoints = os.listdir(self.config["output_dir"])
+        checkpoints = os.listdir(self.config.output_dir)
         best_val_accuracy = 0
         val_convo_ids = set()
         utt2convo = {}
@@ -149,10 +152,10 @@ class TransformerEncoderCGA(ForecasterModel):
             val_convo_ids.add(convo_id)
         val_convo_ids = list(val_convo_ids)
         for cp in checkpoints:
-            full_model_path = os.path.join(self.config["output_dir"], cp)
+            full_model_path = os.path.join(self.config.output_dir, cp)
             finetuned_model = AutoModelForSequenceClassification.from_pretrained(
                 full_model_path
-            ).to(self.config["device"])
+            ).to(self.config.device)
             val_scores = self._predict(val_dataset, model=finetuned_model)
             # for each CONVERSATION, whether or not it triggers will be effectively determined by what the highest score it ever got was
             highest_convo_scores = {convo_id: -1 for convo_id in val_convo_ids}
@@ -182,7 +185,7 @@ class TransformerEncoderCGA(ForecasterModel):
                 self.model = finetuned_model
 
         eval_forecasts_df = self._predict(val_dataset, threshold=self.best_threshold)
-        eval_prediction_file = os.path.join(self.config["output_dir"], "val_predictions.csv")
+        eval_prediction_file = os.path.join(self.config.output_dir, "val_predictions.csv")
         eval_forecasts_df.to_csv(eval_prediction_file)
 
         # Save the best config
@@ -190,13 +193,13 @@ class TransformerEncoderCGA(ForecasterModel):
         best_config["best_checkpoint"] = best_checkpoint
         best_config["best_threshold"] = self.best_threshold
         best_config["best_val_accuracy"] = best_val_accuracy
-        config_file = os.path.join(self.config["output_dir"], "dev_config.json")
+        config_file = os.path.join(self.config.output_dir, "dev_config.json")
         with open(config_file, "w") as outfile:
             json_object = json.dumps(best_config, indent=4)
             outfile.write(json_object)
 
         # Clean other checkpoints to save disk space.
-        for root, _, _ in os.walk(self.config["output_dir"]):
+        for root, _, _ in os.walk(self.config.output_dir):
             if ("checkpoint" in root) and (best_checkpoint not in root):
                 print("Deleting:", root)
                 shutil.rmtree(root)
@@ -217,17 +220,17 @@ class TransformerEncoderCGA(ForecasterModel):
         dataset.set_format("torch")
 
         training_args = TrainingArguments(
-            output_dir=self.config["output_dir"],
-            per_device_train_batch_size=self.config["per_device_batch_size"],
-            gradient_accumulation_steps=self.config['gradient_accumulation_steps'],
-            num_train_epochs=self.config["num_train_epochs"],
-            learning_rate=self.config["learning_rate"],
+            output_dir=self.config.output_dir,
+            per_device_train_batch_size=self.config.per_device_batch_size,
+            gradient_accumulation_steps=self.config.gradient_accumulation_steps,
+            num_train_epochs=self.config.num_train_epochs,
+            learning_rate=self.config.learning_rate,
             logging_strategy="epoch",
             weight_decay=0.01,
             eval_strategy="no",
             save_strategy="epoch",
             prediction_loss_only=False,
-            seed=self.config["random_seed"],
+            seed=self.config.random_seed,
         )
         trainer = Trainer(model=self.model, args=training_args, train_dataset=dataset["train"])
         trainer.train()
@@ -235,7 +238,7 @@ class TransformerEncoderCGA(ForecasterModel):
         best_config = self._tune_best_val_accuracy(dataset["val_for_tuning"], val_contexts)
 
         # Save the tokenizer.
-        self.tokenizer.save_pretrained(os.path.join(self.config["output_dir"], best_config['best_checkpoint']))
+        self.tokenizer.save_pretrained(os.path.join(self.config.output_dir, best_config['best_checkpoint']))
         return
 
     def transform(self, contexts, forecast_attribute_name, forecast_prob_attribute_name):
@@ -249,7 +252,7 @@ class TransformerEncoderCGA(ForecasterModel):
             forecast_prob_attribute_name=forecast_prob_attribute_name,
         )
 
-        prediction_file = os.path.join(self.config["output_dir"], "test_predictions.csv")
+        prediction_file = os.path.join(self.config.output_dir, "test_predictions.csv")
         forecasts_df.to_csv(prediction_file)
 
         return forecasts_df
