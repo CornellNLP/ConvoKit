@@ -2,7 +2,7 @@ Pivotal Moment Measure
 ====================================
 
 The `PivotalMomentMeasure` transformer identifies pivotal moments in conversations 
-as described in this `paper <http://www.cs.cornell.edu/~cristian/>`_. 
+as described in this `paper <http://www.cs.cornell.edu/~cristian/Pivotal_Moments.html>`_. 
 
 We consider a moment in a conversation *pivotal* if the next response is expected 
 to have a large impact on the conversation’s eventual outcome. Our method relies on 
