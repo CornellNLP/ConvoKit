@@ -15,22 +15,27 @@ from .ForecasterTrainingArgument import ForecasterTrainingArgument
 import shutil
 
 def get_templet_map(model_name_or_path):
-    TEMPLATE_MAP = {
-        "google/gemma-2-2b-it":"gemma2",
-        "google/gemma-2-9b-it":"gemma2",
-        "google/gemma-3-12b-it":"gemma3",
-        "mistralai/Mistral-7B-Instruct-v0.3":"mistral",
-        "HuggingFaceH4/zephyr-7b-beta":"zephyr",
-        "microsoft/phi-4":"phi-4",
-        "meta-llama/Llama-3.1-8B-Instruct":"llama3",
-        "meta-llama/Llama-3.2-3B-Instruct":"llama3",
-    }
-    for model in TEMPLATE_MAP:
-        if model in model_name_or_path:
-            return TEMPLATE_MAP[model]
-    raise ValueError(
-            f"Model {model_name_or_path} is not supported."
-        )
+    """
+    Map a model name or path to its corresponding prompt template family.
+
+    :param model_name_or_path: Full model name or path.
+    :return: Template name corresponding to the model family.
+    :raises ValueError: If the model is not recognized.
+    """
+    TEMPLATE_PATTERNS = [
+        ("google/gemma-2-", "gemma2"),
+        ("google/gemma-3-", "gemma3"),
+        ("mistralai/mistral", "mistral"),
+        ("HuggingFaceH4/zephyr", "zephyr"),
+        ("microsoft/phi-4", "phi-4"),
+        ("meta-llama/Llama-3", "llama3"),
+    ]
+
+    for pattern, template in TEMPLATE_PATTERNS:
+        if pattern in model_name_or_path.lower():
+            return template
+
+    raise ValueError(f"Model '{model_name_or_path}' is not supported.")
 
 DEFAULT_CONFIG = ForecasterTrainingArgument(
     output_dir= "TransformerDecoderModel",
@@ -48,6 +53,7 @@ class TransformerDecoderModel(ForecasterModel):
     A ConvoKit Forecaster-adherent implementation of conversational forecasting model based on Transformer Decoder Model (e.g. LlaMA, Gemma, GPT).
     This class is first used in the paper "Conversations Gone Awry, But Then? Evaluating Conversational Forecasting Models"
     (Tran et al., 2025).
+    Supported model families include: Gemma2, Gemma3, Mistral, Zephyr, Phi-4, and LLaMA 3.
 
     :param model_name_or_path: The name or local path of the pretrained transformer model to load.
     :param config (object, optional): ForecasterTrainingArgument object containing parameters for training and evaluation.
