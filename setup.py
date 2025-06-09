@@ -6,7 +6,7 @@ setup(
     author_email="cristian@cs.cornell.edu",
     url="https://github.com/CornellNLP/ConvoKit",
     description="ConvoKit",
-    version="3.1.0",
+    version="3.2.0",
     packages=[
         "convokit",
         "convokit.bag_of_words",
@@ -33,6 +33,8 @@ setup(
         "convokit.speakerConvoDiversity",
         "convokit.expected_context_framework",
         "convokit.surprise",
+        "convokit.pivotal_framework",
+        "convokit.utterance_simulator",
     ],
     package_data={
         "convokit": [
@@ -68,6 +70,7 @@ setup(
         "peft",
         "bitsandbytes",
         "transformers",
+        "unsloth",
         "trl>=0.12.2",
         "tensorflow>=2.18.0",
         "tf-keras>=2.17.0,<3.0.0",

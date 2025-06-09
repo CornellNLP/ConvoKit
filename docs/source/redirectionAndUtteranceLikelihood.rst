@@ -20,5 +20,5 @@ Example usage: `redirection in supreme court oral arguments <https://github.com/
 .. automodule:: convokit.redirection.likelihoodModel
     :members:
 
-.. automodule:: convokit.utteranceLikelihood.utteranceLikelihood
+.. automodule:: convokit.utterance_likelihood.utteranceLikelihood
     :members:

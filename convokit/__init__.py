@@ -21,6 +21,9 @@ try:
     from .expected_context_framework import *
     from .surprise import *
     from .convokitConfig import *
+    from .redirection import *
+    from .pivotal_framework import *
+    from .utterance_simulator import *
 except Exception as e:
     print(f"An error occurred: {e}")
     warnings.warn(
