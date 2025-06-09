@@ -131,7 +131,22 @@ class TransformerDecoderModel(ForecasterModel):
                   tokenize=True,
                   add_generation_prompt=True,
                   return_tensors='pt'):
+        """
+        Format and tokenize a sequence of utterances into model-ready input using a chat-style prompt.
 
+        :param context_utts: A list of utterance objects to include in the prompt. Each utterance
+            must have `.speaker_.id` and `.text` attributes.
+        :param label: (Optional) A binary label indicating the target response ("Yes" or "No").
+            If provided, it will be included in the final message under the "model" role.
+        :param tokenize: (bool) Whether to tokenize the final message using the tokenizer.
+            Defaults to True.
+        :param add_generation_prompt: (bool) Whether to append a generation prompt at the end
+            for decoder-style models. Defaults to True.
+        :param return_tensors: Format in which to return tokenized tensors (e.g., `'pt'` for PyTorch).
+            Passed to the tokenizer.
+
+        :return: Tokenized input returned by `tokenizer.apply_chat_template`, ready for model input.
+        """
         messages = [self.system_msg]
         for idx, utt in enumerate(context_utts):
             messages.append(
@@ -159,6 +174,23 @@ class TransformerDecoderModel(ForecasterModel):
         return tokenized_context
 
     def _context_to_llm_data(self, contexts):
+        """
+        Convert context tuples into a HuggingFace Dataset formatted for LLM-style training.
+
+        This method processes each context tuple by:
+        - Extracting the full conversation associated with the current utterance
+        - Generating a binary label using `self.labeler`
+        - Formatting the context into a structured prompt using `_tokenize` (without actual tokenization)
+        - Collecting the resulting prompt text into a list of training samples
+
+        The output is a list of dictionaries with a single "text" field, suitable for training
+        large language models (LLMs) in a text-to-text setting.
+
+        :param contexts: An iterable of context tuples, each with a current utterance and
+            conversation history.
+
+        :return: A HuggingFace `Dataset` object containing one entry per context with a "text" field.
+        """
         dataset = []
         for context in contexts:
             convo = context.current_utterance.get_conversation()
@@ -175,11 +207,15 @@ class TransformerDecoderModel(ForecasterModel):
 
     def fit(self, train_contexts, val_contexts):
         """
-        Description: Train the conversational forecasting model on the given data
-        Parameters:
-        contexts: an iterator over context tuples, as defined by the above data format
-        val_contexts: an optional second iterator over context tuples to be used as a separate held-out validation set.
-                        The generator for this must be the same as test generator
+        Fine-tune the TransformerDecoder model using LoRA and save the best model based on validation performance.
+
+        This method applies Low-Rank Adaptation (LoRA) to the decoder model, converts the
+        training contexts into text-based input for LLM fine-tuning, and trains the model
+        using HuggingFace's `SFTTrainer`. After training, it tunes a decision threshold on
+        a held-out validation set to optimize binary forecast classification.
+
+        :param contexts: an iterator over context tuples, provided by the Forecaster framework
+        :param val_contexts: an iterator over context tuples to be used only for validation.
         """
         # LORA
         self.model = FastLanguageModel.get_peft_model(
@@ -238,7 +274,25 @@ class TransformerDecoderModel(ForecasterModel):
 
     def _tune_threshold(self, val_contexts):
         """
-        Save the tuned model to self.best_threshold and self.model
+        Tune the decision threshold and select the best model checkpoint based on validation accuracy.
+
+        This method evaluates all model checkpoints in the configured output directory using a
+        held-out validation set.
+
+        The selected model, threshold, and associated metadata are stored in:
+        - `self.model`: the best-performing fine-tuned model
+        - `self.best_threshold`: the optimal decision threshold
+        - `dev_config.json`: file containing best checkpoint metadata
+        - `val_predictions.csv`: CSV file with forecast outputs on the validation set
+
+        Additionally, all non-optimal model checkpoints are removed to save disk space, and the
+        tokenizer is saved to the directory of the best checkpoint.
+
+        :param val_dataset: A HuggingFace-compatible dataset containing features for validation.
+        :param val_contexts: An iterable of context tuples corresponding to the validation set.
+                            Used to map utterance IDs to conversation IDs and extract ground-truth labels.
+
+        :return: A dictionary containing the best checkpoint path, best threshold, and best validation accuracy.
         """
         checkpoints = [cp for cp in os.listdir(self.config.output_dir) if 'checkpoint-' in cp]
         if checkpoints == []:
@@ -326,6 +380,22 @@ class TransformerDecoderModel(ForecasterModel):
     def _predict(self,
                 context,
                 threshold=None):
+        """
+        Run inference on a single context using the fine-tuned TransformerDecoder model.
+
+        This method prepares the input from the given context, generates a single-token
+        prediction (either "Yes" or "No"), and computes the softmax probability for "Yes".
+        The output is a confidence score and a binary prediction based on the given or
+        default threshold.
+
+        :param context: A context tuple containing the current utterance and conversation history.
+        :param threshold: (Optional) A float threshold for converting the predicted probability into a binary label.
+            If not provided, `self.best_threshold` is used.
+
+        :return: A tuple (`utt_score`, `utt_pred`), where:
+            - `utt_score` is the softmax probability assigned to "Yes"
+            - `utt_pred` is the binary prediction (1 if `utt_score > threshold`, else 0)
+        """
         # Enabling inference with different checkpoints to _tune_best_val_accuracy
         if not threshold:
             threshold = self.best_threshold
@@ -351,6 +421,15 @@ class TransformerDecoderModel(ForecasterModel):
         return utt_score, utt_pred
 
     def transform(self, contexts, forecast_attribute_name, forecast_prob_attribute_name):
+        """
+        Generate forecasts using the fine-tuned TransformerDecoder model on the provided contexts, and save the predictions to the output directory specified in the configuration.
+
+        :param contexts: context tuples from the Forecaster framework
+        :param forecast_attribute_name: Forecaster will use this to look up the table column containing your model's discretized predictions (see output specification below)
+        :param forecast_prob_attribute_name: Forecaster will use this to look up the table column containing your model's raw forecast probabilities (see output specification below)
+
+        :return: a Pandas DataFrame, with one row for each context, indexed by the ID of that context's current utterance. Contains two columns, one with raw probabilities named according to forecast_prob_attribute_name, and one with discretized (binary) forecasts named according to forecast_attribute_name
+        """
         FastLanguageModel.for_inference(self.model)
         utt_ids = []
         preds = []
