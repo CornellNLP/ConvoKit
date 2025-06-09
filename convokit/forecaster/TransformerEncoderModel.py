@@ -245,7 +245,7 @@ class TransformerEncoderModel(ForecasterModel):
             highest_convo_scores = {convo_id: -1 for convo_id in val_convo_ids}
             for utt_id in val_scores.index:
                 convo_id = utt2convo[utt_id]
-                utt_score = val_scores.loc[utt_id].score
+                utt_score = val_scores.loc[utt_id].forecast_prob
                 if utt_score > highest_convo_scores[convo_id]:
                     highest_convo_scores[convo_id] = utt_score
 
