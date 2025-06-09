@@ -2,18 +2,18 @@ Forecaster
 ==========
 
 The Forecaster class provides a generic interface to *conversational forecasting models*, a class of models designed to computationally capture the trajectory
-of conversations in order to predict future events. Though individual conversational forecasting models can get quite complex, the Forecaster API abstracts 
+of conversations in order to predict future events. Though individual conversational forecasting models can get quite complex, the Forecaster API abstracts
 away the implementation details into a standard fit-transform interface.
 
 For end users of Forecaster: see the demo notebook which `uses Forecaster to fine-tune the CRAFT forecasting model on the CGA-CMV corpus <https://github.com/CornellNLP/ConvoKit/blob/master/examples/forecaster/CRAFT%20Forecaster%20demo.ipynb>`_
 
 For developers of conversational forecasting models: Forecaster also represents a common framework for conversational forecasting
 that you can use, in conjunction with other ML/NLP ecosystems like PyTorch and Huggingface, to streamline the development of your models!
-You can create your conversational forecasting model as a subclass of ForecasterModel, which can then be directly "plugged in" to the 
+You can create your conversational forecasting model as a subclass of ForecasterModel, which can then be directly "plugged in" to the
 Forecaster wrapper which will provide a standard fit-transform interface to your model. At runtime, Forecaster will feed a temporally-ordered
-stream of conversational data to your ForecasterModel in the form of "context tuples". Context tuples are generated in chronological order, 
-simulating the notion that the model is following the conversation as it develops in real time and generating a new prediction every time a 
-new utterance appears (e.g., in a social media setting, every time a new comment is posted). Each context tuple, in turn, is defined as a 
+stream of conversational data to your ForecasterModel in the form of "context tuples". Context tuples are generated in chronological order,
+simulating the notion that the model is following the conversation as it develops in real time and generating a new prediction every time a
+new utterance appears (e.g., in a social media setting, every time a new comment is posted). Each context tuple, in turn, is defined as a
 NamedTuple with the following fields:
 
 * ``context``: a chronological list of Utterances up to and including the most recent Utterance at the time this context was generated. Beyond the chronological ordering, no structure of any kind is imposed on the Utterances, so developers of conversational forecasting models are free to perform any structuring of their own that they desire (so yes, if you want, you can build conversational graphs on top of the provided context!)
@@ -34,4 +34,13 @@ Illustrative example, a conversation containing utterances ``[a, b, c, d]`` (in 
 .. automodule:: convokit.forecaster.forecasterModel
     :members:
 
+Forecaster Model
+================
+These are subclasses of ForecasterModel, each implementing forecasting models using different model architectures or families.
 
+.. toctree::
+   :maxdepth: 2
+
+   CRAFT Model <craftmodel.rst>
+   Transformer Encoder-based Model <transformerencodermodel.rst>
+   Transformer Decoder-based Model <transformerdecodermodel.rst>
