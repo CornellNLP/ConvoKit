@@ -1,9 +1,9 @@
 from dataclasses import dataclass, field
 
 @dataclass
-class CGAModelArgument:
+class ForecasterTrainingArgument:
     """
-    Arguments for fine-tuning CGA Model.
+    Arguments for fine-tuning Forecaster Model.
     """
     output_dir: str = field(
         metadata={"help": "Path to the directory where outputs (e.g., predictions, checkpoints, logs) will be saved."}

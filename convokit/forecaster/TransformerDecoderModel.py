@@ -99,6 +99,23 @@ class TransformerDecoderModel(ForecasterModel):
         return
 
     def _context_mode(self, context):
+        """
+        Select the utterances to include in the input context based on the configured context mode.
+
+        This method determines whether to include the full dialogue context or only
+        the current utterance, depending on the value of `self.config.context_mode`.
+
+        Supported modes:
+        - "normal": Use the full dialogue context (i.e., all utterances leading up to the current one).
+        - "no-context": Use only the current utterance.
+
+        :param context: A context tuple containing `context.context` (prior utterances)
+            and `context.current_utterance`.
+
+        :return: A list of utterance objects to be used for tokenization.
+
+        :raises ValueError: If `self.config.context_mode` is not one of the supported values.
+        """
         if self.config.context_mode == "normal":
             context_utts = context.context
         elif self.config.context_mode == "no-context":
