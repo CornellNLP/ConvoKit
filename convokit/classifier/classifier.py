@@ -1,10 +1,14 @@
+from typing import Callable, Optional, Union, Any, List, Iterator
+
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.model_selection import train_test_split, cross_val_score, KFold
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
-from convokit import Transformer
+from convokit.transformer import Transformer
+from .classifierModel import ClassifierModel
+from convokit.model.corpusComponent import CorpusComponent
 from convokit.classifier.util import *
 
 
@@ -15,56 +19,88 @@ class Classifier(Transformer):
     Runs on the Corpus's Speakers, Utterances, or Conversations (as specified by obj_type).
 
     :param obj_type: type of Corpus object to classify: 'conversation', 'speaker', or 'utterance'
-    :param pred_feats: list of metadata attributes containing the features to be used in prediction.
-        If the metadata attribute contains a dictionary, all the keys of the dictionary will be included in pred_feats.
-        Each feature used should have a numeric/boolean type.
     :param labeller: a (lambda) function that takes a Corpus object and returns True (y=1) or False (y=0)
         - i.e. labeller defines the y value of the object for fitting
-    :param clf: optional sklearn classifier model. By default, clf is a Pipeline with StandardScaler and LogisticRegression.
+    :param clf_model: instance of a classifier model of type convokit.classifier.classifier.ClassifierModel
     :param clf_attribute_name: the metadata attribute name to store the classifier prediction value under; default: "prediction"
     :param clf_prob_attribute_name: the metadata attribute name to store the classifier prediction score under; default: "pred_score"
+    :param pred_feats: (Please note: usage of pred_feats is no longer recommended—users should define their own prediction features using
+    their own custom dataset.) list of metadata attributes containing the features to be used in prediction.
+        If the metadata attribute contains a dictionary, all the keys of the dictionary will be included in pred_feats.
+        Each feature used should have a numeric/boolean type.
 
     """
 
     def __init__(
         self,
         obj_type: str,
-        pred_feats: List[str],
         labeller: Callable[[CorpusComponent], bool] = lambda x: True,
-        clf=None,
+        clf_model: ClassifierModel = None,
         clf_attribute_name: str = "prediction",
-        clf_prob_attribute_name: str = "pred_score",
+        clf_prob_attribute_name: str = "probability",
+        pred_feats: List[str] = None,
     ):
-        self.pred_feats = pred_feats
         self.labeller = labeller
         self.obj_type = obj_type
-        if clf is None:
-            clf = Pipeline(
+        if clf_model is None:
+            clf_model = Pipeline(
                 [
                     ("standardScaler", StandardScaler(with_mean=False)),
                     ("logreg", LogisticRegression(solver="liblinear")),
                 ]
             )
             print("Initialized default classification model (standard scaled logistic regression).")
-        self.clf = clf
+        self.clf_model = clf_model
         self.clf_attribute_name = clf_attribute_name
         self.clf_prob_attribute_name = clf_prob_attribute_name
 
+    def _create_context_iterator(
+        self,
+        corpus: Corpus,
+        # NTS: not sure if this is a correct approach. `context_type` would be a string which would be interpreted into a specific subtype of
+        # CorpusComponent
+        context_type: str,
+        context_selector: Callable[[CorpusComponent], bool],
+    ) -> Iterator[CorpusComponent]:
+        """
+        Helper function that generates an iterator over conversational contexts that satisfy the provided context selector,
+        across the entire corpus.
+        """
+        for obj in corpus.iter_objs(context_type):
+            if not context_selector(obj):
+                continue
+            yield obj  # this needed to be indented...
+
     def fit(
-        self, corpus: Corpus, y=None, selector: Callable[[CorpusComponent], bool] = lambda x: True
+        self,
+        context_type: str,
+        corpus: Corpus,
+        y=None,
+        context_selector: Callable[[CorpusComponent], bool] = lambda context: True,
+        val_context_selector: Optional[Callable[[CorpusComponent], bool]] = None,
     ):
         """
         Trains the Transformer's classifier model, with an optional selector that filters for objects to be fit on.
 
+        :param context_type: type of Corpus object to classify: 'conversation', 'speaker', or 'utterance'
         :param corpus: target Corpus
-        :param selector: a (lambda) function that takes a Corpus object and returns True or False (i.e. include / exclude).
-            By default, the selector includes all objects of the specified type in the Corpus.
+        :param context_selector: a (lambda) function that takes a Corpus object and returns True or False (i.e. include / exclude).
+            By default, the context_selector includes all objects of the specified type in the Corpus.
+        :param context_selector: a (lambda) function that takes a Corpus object and returns True or False (i.e. include / exclude).
+            By default, the val_context_selector is None.
+
         :return: the fitted Classifier Transformer
         """
-        X, y = extract_feats_and_label(
-            corpus, self.obj_type, self.pred_feats, self.labeller, selector
+        contexts = self._create_context_iterator(
+            corpus, context_type=context_type, context_selector=context_selector
         )
-        self.clf.fit(X, y)
+        val_contexts = None
+        if val_context_selector is not None:
+            val_contexts = self._create_context_iterator(
+                corpus, context_type=context_type, context_selector=val_context_selector
+            )
+        self.clf_model.fit(contexts, val_contexts)
+
         return self
 
     def transform(
@@ -81,23 +117,17 @@ class Classifier(Transformer):
 
         :return: annotated Corpus
         """
-        obj_id_to_feats = extract_feats_dict(corpus, self.obj_type, self.pred_feats, selector)
-        feats_df = pd.DataFrame.from_dict(obj_id_to_feats, orient="index").reindex(
-            index=list(obj_id_to_feats)
+        contexts = self._create_context_iterator(
+            corpus, context_type=self.obj_type, context_selector=selector
         )
-        X = csr_matrix(feats_df.values.astype("float64"))
-        idx_to_id = {idx: obj_id for idx, obj_id in enumerate(list(obj_id_to_feats))}
-        clfs, clfs_probs = self.clf.predict(X), self.clf.predict_proba(X)[:, 1]
 
-        for idx, (clf, clf_prob) in enumerate(list(zip(clfs, clfs_probs))):
-            corpus_obj = corpus.get_object(self.obj_type, idx_to_id[idx])
-            corpus_obj.add_meta(self.clf_attribute_name, clf)
-            corpus_obj.add_meta(self.clf_prob_attribute_name, clf_prob)
-
-        for obj in corpus.iter_objs(self.obj_type, selector):
-            if self.clf_attribute_name not in obj.meta:
-                obj.meta[self.clf_attribute_name] = None
-                obj.meta[self.clf_prob_attribute_name] = None
+        outputs = self.clf_model.transform(contexts)
+        # NTS: outputs is a dataframe
+        preds = outputs["predictions"].tolist()
+        probs = outputs["probabilities"].tolist()
+        for obj, pred, prob in zip(corpus.iter_objs(self.obj_type, selector), preds, probs):
+            obj.add_meta(self.clf_attribute_name, pred)
+            obj.add_meta(self.clf_prob_attribute_name, prob)
 
         return corpus
 
@@ -107,7 +137,11 @@ class Classifier(Transformer):
         self.fit(corpus, selector=selector)
         return self.transform(corpus, selector=selector)
 
-    def transform_objs(self, objs: List[CorpusComponent]) -> List[CorpusComponent]:
+    def transform_objs(
+        self,
+        objs: List[CorpusComponent],
+        selector: Callable[[CorpusComponent], bool] = lambda x: True,
+    ) -> List[CorpusComponent]:
         """
         Run classifier on list of Corpus objects and annotate them with the predictions and prediction scores
 
@@ -115,15 +149,8 @@ class Classifier(Transformer):
 
         :return: list of annotated Corpus objects
         """
-        X = np.array([list(extract_feats_from_obj(obj, self.pred_feats).values()) for obj in objs])
-        # obj_ids = [obj.id for obj in objs]
-        clfs, clfs_probs = self.clf.predict(X), self.clf.predict_proba(X)[:, 1]
-
-        for idx, (clf, clf_prob) in enumerate(list(zip(clfs, clfs_probs))):
-            obj = objs[idx]
-            obj.add_meta(self.clf_attribute_name, clf)
-            obj.add_meta(self.clf_prob_attribute_name, clf_prob)
-
+        for obj in objs:
+            self.transform(obj, selector=selector)
         return objs
 
     def summarize(
@@ -187,6 +214,7 @@ class Classifier(Transformer):
         test_size: float = 0.2,
     ):
         """
+        Please note that Classifier.pred_feats is a deprecated attribute, and so this function may have undefined behavior.
         Evaluate the performance of predictive features (Classifier.pred_feats) in predicting for the label,
         using a train-test split.
 
@@ -238,6 +266,7 @@ class Classifier(Transformer):
         selector: Callable[[CorpusComponent], bool] = lambda x: True,
     ):
         """
+        Please note that Classifier.pred_feats is a deprecated attribute, and so this function may have undefined behavior.
         Evaluate the performance of predictive features (Classifier.pred_feats) in predicting for the label,
         using cross-validation for data splitting.
 
@@ -367,10 +396,10 @@ class Classifier(Transformer):
         """
         Gets the Classifier's internal model
         """
-        return self.clf
+        return self.clf_model
 
     def set_model(self, clf):
         """
         Sets the Classifier's internal model
         """
-        self.clf = clf
+        self.clf_model = clf
