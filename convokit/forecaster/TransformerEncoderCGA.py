@@ -15,7 +15,7 @@ from transformers import (
     Trainer,
 )
 from .forecasterModel import ForecasterModel
-from .CGAModelArgument import CGAModelArgument
+from .ForecasterTrainingArgument import ForecasterTrainingArgument
 import shutil
 
 
@@ -133,7 +133,7 @@ class TransformerEncoderCGA(ForecasterModel):
             {forecast_attribute_name: preds, forecast_prob_attribute_name: scores}, index=utt_ids
         )
 
-    def _tune_best_val_accuracy(self, val_dataset, val_contexts):
+    def _tune_threshold(self, val_dataset, val_contexts):
         """
         Save the tuned model to self.best_threshold and self.model
         """
@@ -235,7 +235,7 @@ class TransformerEncoderCGA(ForecasterModel):
         )
         trainer = Trainer(model=self.model, args=training_args, train_dataset=dataset["train"])
         trainer.train()
-        _ = self._tune_best_val_accuracy(dataset["val_for_tuning"], val_contexts)
+        _ = self._tune_threshold(dataset["val_for_tuning"], val_contexts)
         return
 
     def transform(self, contexts, forecast_attribute_name, forecast_prob_attribute_name):

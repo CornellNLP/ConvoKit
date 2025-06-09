@@ -12,7 +12,7 @@ from sklearn.metrics import roc_curve
 from datasets import Dataset
 from trl import SFTTrainer, SFTConfig
 from .forecasterModel import ForecasterModel
-from .CGAModelArgument import CGAModelArgument
+from .ForecasterTrainingArgument import ForecasterTrainingArgument
 import shutil
 
 def get_templet_map(model_name_or_path):
@@ -33,7 +33,7 @@ def get_templet_map(model_name_or_path):
             f"Model {model_name_or_path} is not supported."
         )
 
-DEFAULT_CONFIG = CGAModelArgument(
+DEFAULT_CONFIG = ForecasterTrainingArgument(
     output_dir= "TransformerDecoderCGA",
     gradient_accumulation_steps= 32,
     per_device_batch_size= 2,
@@ -216,10 +216,10 @@ class TransformerDecoderCGA(ForecasterModel):
                         )
                         )
         trainer.train()
-        _ = self.tune_threshold(self, val_contexts)
+        _ = self._tune_threshold(self, val_contexts)
         return
 
-    def tune_threshold(self, val_contexts):
+    def _tune_threshold(self, val_contexts):
         """
         Save the tuned model to self.best_threshold and self.model
         """
