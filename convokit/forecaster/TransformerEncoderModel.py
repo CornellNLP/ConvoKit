@@ -21,8 +21,8 @@ import shutil
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
-DEFAULT_CONFIG = CGAModelArgument(
-    output_dir= "TransformerEncoderCGA",
+DEFAULT_CONFIG = ForecasterTrainingArgument(
+    output_dir= "TransformerEncoderModel",
     gradient_accumulation_steps= 1,
     per_device_batch_size= 4,
     num_train_epochs= 1,
@@ -33,9 +33,14 @@ DEFAULT_CONFIG = CGAModelArgument(
 )
 
 
-class TransformerEncoderCGA(ForecasterModel):
+class TransformerEncoderModel(ForecasterModel):
     """
-    Wrapper for Huggingface Transformers AutoModel
+    A ConvoKit Forecaster-adherent implementation of conversational forecasting model based on Transformer Encoder Model (e.g. BERT, RoBERTa, SpanBERT, DeBERTa).
+    This class is first used in the paper "Conversations Gone Awry, But Then? Evaluating Conversational Forecasting Models"
+    (Tran et al., 2025).
+
+    :param model_name_or_path: The name or local path of the pretrained transformer model to load.
+    :param config (object, optional): ForecasterTrainingArgument object containing parameters for training and evaluation.
     """
 
     def __init__(self, model_name_or_path, config=DEFAULT_CONFIG):
@@ -59,6 +64,23 @@ class TransformerEncoderCGA(ForecasterModel):
         return
 
     def _context_mode(self, context):
+        """
+        Select the utterances to include in the input context based on the configured context mode.
+
+        This method determines whether to include the full dialogue context or only
+        the current utterance, depending on the value of `self.config.context_mode`.
+
+        Supported modes:
+        - "normal": Use the full dialogue context (i.e., all utterances leading up to the current one).
+        - "no-context": Use only the current utterance.
+
+        :param context: A context tuple containing `context.context` (prior utterances)
+            and `context.current_utterance`.
+
+        :return: A list of utterance objects to be used for tokenization.
+
+        :raises ValueError: If `self.config.context_mode` is not one of the supported values.
+        """
         if self.config.context_mode == "normal":
             context_utts = context.context
         elif self.config.context_mode == "no-context":
@@ -70,6 +92,20 @@ class TransformerEncoderCGA(ForecasterModel):
         return context_utts
 
     def _tokenize(self, context):
+        """
+        Tokenize a list of utterances into model-ready input using the class tokenizer.
+
+        This method joins the utterances in the given context using the tokenizer's
+        separator token (e.g., `[SEP]`), then tokenizes the resulting. It applies
+        padding and truncation to ensure the sequence fits within the model's maximum
+        input length.
+
+        :param context: A list of Utterance objects.
+
+        :return: A dictionary containing:
+            - 'input_ids': the token IDs for the input sequence
+            - 'attention_mask': the attention mask corresponding to the input
+        """
         tokenized_context = self.tokenizer.encode_plus(
             text=f" {self.tokenizer.sep_token} ".join([u.text for u in context]),
             add_special_tokens=True,
@@ -80,6 +116,28 @@ class TransformerEncoderCGA(ForecasterModel):
         return tokenized_context
 
     def _context_to_bert_data(self, contexts):
+        """
+        Convert context tuples into a HuggingFace Dataset formatted for BERT-family models.
+
+        This method processes each context tuple by:
+        - Extracting the full conversation history associated with the current utterance
+        - Generating a label for the conversation using the provided `self.labeler`
+        - Formatting the context according to the model’s context mode
+        - Tokenizing the resulting text input
+        - Collecting input IDs, attention masks, labels, and utterance IDs
+
+        The result is packaged into a `datasets.Dataset` object suitable for training
+        or evaluation with a Transformer-based classification model.
+
+        :param contexts: An iterable of context tuples, each containing a current utterance
+            and its conversation history.
+
+        :return: A HuggingFace `Dataset` with fields:
+            - 'input_ids': tokenized input sequences
+            - 'attention_mask': corresponding attention masks
+            - 'labels': ground-truth binary labels
+            - 'id': IDs of the current utterances
+        """
         pairs = {"id": [], "input_ids": [], "attention_mask": [], "labels": []}
         for context in contexts:
             convo = context.current_utterance.get_conversation()
@@ -100,16 +158,25 @@ class TransformerEncoderCGA(ForecasterModel):
         dataset,
         model=None,
         threshold=0.5,
-        forecast_prob_attribute_name=None,
-        forecast_attribute_name=None,
+        forecast_prob_attribute_name="forecast_prob",
+        forecast_attribute_name="forecast",
     ):
         """
-        Return predictions in DataFrame
+        Generate predictions using the model on the given dataset and return them in a Pandas DataFrame.
+
+        :param dataset: A torch-formatted iterable (e.g., HuggingFace Dataset) where each item contains
+            'input_ids', 'attention_mask', and 'id'.
+        :param model: (Optional) A PyTorch model for inference. If not provided, `self.model` is used.
+        :param threshold: (float) Threshold to convert raw probabilities into binary predictions.
+        :param forecast_prob_attribute_name: (Optional) Column name for raw forecast probabilities in the output DataFrame.
+            Defaults to "forecast_prob" if not specified.
+        :param forecast_attribute_name: (Optional) Column name for binary predictions in the output DataFrame.
+            Defaults to "forecast" if not specified.
+
+        :return: A Pandas DataFrame indexed by utterance ID. Contains two columns:
+            - One with raw probabilities (named `forecast_prob_attribute_name`)
+            - One with binary predictions (named `forecast_attribute_name`)
         """
-        if not forecast_prob_attribute_name:
-            forecast_prob_attribute_name = "score"
-        if not forecast_attribute_name:
-            forecast_attribute_name = "pred"
         if not model:
             model = self.model.to(self.config.device)
         utt_ids = []
@@ -135,7 +202,25 @@ class TransformerEncoderCGA(ForecasterModel):
 
     def _tune_threshold(self, val_dataset, val_contexts):
         """
-        Save the tuned model to self.best_threshold and self.model
+        Tune the decision threshold and select the best model checkpoint based on validation accuracy.
+
+        This method evaluates all model checkpoints in the configured output directory using a
+        held-out validation set.
+
+        The selected model, threshold, and associated metadata are stored in:
+        - `self.model`: the best-performing fine-tuned model
+        - `self.best_threshold`: the optimal decision threshold
+        - `dev_config.json`: file containing best checkpoint metadata
+        - `val_predictions.csv`: CSV file with forecast outputs on the validation set
+
+        Additionally, all non-optimal model checkpoints are removed to save disk space, and the
+        tokenizer is saved to the directory of the best checkpoint.
+
+        :param val_dataset: A HuggingFace-compatible dataset containing features for validation.
+        :param val_contexts: An iterable of context tuples corresponding to the validation set.
+                            Used to map utterance IDs to conversation IDs and extract ground-truth labels.
+
+        :return: A dictionary containing the best checkpoint path, best threshold, and best validation accuracy.
         """
         checkpoints = os.listdir(self.config.output_dir)
         best_val_accuracy = 0
@@ -208,11 +293,15 @@ class TransformerEncoderCGA(ForecasterModel):
 
     def fit(self, contexts, val_contexts):
         """
-        Description: Train the conversational forecasting model on the given data
-        Parameters:
-        contexts: an iterator over context tuples, as defined by the above data format
-        val_contexts: an optional second iterator over context tuples to be used as a separate held-out validation set.
-                        The generator for this must be the same as test generator
+        Fine-tune the TransformerEncoder model, and save the best model according to validation performance.
+
+        This method transforms the input contexts into model-compatible format,
+        configures training parameters, and trains the model using HuggingFace's
+        Trainer API. It also tunes a decision threshold using a separate
+        held-out validation set.
+
+        :param contexts: an iterator over context tuples, provided by the Forecaster framework
+        :param val_contexts: an iterator over context tuples to be used only for validation.
         """
         val_contexts = list(val_contexts)
         train_pairs = self._context_to_bert_data(contexts)
@@ -239,6 +328,15 @@ class TransformerEncoderCGA(ForecasterModel):
         return
 
     def transform(self, contexts, forecast_attribute_name, forecast_prob_attribute_name):
+        """
+        Generate forecasts using the fine-tuned TransformerEncoder model on the provided contexts, and save the predictions to the output directory specified in the configuration.
+
+        :param contexts: context tuples from the Forecaster framework
+        :param forecast_attribute_name: Forecaster will use this to look up the table column containing your model's discretized predictions (see output specification below)
+        :param forecast_prob_attribute_name: Forecaster will use this to look up the table column containing your model's raw forecast probabilities (see output specification below)
+
+        :return: a Pandas DataFrame, with one row for each context, indexed by the ID of that context's current utterance. Contains two columns, one with raw probabilities named according to forecast_prob_attribute_name, and one with discretized (binary) forecasts named according to forecast_attribute_name
+        """
         test_pairs = self._context_to_bert_data(contexts)
         dataset = DatasetDict({"test": test_pairs})
         dataset.set_format("torch")

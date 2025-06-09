@@ -34,7 +34,7 @@ def get_templet_map(model_name_or_path):
         )
 
 DEFAULT_CONFIG = ForecasterTrainingArgument(
-    output_dir= "TransformerDecoderCGA",
+    output_dir= "TransformerDecoderModel",
     gradient_accumulation_steps= 32,
     per_device_batch_size= 2,
     num_train_epochs= 1,
@@ -44,14 +44,14 @@ DEFAULT_CONFIG = ForecasterTrainingArgument(
     device= "cuda"
 )
 
-class TransformerDecoderCGA(ForecasterModel):
+class TransformerDecoderModel(ForecasterModel):
     """
     A ConvoKit Forecaster-adherent implementation of conversational forecasting model based on Transformer Decoder Model (e.g. LlaMA, Gemma, GPT).
     This class is first used in the paper "Conversations Gone Awry, But Then? Evaluating Conversational Forecasting Models"
     (Tran et al., 2025).
 
     :param model_name_or_path: The name or local path of the pretrained transformer model to load.
-    :param config (object, optional): CGAModelArgument object containing parameters for training and evaluation.
+    :param config (object, optional): ForecasterTrainingArgument object containing parameters for training and evaluation.
     :param system_msg (str, optional): Custom system-level message guiding the forecaster's behavior. If not provided, a default prompt tailored for CGA (Conversation Gone Awry) moderation tasks is used.
     :param question_msg (str, optional): Custom question prompt posed to the transformer model. If not provided, defaults to a standard CGA question asking about potential conversation derailment.
     """

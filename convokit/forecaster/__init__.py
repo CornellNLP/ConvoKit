@@ -6,6 +6,6 @@ import sys
 if "torch" in sys.modules:
     from .CRAFTModel import *
     from .CRAFT import *
-    from .TransformerEncoderCGA import *
-    from .TransformerDecoderCGA import *
-    from .CGAModelArgument import *
+    from .TransformerEncoderModel import *
+    from .TransformerDecoderModel import *
+    from .ForecasterTrainingArgument import *
