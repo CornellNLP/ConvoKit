@@ -40,7 +40,7 @@ class TransformerEncoderModel(ForecasterModel):
     (Tran et al., 2025).
 
     :param model_name_or_path: The name or local path of the pretrained transformer model to load.
-    :param config (object, optional): ForecasterTrainingArgument object containing parameters for training and evaluation.
+    :param config: (Optional) ForecasterTrainingArgument object containing parameters for training and evaluation.
     """
 
     def __init__(self, model_name_or_path, config=DEFAULT_CONFIG):

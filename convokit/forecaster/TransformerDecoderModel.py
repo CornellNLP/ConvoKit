@@ -18,7 +18,7 @@ from .ForecasterTrainingArgument import ForecasterTrainingArgument
 import shutil
 
 
-def get_templet_map(model_name_or_path):
+def _get_templet_map(model_name_or_path):
     """
     Map a model name or path to its corresponding prompt template family.
 
@@ -62,9 +62,9 @@ class TransformerDecoderModel(ForecasterModel):
     Supported model families include: Gemma2, Gemma3, Mistral, Zephyr, Phi-4, and LLaMA 3.
 
     :param model_name_or_path: The name or local path of the pretrained transformer model to load.
-    :param config (object, optional): ForecasterTrainingArgument object containing parameters for training and evaluation.
-    :param system_msg (str, optional): Custom system-level message guiding the forecaster's behavior. If not provided, a default prompt tailored for CGA (Conversation Gone Awry) moderation tasks is used.
-    :param question_msg (str, optional): Custom question prompt posed to the transformer model. If not provided, defaults to a standard CGA question asking about potential conversation derailment.
+    :param config: (Optional) ForecasterTrainingArgument object containing parameters for training and evaluation.
+    :param system_msg: (Optional) Custom system-level message guiding the forecaster's behavior. If not provided, a default prompt tailored for CGA (Conversation Gone Awry) moderation tasks is used.
+    :param question_msg: (Optional) Custom question prompt posed to the transformer model. If not provided, defaults to a standard CGA question asking about potential conversation derailment.
     """
 
     def __init__(
@@ -83,7 +83,7 @@ class TransformerDecoderModel(ForecasterModel):
 
         self.tokenizer = get_chat_template(
             tokenizer,
-            chat_template=get_templet_map(model_name_or_path),  # TO-DO: Define this
+            chat_template=_get_templet_map(model_name_or_path),  # TO-DO: Define this
             mapping={"role": "from", "content": "value", "user": "human", "assistant": "model"},
         )
         # Custom prompt

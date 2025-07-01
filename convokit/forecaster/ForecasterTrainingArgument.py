@@ -11,14 +11,11 @@ class ForecasterTrainingArgument:
     configuration parsing and command-line interfacing (e.g., via `argparse` or `transformers.HfArgumentParser`).
 
     Attributes:
-        output_dir (str): Path to the directory where outputs such as predictions, model checkpoints,
-            and training logs will be saved.
+        output_dir (str): Path to the directory where outputs such as predictions, model checkpoints, and training logs will be saved.
 
-        per_device_batch_size (int): Number of samples processed per device (e.g., GPU) in a single batch.
-            Default is 4.
+        per_device_batch_size (int): Number of samples processed per device (e.g., GPU) in a single batch. Default is 4.
 
-        gradient_accumulation_steps (int): Number of steps to accumulate gradients before performing
-            a backward pass and optimizer update. Useful for simulating larger batch sizes. Default is 1.
+        gradient_accumulation_steps (int): Number of steps to accumulate gradients before performing a backward pass and optimizer update. Useful for simulating larger batch sizes. Default is 1.
 
         num_train_epochs (int): Total number of epochs for model training. Default is 4.
 
@@ -26,13 +23,9 @@ class ForecasterTrainingArgument:
 
         random_seed (int): Seed value to ensure reproducible training behavior. Default is 1.
 
-        device (str): Device identifier on which the model will be trained and evaluated.
-            Typically 'cuda', 'cuda:0', or 'cpu'. Default is "cuda".
+        device (str): Device identifier on which the model will be trained and evaluated. Typically 'cuda', 'cuda:0', or 'cpu'. Default is "cuda".
 
-        context_mode (str): Specifies how the input context is constructed:
-            - "normal": Use full conversational context (previous utterances).
-            - "no-context": Use only the current utterance.
-            Default is "normal".
+        context_mode (str): Specifies how the input context is constructed: "normal": Use full conversational context (previous utterances). "no-context": Use only the current utterance. Default is "normal".
     """
 
     output_dir: str = field(
