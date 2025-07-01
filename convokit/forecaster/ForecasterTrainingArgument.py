@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 
+
 @dataclass
 class ForecasterTrainingArgument:
     """
@@ -33,14 +34,21 @@ class ForecasterTrainingArgument:
             - "no-context": Use only the current utterance.
             Default is "normal".
     """
+
     output_dir: str = field(
-        metadata={"help": "Path to the directory where outputs (e.g., predictions, checkpoints, logs) will be saved."}
+        metadata={
+            "help": "Path to the directory where outputs (e.g., predictions, checkpoints, logs) will be saved."
+        }
     )
     per_device_batch_size: int = field(
-        default=4, metadata={"help": "Number of samples processed per device (e.g., GPU) in a single batch."}
+        default=4,
+        metadata={"help": "Number of samples processed per device (e.g., GPU) in a single batch."},
     )
     gradient_accumulation_steps: int = field(
-        default=1, metadata={"help": "Number of steps to accumulate gradients before performing a backward/update pass."}
+        default=1,
+        metadata={
+            "help": "Number of steps to accumulate gradients before performing a backward/update pass."
+        },
     )
     num_train_epochs: int = field(
         default=4, metadata={"help": "Total number of epochs for training the model."}

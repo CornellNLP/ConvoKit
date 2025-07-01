@@ -8,6 +8,7 @@ if "torch" in sys.modules:
     from .CRAFT import *
     from .TransformerEncoderModel import *
     from .ForecasterTrainingArgument import *
+
     try:
         from .TransformerDecoderModel import *
     except ImportError as e:

@@ -22,14 +22,14 @@ import shutil
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 DEFAULT_CONFIG = ForecasterTrainingArgument(
-    output_dir= "TransformerEncoderModel",
-    gradient_accumulation_steps= 1,
-    per_device_batch_size= 4,
-    num_train_epochs= 1,
-    learning_rate= 6.7e-6,
-    random_seed= 1,
-    context_mode= "normal",
-    device= "cuda"
+    output_dir="TransformerEncoderModel",
+    gradient_accumulation_steps=1,
+    per_device_batch_size=4,
+    num_train_epochs=1,
+    learning_rate=6.7e-6,
+    random_seed=1,
+    context_mode="normal",
+    device="cuda",
 )
 
 
@@ -183,9 +183,7 @@ class TransformerEncoderModel(ForecasterModel):
         preds = []
         scores = []
         for data in tqdm(dataset):
-            input_ids = (
-                data["input_ids"].to(self.config.device, dtype=torch.long).reshape([1, -1])
-            )
+            input_ids = data["input_ids"].to(self.config.device, dtype=torch.long).reshape([1, -1])
             attention_mask = (
                 data["attention_mask"].to(self.config.device, dtype=torch.long).reshape([1, -1])
             )
@@ -288,7 +286,9 @@ class TransformerEncoderModel(ForecasterModel):
                 print("Deleting:", root)
                 shutil.rmtree(root)
         # Save the tokenizer.
-        self.tokenizer.save_pretrained(os.path.join(self.config.output_dir, best_config['best_checkpoint']))
+        self.tokenizer.save_pretrained(
+            os.path.join(self.config.output_dir, best_config["best_checkpoint"])
+        )
         return best_config
 
     def fit(self, contexts, val_contexts):
