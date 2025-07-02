@@ -9,7 +9,6 @@
 [![license](https://img.shields.io/badge/license-MIT-green)](https://github.com/CornellNLP/ConvoKit/blob/master/LICENSE.md)
 [![Discord Community](https://img.shields.io/static/v1?logo=discord&style=flat&color=red&label=discord&message=community)](https://discord.gg/WMFqMWgz6P)
 
-
 This toolkit contains tools to extract conversational features and analyze social phenomena in conversations, using a [single unified interface](https://convokit.cornell.edu/documentation/architecture.html) inspired by (and compatible with) scikit-learn.  Several large [conversational datasets](https://github.com/CornellNLP/ConvoKit#datasets) are included together with scripts exemplifying the use of the toolkit on these datasets. The latest version is [3.3.0](https://github.com/CornellNLP/ConvoKit/releases/tag/v3.3.0) (released July 2, 2025); follow the [project on GitHub](https://github.com/CornellNLP/ConvoKit) to keep track of updates.
 
 Join our [Discord community](https://discord.gg/WMFqMWgz6P) to stay informed, connect with fellow developers, and be part of an engaging space where we share progress, discuss features, and tackle issues together.
@@ -57,6 +56,9 @@ Available as an interactive notebook: [full version (fine-tuning + inference)](h
 The methods to compute the extent to which utterances redirect the flow of the conversation (Redirection) and to measure the log-likelihoods of utterances given a defined conversation context (Utterance Likelihood).
 Example: [redirection in supreme court oral arguments](https://github.com/CornellNLP/ConvoKit/blob/master/convokit/redirection/redirectionDemo.ipynb)
 
+### [Pivotal Moment Measure]( ) <sub><sup>[(API)](https://convokit.cornell.edu/documentation/pivotal.html)</sup></sub>
+A method to identify pivotal moments in conversations.
+Example: [pivotal moments in conversations gone awry](https://github.com/CornellNLP/ConvoKit/blob/master/convokit/pivotal_framework/pivotal_demo.ipynb)
 
 ## Datasets
 ConvoKit ships with several datasets ready for use "out-of-the-box".
