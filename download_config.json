@@ -124,6 +124,12 @@
       "https://zissou.infosci.cornell.edu/convokit/models/craft_cmv/craft_full.tar",
       "https://zissou.infosci.cornell.edu/convokit/models/craft_cmv/index2word.json",
       "https://zissou.infosci.cornell.edu/convokit/models/craft_cmv/word2index.json"
-    ]
+    ],
+    "cga-cmv-large/roberta-large": ["https://zissou.infosci.cornell.edu/convokit/models/forecaster_models/cga-cmv-large/roberta-large.tar"],
+    "cga-cmv-large/bert-base-cased": ["https://zissou.infosci.cornell.edu/convokit/models/forecaster_models/cga-cmv-large/bert-base-cased.tar"],
+    "cga-cmv-legacy/roberta-large": ["https://zissou.infosci.cornell.edu/convokit/models/forecaster_models/cga-cmv-legacy/roberta-large.tar"],
+    "cga-cmv-legacy/bert-base-cased": ["https://zissou.infosci.cornell.edu/convokit/models/forecaster_models/cga-cmv-legacy/bert-base-cased.tar"],
+    "cga-wikiconv/roberta-large": ["https://zissou.infosci.cornell.edu/convokit/models/forecaster_models/cga-wikiconv/roberta-large.tar"],
+    "cga-wikiconv/bert-base-cased": ["https://zissou.infosci.cornell.edu/convokit/models/forecaster_models/cga-wikiconv/bert-base-cased.tar"]
   }
 }
