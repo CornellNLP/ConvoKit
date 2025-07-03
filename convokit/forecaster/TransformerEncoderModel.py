@@ -220,7 +220,7 @@ class TransformerEncoderModel(ForecasterModel):
 
         :return: A dictionary containing the best checkpoint path, best threshold, and best validation accuracy.
         """
-        checkpoints = os.listdir(self.config.output_dir)
+        checkpoints = [cp for cp in os.listdir(self.config.output_dir) if "checkpoint-" in cp]
         best_val_accuracy = 0
         val_convo_ids = set()
         utt2convo = {}
