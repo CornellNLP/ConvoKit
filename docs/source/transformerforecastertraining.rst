@@ -1,5 +1,5 @@
-Transformer Forecaster Training Argument
+Transformer Forecaster Configuration
 ========================================
 
-.. automodule:: convokit.forecaster.ForecasterTrainingArgument
+.. automodule:: convokit.forecaster.TransformerForecasterConfig
     :members:

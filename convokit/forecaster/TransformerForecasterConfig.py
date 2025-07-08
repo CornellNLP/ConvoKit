@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 
 
 @dataclass
-class ForecasterTrainingArgument:
+class TransformerForecasterConfig:
     """
     Configuration class for defining training arguments used during fine-tuning of a TransformerDecoderModel or TransformerEncoderModel.
 

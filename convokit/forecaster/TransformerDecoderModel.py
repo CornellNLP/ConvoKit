@@ -14,7 +14,7 @@ from sklearn.metrics import roc_curve
 from datasets import Dataset
 from trl import SFTTrainer, SFTConfig
 from .forecasterModel import ForecasterModel
-from .ForecasterTrainingArgument import ForecasterTrainingArgument
+from .TransformerForecasterConfig import TransformerForecasterConfig
 import shutil
 
 
@@ -42,7 +42,7 @@ def _get_templet_map(model_name_or_path):
     raise ValueError(f"Model '{model_name_or_path}' is not supported.")
 
 
-DEFAULT_CONFIG = ForecasterTrainingArgument(
+DEFAULT_CONFIG = TransformerForecasterConfig(
     output_dir="TransformerDecoderModel",
     gradient_accumulation_steps=32,
     per_device_batch_size=2,
@@ -62,7 +62,7 @@ class TransformerDecoderModel(ForecasterModel):
     Supported model families include: Gemma2, Gemma3, Mistral, Zephyr, Phi-4, and LLaMA 3.
 
     :param model_name_or_path: The name or local path of the pretrained transformer model to load.
-    :param config: (Optional) ForecasterTrainingArgument object containing parameters for training and evaluation.
+    :param config: (Optional) TransformerForecasterConfig object containing parameters for training and evaluation.
     :param system_msg: (Optional) Custom system-level message guiding the forecaster's behavior. If not provided, a default prompt tailored for CGA (Conversation Gone Awry) moderation tasks is used.
     :param question_msg: (Optional) Custom question prompt posed to the transformer model. If not provided, defaults to a standard CGA question asking about potential conversation derailment.
     """

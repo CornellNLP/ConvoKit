@@ -7,7 +7,7 @@ if "torch" in sys.modules:
     from .CRAFTModel import *
     from .CRAFT import *
     from .TransformerEncoderModel import *
-    from .ForecasterTrainingArgument import *
+    from .TransformerForecasterConfig import *
 
     try:
         from .TransformerDecoderModel import *

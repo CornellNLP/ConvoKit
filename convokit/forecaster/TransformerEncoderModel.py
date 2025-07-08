@@ -15,13 +15,13 @@ from transformers import (
     Trainer,
 )
 from .forecasterModel import ForecasterModel
-from .ForecasterTrainingArgument import ForecasterTrainingArgument
+from .TransformerForecasterConfig import TransformerForecasterConfig
 import shutil
 
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
-DEFAULT_CONFIG = ForecasterTrainingArgument(
+DEFAULT_CONFIG = TransformerForecasterConfig(
     output_dir="TransformerEncoderModel",
     gradient_accumulation_steps=1,
     per_device_batch_size=4,
@@ -40,7 +40,7 @@ class TransformerEncoderModel(ForecasterModel):
     (Tran et al., 2025).
 
     :param model_name_or_path: The name or local path of the pretrained transformer model to load.
-    :param config: (Optional) ForecasterTrainingArgument object containing parameters for training and evaluation.
+    :param config: (Optional) TransformerForecasterConfig object containing parameters for training and evaluation.
     """
 
     def __init__(self, model_name_or_path, config=DEFAULT_CONFIG):

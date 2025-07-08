@@ -44,7 +44,7 @@ These are subclasses of ForecasterModel, each implementing forecasting models us
    CRAFT Model <craftmodel.rst>
    Transformer Encoder-based Model <transformerencodermodel.rst>
    Transformer Decoder-based Model <transformerdecodermodel.rst>
-   Transformer Forecaster Training Argument <transformerforecastertraining.rst>
+   Transformer Forecaster Configuration <transformerforecastertraining.rst>
 
 +----------------+-------+------+-------+-------+------+----------+-------------------------+
 | Model          | Acc ↑ | P ↑  | R ↑   | F1 ↑  | FPR ↓| Mean H ↑ | Recovery ↑              |
