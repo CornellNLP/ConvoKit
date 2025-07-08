@@ -6,8 +6,6 @@ import sys
 if "torch" in sys.modules:
     from .CRAFTModel import *
     from .CRAFT import *
-    from .TransformerEncoderModel import *
-    from .TransformerForecasterConfig import *
 
     try:
         from .TransformerDecoderModel import *
@@ -18,3 +16,5 @@ if "torch" in sys.modules:
             )
         else:
             raise
+    from .TransformerEncoderModel import *
+    from .TransformerForecasterConfig import *

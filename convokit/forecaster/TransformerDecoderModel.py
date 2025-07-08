@@ -1,8 +1,9 @@
 try:
-    from unsloth import FastLanguageModel, is_bfloat16_supported
-    from unsloth.chat_templates import get_chat_template
+    import unsloth
 except NotImplementedError as e:
     raise ImportError("Unsloth GPU requirement not met") from e
+from unsloth import FastLanguageModel, is_bfloat16_supported
+from unsloth.chat_templates import get_chat_template
 import torch
 import torch.nn.functional as F
 import json
