@@ -221,7 +221,7 @@ class UnslothUtteranceSimulatorModel(UtteranceSimulatorModel):
                 repetition_penalty=generation_config["repetition_penalty"],
                 eos_token_id=self.tokenizer.convert_tokens_to_ids("<|eot_id|>"),
                 pad_token_id=self.tokenizer.pad_token_id,
-                num_return_sequences=self.num_simulations
+                num_return_sequences=self.num_simulations,
             )
             responses = responses[:, input_len:]
             responses = self.tokenizer.batch_decode(responses, skip_special_tokens=True)
