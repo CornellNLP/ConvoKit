@@ -376,4 +376,6 @@ autodoc_mock_imports = [
     "bson",
     "dnspython",
     "datasets",
+    "transformers",
+    "unsloth",
 ]
