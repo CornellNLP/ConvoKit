@@ -47,6 +47,7 @@ Forecaster
 ----------
 - `CRAFT forecasting of conversational derailment <https://github.com/CornellNLP/ConvoKit/blob/master/convokit/forecaster/CRAFT/demos/craft_demo_new.ipynb>`_
 - `Forecasting of conversational derailment using a cumulative bag-of-words model <https://github.com/CornellNLP/ConvoKit/blob/master/convokit/forecaster/tests/cumulativeBoW_demo.ipynb>`_
+- `Evaluating Transformer Fine-tuned Models (i.e. RoBERTa, Gemma) <https://github.com/CornellNLP/ConvoKit/blob/master/examples/forecaster/Run%20Transformer%20Fine-tuned%20Models.ipynb>`_
 
 Hyperconvo
 ----------

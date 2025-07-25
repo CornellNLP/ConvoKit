@@ -199,7 +199,17 @@ class UnslothUtteranceSimulatorModel(UtteranceSimulatorModel):
         utt_ids = []
         for data in tqdm(test_dataset):
             text = data["text"]
-            inputs = self.tokenizer(text, return_tensors="pt").to(self.device)
+            inputs = self.tokenizer(
+                text,
+                return_tensors="pt",
+                padding=True,
+                truncation=True,
+                max_length=self.model_config["max_seq_length"],
+            ).to(self.device)
+            assert inputs["input_ids"].shape[1] <= self.model_config["max_seq_length"], (
+                f"Input length {inputs['input_ids'].shape[1]} exceeds max_seq_length "
+                f"{self.model_config['max_seq_length']}"
+            )
             input_len = inputs["input_ids"].shape[1]
             responses = self.model.generate(
                 **inputs,

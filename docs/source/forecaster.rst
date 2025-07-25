@@ -79,3 +79,5 @@ These are subclasses of ForecasterModel, each implementing forecasting models us
 **Table 1: Forecasting derailment on CGA-CMV-large conversations.**
 The performance is measured in accuracy (Acc), precision (P), recall (R), F1, false positive rate (FPR), mean horizon (Mean H), and Forecast Recovery (Recovery) along with the correct and incorrect recovery rates. Results are reported as averages over five runs with
 different random seeds.
+
+For more information on how to produce a leaderboard string here, see the `Run Transformer Fine-tuned Models.ipynb <https://github.com/CornellNLP/ConvoKit/blob/master/examples/forecaster/Run%20Transformer%20Fine-tuned%20Models.ipynb>`_ notebook.
