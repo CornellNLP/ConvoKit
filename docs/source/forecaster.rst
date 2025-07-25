@@ -46,6 +46,8 @@ These are subclasses of ForecasterModel, each implementing forecasting models us
    Transformer Decoder-based Model <transformerdecodermodel.rst>
    Transformer Forecaster Configuration <transformerforecastertraining.rst>
 
+   The following table is the current leaderboard comparing the performance of different forecaster models following a uniform evaluation framework described in Son et al, 2025. If you want to include the performance of another model in this leaderboard, make a pull request with the respective ForecasterModel class and with the version of this `demo <https://github.com/CornellNLP/ConvoKit/blob/master/examples/forecaster/Run%20Transformer%20Fine-tuned%20Models.ipynb>`_ that generates the respective new leaderboard line.
+
 +----------------+-------+------+-------+-------+------+----------+-------------------------+
 | Model          | Acc ↑ | P ↑  | R ↑   | F1 ↑  | FPR ↓| Mean H ↑ | Recovery ↑              |
 +================+=======+======+=======+=======+======+==========+=========================+
@@ -79,5 +81,3 @@ These are subclasses of ForecasterModel, each implementing forecasting models us
 **Table 1: Forecasting derailment on CGA-CMV-large conversations.**
 The performance is measured in accuracy (Acc), precision (P), recall (R), F1, false positive rate (FPR), mean horizon (Mean H), and Forecast Recovery (Recovery) along with the correct and incorrect recovery rates. Results are reported as averages over five runs with
 different random seeds.
-
-For more information on how to produce a leaderboard string here, see the `Run Transformer Fine-tuned Models.ipynb <https://github.com/CornellNLP/ConvoKit/blob/master/examples/forecaster/Run%20Transformer%20Fine-tuned%20Models.ipynb>`_ notebook. If you would like to include your model in the leaderboard, please make a pull request adding the respective ForecasterModel and the version of the demo generating the leaderboard line. Please contact us on `Discord <https://discord.gg/R2ej9Kyr3K>`_ for assistance.
