@@ -65,7 +65,7 @@ Usage
 To download directly with ConvoKit:
 
 >>> from convokit import Corpus, download
->>> corpus = Corpus(filename=download("conversations-gone-awry-cmv-corpus"))
+>>> corpus = Corpus(filename=download("conversations-gone-awry-cmv-corpus-large"))
 
 
 For some quick stats:
