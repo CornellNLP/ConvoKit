@@ -80,4 +80,4 @@ These are subclasses of ForecasterModel, each implementing forecasting models us
 The performance is measured in accuracy (Acc), precision (P), recall (R), F1, false positive rate (FPR), mean horizon (Mean H), and Forecast Recovery (Recovery) along with the correct and incorrect recovery rates. Results are reported as averages over five runs with
 different random seeds.
 
-For more information on how to produce a leaderboard string here, see the `Run Transformer Fine-tuned Models.ipynb <https://github.com/CornellNLP/ConvoKit/blob/master/examples/forecaster/Run%20Transformer%20Fine-tuned%20Models.ipynb>`_ notebook.
+For more information on how to produce a leaderboard string here, see the `Run Transformer Fine-tuned Models.ipynb <https://github.com/CornellNLP/ConvoKit/blob/master/examples/forecaster/Run%20Transformer%20Fine-tuned%20Models.ipynb>`_ notebook. If you would like to include your model in the leaderboard, please make a pull request adding the respective ForecasterModel and the version of the demo generating the leaderboard line. Please contact us on `Discord <https://discord.gg/R2ej9Kyr3K>`_ for assistance.
