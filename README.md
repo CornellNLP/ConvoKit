@@ -1,6 +1,6 @@
 # [ConvoKit](http://convokit.cornell.edu/)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-35-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-36-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![pypi](https://img.shields.io/pypi/v/convokit.svg)](https://pypi.org/pypi/convokit/)
@@ -286,6 +286,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/vianxnguyen"><img src="https://avatars.githubusercontent.com/u/46759999?v=4?s=100" width="100px;" alt="vivian"/><br /><sub><b>vivian</b></sub></a><br /><a href="https://github.com/CornellNLP/ConvoKit/commits?author=vianxnguyen" title="Code">💻</a> <a href="https://github.com/CornellNLP/ConvoKit/commits?author=vianxnguyen" title="Documentation">📖</a> <a href="#example-vianxnguyen" title="Examples">💡</a> <a href="#ideas-vianxnguyen" title="Ideas, Planning, & Feedback">🤔</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/laerdon"><img src="https://avatars.githubusercontent.com/u/96972420?v=4?s=100" width="100px;" alt="Laerdon Kim"/><br /><sub><b>Laerdon Kim</b></sub></a><br /><a href="https://github.com/CornellNLP/ConvoKit/commits?author=laerdon" title="Documentation">📖</a> <a href="#example-laerdon" title="Examples">💡</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/yash-chatha"><img src="https://avatars.githubusercontent.com/u/62723967?v=4?s=100" width="100px;" alt="Yash Chatha"/><br /><sub><b>Yash Chatha</b></sub></a><br /><a href="https://github.com/CornellNLP/ConvoKit/commits?author=yash-chatha" title="Documentation">📖</a> <a href="#example-yash-chatha" title="Examples">💡</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/jeeyonkang"><img src="https://avatars.githubusercontent.com/u/135584717?v=4?s=100" width="100px;" alt="Jeeyon Kang"/><br /><sub><b>Jeeyon Kang</b></sub></a><br /><a href="#data-jeeyonkang" title="Data">🔣</a> <a href="#example-jeeyonkang" title="Examples">💡</a></td>
     </tr>
   </tbody>
 </table>

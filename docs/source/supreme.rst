@@ -130,13 +130,13 @@ Citation and other versions
 
 This corpus extends a `smaller dataset <https://confluence.cornell.edu/display/llresearch/Supreme+Court+Dialogs+Corpus>`_ of oral arguments that we previously released together with `Echoes of power\: Language effects and power differences in social interaction <https://www.cs.cornell.edu/~cristian/Echoes_of_power.html>`_. Cristian Danescu-Niculescu-Mizil, Bo Pang, Lillian Lee and Jon Kleinberg. WWW 2012.  Please cite the Echoes of Powers paper if you use either version of the corpus.  If you use the ConvoKit version 	please additionally cite: `ConvoKit\: A Toolkit for the Analysis of Conversations <https://www.cs.cornell.edu/~cristian/ConvoKit_Demo_Paper_files/convokit-demo-paper.pdf>`_. Jonathan P. Chang, Caleb Chiam, Liye Fu, Andrew Wang, Justine Zhang, Cristian Danescu-Niculescu-Mizil. Proceedings of SIGDIAL. 2020.
 
-This work extends the original Supreme Court Corpus curated by the ConvoKit team to include data up to the year 2023. We preserve the structure and metadata of the original release while integrating updated transcripts from 2019 where appropriate.  
+This work extends the original Supreme Court Corpus curated by the ConvoKit team to include data up to the year 2023. We preserve the structure and metadata of the original release while integrating updated transcripts from 2019 where appropriate. We thank Jeeyon Kang for the help with the 2023 extension of the corpus.
 
-**Note:** The original version of the corpus (prior to the 2023 extension) is still available for reproducibility purposes at [link]. 
+**Note:** The original version of the corpus (prior to the 2023 extension) is still available for reproducibility purposes at `link <https://zissou.infosci.cornell.edu/convokit/datasets/supreme-corpus-deprecated/>`_. 
 
 
 Contact
 ^^^^^^^
 
 Please email any questions to: jz727@cornell.edu (Justine Zhang).
-
+For issues with the extended version (2023 extension) of the corpus, please email: jk26@williams.edu (Jeeyon Kang).
