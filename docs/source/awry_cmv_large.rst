@@ -1,4 +1,4 @@
-Conversations Gone Awry Dataset (Large) - Reddit CMV version (CGA-CMV)
+Conversations Gone Awry Dataset (Large) - Reddit CMV version (CGA-CMV-Large)
 ==============================================================
 
 A collection of conversations from the ChangeMyView (CMV) subreddit that derail into personal attacks (19,578 conversations, 116,793 comments), now updated with conversations up to 2022. Using this dataset, over the original version, is recommended.
