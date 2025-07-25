@@ -66,8 +66,8 @@ These datasets can be downloaded using the `convokit.download()` [helper functio
 
 ### Conversations Gone Awry Datasets ([Wikipedia](https://convokit.cornell.edu/documentation/awry.html)/[CMV](https://convokit.cornell.edu/documentation/awry_cmv.html))
 
-Two related corpora of conversations that derail into antisocial behavior. One corpus (CGA-WIKI) consists of Wikipedia talk page conversations that derail into personal attacks as labeled by crowdworkers (4,188 conversations containing 30.021 comments). The other (CGA-CMV) consists of discussion threads on the subreddit ChangeMyView (CMV) that derail into rule-violating behavior as determined by the presence of a moderator intervention (6,842 conversations containing 42,964 comments).
-Name for download: `conversations-gone-awry-corpus` (for CGA-WIKI) or `conversations-gone-awry-cmv-corpus` (for CGA-CMV)
+Three related corpora of conversations that derail into antisocial behavior. One corpus (CGA-WIKI) consists of Wikipedia talk page conversations that derail into personal attacks as labeled by crowdworkers (4,188 conversations containing 30.021 comments). Another (CGA-CMV) consists of discussion threads on the subreddit ChangeMyView (CMV) that derail into rule-violating behavior as determined by the presence of a moderator intervention (6,842 conversations containing 42,964 comments). The last is a recent expansion of the CGA-CMV dataset, containing now 19,578 conversations and 116,793 utterances.
+Name for download: `conversations-gone-awry-corpus` (for CGA-WIKI), `conversations-gone-awry-cmv-corpus` (for CGA-CMV), and `conversations-gone-awry-cmv-corpus-large` (for CGA-CMV-Large)
 
 ### [Cornell Movie-Dialogs Corpus](https://convokit.cornell.edu/documentation/movie.html)
 

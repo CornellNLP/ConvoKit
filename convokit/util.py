@@ -36,9 +36,11 @@ def download(
         - "conversations-gone-awry-corpus": Wiki Personal Attacks Corpus
             Wikipedia talk page conversations that derail into personal attacks as labeled by crowdworkers
             (see http://www.cs.cornell.edu/~cristian/Conversations_gone_awry.html)
+        - "conversations-gone-awry-cmv-corpus-large"
+            Discussion threads on the subreddit ChangeMyView (CMV) that derail into rule-violating behavior, now updated with conversations up to 2022.
+            (see http://www.cs.cornell.edu/~cristian/Conversations_gone_awry.html)
         - "conversations-gone-awry-cmv-corpus"
             Discussion threads on the subreddit ChangeMyView (CMV) that derail into rule-violating behavior
-            (see http://www.cs.cornell.edu/~cristian/Conversations_gone_awry.html)
         -  "movie-corpus": Cornell Movie-Dialogs Corpus
             A large metadata-rich collection of fictional conversations extracted from raw movie scripts.
             (see https://www.cs.cornell.edu/~cristian/Chameleons_in_imagined_conversations.html)
