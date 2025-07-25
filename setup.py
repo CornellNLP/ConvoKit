@@ -28,6 +28,7 @@ setup(
         "convokit.prompt_types",
         "convokit.ranker",
         "convokit.redirection",
+        "convokit.balance",
         "convokit.text_processing",
         "convokit.speaker_convo_helpers",
         "convokit.speakerConvoDiversity",
@@ -72,8 +73,8 @@ setup(
         "transformers",
         "unsloth",
         "trl>=0.12.2",
-        "tensorflow>=2.18.0",
-        "tf-keras>=2.17.0,<3.0.0",
+        # "tensorflow>=2.18.0",
+        # "tf-keras>=2.17.0,<3.0.0",
     ],
     extras_require={
         "craft": ["torch>=0.12"],
