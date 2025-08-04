@@ -46,7 +46,7 @@ These are subclasses of ForecasterModel, each implementing forecasting models us
    Transformer Decoder-based Model <transformerdecodermodel.rst>
    Transformer Forecaster Configuration <transformerforecastertraining.rst>
 
-The following table is the current leaderboard comparing the performance of different forecaster models following a uniform evaluation framework described in Son et al, 2025. If you want to include the performance of another model in this leaderboard, make a pull request with the respective ForecasterModel class and with the version of this `demo <https://github.com/CornellNLP/ConvoKit/blob/master/examples/forecaster/Run%20Transformer%20Fine-tuned%20Models.ipynb>`_ that generates the respective new leaderboard line.
+The following table is the current leaderboard comparing the performance of different forecaster models following a uniform evaluation framework described in `Tran et al., 2025 <https://arxiv.org/abs/2507.19470>`_. If you want to include the performance of another model in this leaderboard, make a pull request with the respective ForecasterModel class and with the version of this `demo <https://github.com/CornellNLP/ConvoKit/blob/master/examples/forecaster/Run%20Transformer%20Fine-tuned%20Models.ipynb>`_ that generates the respective new leaderboard line.
 
 +----------------+-------+------+-------+-------+------+----------+-------------------------+
 | Model          | Acc ↑ | P ↑  | R ↑   | F1 ↑  | FPR ↓| Mean H ↑ | Recovery ↑              |
