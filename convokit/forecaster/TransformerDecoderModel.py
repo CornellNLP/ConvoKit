@@ -19,7 +19,7 @@ from .TransformerForecasterConfig import TransformerForecasterConfig
 import shutil
 
 
-def _get_templet_map(model_name_or_path):
+def _get_template_map(model_name_or_path):
     """
     Map a model name or path to its corresponding prompt template family.
 
@@ -28,12 +28,12 @@ def _get_templet_map(model_name_or_path):
     :raises ValueError: If the model is not recognized.
     """
     TEMPLATE_PATTERNS = [
-        ("google/gemma-2-", "gemma2"),
-        ("google/gemma-3-", "gemma3"),
-        ("mistralai/mistral", "mistral"),
-        ("HuggingFaceH4/zephyr", "zephyr"),
-        ("microsoft/phi-4", "phi-4"),
-        ("meta-llama/Llama-3", "llama3"),
+        ("google/gemma-2", "gemma2"),
+        ("google/gemma-3", "gemma3"),
+        ("mistral", "mistral"),
+        ("zephyr", "zephyr"),
+        ("phi-4", "phi-4"),
+        ("llama-3", "llama3"),
     ]
 
     for pattern, template in TEMPLATE_PATTERNS:
@@ -84,7 +84,7 @@ class TransformerDecoderModel(ForecasterModel):
 
         self.tokenizer = get_chat_template(
             tokenizer,
-            chat_template=_get_templet_map(model_name_or_path),  # TO-DO: Define this
+            chat_template=_get_template_map(self.model.config.name_or_path),
             mapping={"role": "from", "content": "value", "user": "human", "assistant": "model"},
         )
         # Custom prompt
