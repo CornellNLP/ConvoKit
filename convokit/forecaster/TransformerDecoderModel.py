@@ -28,8 +28,8 @@ def _get_template_map(model_name_or_path):
     :raises ValueError: If the model is not recognized.
     """
     TEMPLATE_PATTERNS = [
-        ("google/gemma-2", "gemma2"),
-        ("google/gemma-3", "gemma3"),
+        ("gemma-2", "gemma2"),
+        ("gemma-3", "gemma3"),
         ("mistral", "mistral"),
         ("zephyr", "zephyr"),
         ("phi-4", "phi-4"),
