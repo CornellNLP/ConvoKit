@@ -284,12 +284,16 @@ def _download_helper(
                 os.mkdir(corpus_dir)
             zipf.extractall(corpus_dir)
 
-    elif url.lower().endswith(".corpus") or url.lower().endswith(".corpus.zip") or url.lower().endswith(".zip"):
+    elif (
+        url.lower().endswith(".corpus")
+        or url.lower().endswith(".corpus.zip")
+        or url.lower().endswith(".zip")
+    ):
         with zipfile.ZipFile(dataset_path, "r") as zipf:
             # Check if the zip contains a directory with the corpus name
             zip_contents = zipf.namelist()
             has_corpus_dir = any(item.startswith(f"{name}/") for item in zip_contents)
-            
+
             if has_corpus_dir:
                 # If zip contains a corpus directory, extract to parent directory
                 zipf.extractall(os.path.dirname(dataset_path))
