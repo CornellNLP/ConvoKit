@@ -1,19 +1,27 @@
+try:
+    import torch
+    import torch.nn.functional as F
+    from datasets import Dataset, DatasetDict
+    from transformers import (
+        AutoConfig,
+        AutoModelForSequenceClassification,
+        AutoTokenizer,
+        TrainingArguments,
+        Trainer,
+    )
+
+    TRANSFORMERS_AVAILABLE = True
+except (ModuleNotFoundError, ImportError) as e:
+    raise ModuleNotFoundError(
+        "torch, transformers, or datasets is not currently installed. Run 'pip install convokit[ml]' if you would like to use the TransformerEncoderModel."
+    ) from e
+
 import os
-import torch
-import torch.nn.functional as F
 import pandas as pd
 import numpy as np
 import json
 from tqdm import tqdm
 from sklearn.metrics import roc_curve
-from datasets import Dataset, DatasetDict
-from transformers import (
-    AutoConfig,
-    AutoModelForSequenceClassification,
-    AutoTokenizer,
-    TrainingArguments,
-    Trainer,
-)
 from .forecasterModel import ForecasterModel
 from .TransformerForecasterConfig import TransformerForecasterConfig
 import shutil
