@@ -6,7 +6,7 @@ try:
     DATASETS_AVAILABLE = True
 except (ModuleNotFoundError, ImportError) as e:
     raise ModuleNotFoundError(
-        "datasets is not currently installed. Run 'pip install convokit[ml]' if you would like to use the utterance simulator functionality."
+        "datasets is not currently installed. Run 'pip install convokit[llm]' if you would like to use the utterance simulator functionality."
     ) from e
 
 ContextTuple = namedtuple(

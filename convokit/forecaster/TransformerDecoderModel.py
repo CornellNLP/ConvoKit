@@ -13,7 +13,7 @@ except (ModuleNotFoundError, ImportError) as e:
         raise ImportError("Unsloth GPU requirement not met") from e
     else:
         raise ModuleNotFoundError(
-            "unsloth, torch, trl, or datasets is not currently installed. Run 'pip install convokit[ml]' if you would like to use the TransformerDecoderModel."
+            "unsloth, torch, trl, or datasets is not currently installed. Run 'pip install convokit[llm]' if you would like to use the TransformerDecoderModel."
         ) from e
 
 import json

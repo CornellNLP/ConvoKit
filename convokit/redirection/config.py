@@ -6,7 +6,7 @@ try:
     REDIRECTION_ML_AVAILABLE = True
 except (ModuleNotFoundError, ImportError) as e:
     raise ModuleNotFoundError(
-        "peft, transformers, or torch is not currently installed. Run 'pip install convokit[ml]' if you would like to use the redirection module."
+        "peft, transformers, or torch is not currently installed. Run 'pip install convokit[llm]' if you would like to use the redirection module."
     ) from e
 
 DEFAULT_BNB_CONFIG = BitsAndBytesConfig(

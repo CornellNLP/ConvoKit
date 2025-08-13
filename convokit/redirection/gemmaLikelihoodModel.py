@@ -13,7 +13,7 @@ try:
     GEMMA_ML_AVAILABLE = True
 except (ModuleNotFoundError, ImportError) as e:
     raise ModuleNotFoundError(
-        "torch, peft, transformers, or trl is not currently installed. Run 'pip install convokit[ml]' if you would like to use the GemmaLikelihoodModel."
+        "torch, peft, transformers, or trl is not currently installed. Run 'pip install convokit[llm]' if you would like to use the GemmaLikelihoodModel."
     ) from e
 
 from .likelihoodModel import LikelihoodModel

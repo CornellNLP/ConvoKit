@@ -7,7 +7,7 @@ except ImportError as e:
         )
     elif "not currently installed" in str(e):
         print(
-            "Pivotal framework requires ML dependencies. Run 'pip install convokit[ml]' to install them."
+            "Pivotal framework requires ML dependencies. Run 'pip install convokit[llm]' to install them."
         )
     else:
         raise

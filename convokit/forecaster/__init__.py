@@ -18,7 +18,7 @@ except ImportError as e:
         )
     elif "not currently installed" in str(e):
         print(
-            "TransformerDecoderModel requires ML dependencies. Run 'pip install convokit[ml]' to install them."
+            "TransformerDecoderModel requires ML dependencies. Run 'pip install convokit[llm]' to install them."
         )
     else:
         raise
@@ -28,7 +28,7 @@ try:
 except ImportError as e:
     if "not currently installed" in str(e):
         print(
-            "TransformerEncoderModel requires ML dependencies. Run 'pip install convokit[ml]' to install them."
+            "TransformerEncoderModel requires ML dependencies. Run 'pip install convokit[llm]' to install them."
         )
     else:
         raise
