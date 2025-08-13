@@ -65,13 +65,13 @@ setup(
         "numexpr>=2.8.0",
         "ruff>=0.4.8",
         "bottleneck",
+        "datasets",
     ],
     extras_require={
         "craft": ["torch>=0.12"],
         "forecaster": ["torch>=0.12", "datasets"],
         "ml": [
             "torch>=0.12",
-            "datasets",
             "accelerate",
             "peft",
             "bitsandbytes",
