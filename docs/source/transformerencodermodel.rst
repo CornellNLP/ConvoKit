@@ -1,6 +1,5 @@
 Transformer Encoder-based Forecasting Model
 ===========================================
-Please note: this transformer requires installing convokit with the optional LLM packages via `pip install convokit[llm]`.
 
 A ConvoKit Forecaster-adherent implementation of conversational forecasting model based on Transformer Encoder Model (e.g. BERT, RoBERTa, SpanBERT, DeBERTa).
 This class is first used in the paper "Conversations Gone Awry, But Then? Evaluating Conversational Forecasting Models"(Tran et al., 2025).
