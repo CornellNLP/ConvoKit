@@ -35,12 +35,15 @@ setup(
         "convokit.surprise",
         "convokit.pivotal_framework",
         "convokit.utterance_simulator",
+        "convokit.genai",
+        "convokit.convo_similarity",
     ],
     package_data={
         "convokit": [
             "data/*.txt",
             "politeness_collections/politeness_local/lexicons/*.json",
             "politeness_collections/politeness_cscw_zh/lexicons/*.json",
+            "convo_similarity/prompts/*.txt",
         ]
     },
     install_requires=[
@@ -74,10 +77,16 @@ setup(
         "trl>=0.12.2",
         "tensorflow>=2.18.0",
         "tf-keras>=2.17.0,<3.0.0",
+        "evaluate",
+        "sentence-transformers",
     ],
     extras_require={
         "craft": ["torch>=0.12"],
         "forecaster": ["torch>=0.12", "datasets"],
+        "genai": [
+            "openai>=1.3.5",
+            "google-genai",
+        ],
     },
     classifiers=[
         "Programming Language :: Python",

@@ -378,4 +378,10 @@ autodoc_mock_imports = [
     "datasets",
     "transformers",
     "unsloth",
+    "sentence_transformers",
+    "evaluate",
+    "openai",
+    "google",
+    "google.genai",
+    "google.genai.types",
 ]

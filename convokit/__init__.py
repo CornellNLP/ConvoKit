@@ -24,6 +24,8 @@ try:
     from .redirection import *
     from .pivotal_framework import *
     from .utterance_simulator import *
+    from .genai import *
+    from .convo_similarity import *
 except Exception as e:
     print(f"An error occurred: {e}")
     warnings.warn(
