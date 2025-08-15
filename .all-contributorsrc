@@ -372,6 +372,15 @@
         "data",
         "example"
       ]
+    },
+    {
+      "login": "kakeith",
+      "name": "Katherine A. Keith",
+      "avatar_url": "https://avatars.githubusercontent.com/u/18640437?v=4",
+      "profile": "https://kakeith.github.io/",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
