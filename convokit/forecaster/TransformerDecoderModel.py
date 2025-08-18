@@ -1,19 +1,27 @@
 try:
     import unsloth
-except NotImplementedError as e:
-    raise ImportError("Unsloth GPU requirement not met") from e
-from unsloth import FastLanguageModel, is_bfloat16_supported
-from unsloth.chat_templates import get_chat_template
-import torch
-import torch.nn.functional as F
+    from unsloth import FastLanguageModel, is_bfloat16_supported
+    from unsloth.chat_templates import get_chat_template
+    import torch
+    import torch.nn.functional as F
+    from trl import SFTTrainer, SFTConfig
+    from datasets import Dataset
+
+    UNSLOTH_AVAILABLE = True
+except (ModuleNotFoundError, ImportError) as e:
+    if "Unsloth GPU requirement not met" in str(e):
+        raise ImportError("Unsloth GPU requirement not met") from e
+    else:
+        raise ModuleNotFoundError(
+            "unsloth, torch, trl, or datasets is not currently installed. Run 'pip install convokit[llm]' if you would like to use the TransformerDecoderModel."
+        ) from e
+
 import json
 import os
 from tqdm import tqdm
 import pandas as pd
 import numpy as np
 from sklearn.metrics import roc_curve
-from datasets import Dataset
-from trl import SFTTrainer, SFTConfig
 from .forecasterModel import ForecasterModel
 from .TransformerForecasterConfig import TransformerForecasterConfig
 import shutil

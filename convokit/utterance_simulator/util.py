@@ -1,5 +1,13 @@
 from collections import namedtuple
-from datasets import Dataset
+
+try:
+    from datasets import Dataset
+
+    DATASETS_AVAILABLE = True
+except (ModuleNotFoundError, ImportError) as e:
+    raise ModuleNotFoundError(
+        "datasets is not currently installed. Run 'pip install convokit[llm]' if you would like to use the utterance simulator functionality."
+    ) from e
 
 ContextTuple = namedtuple(
     "ContextTuple", ["context", "current_utterance", "future_context", "conversation_id"]
