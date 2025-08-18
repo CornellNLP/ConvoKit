@@ -233,6 +233,8 @@ Jonathan P. Chang, Caleb Chiam, Liye Fu, Andrew Wang, Justine Zhang, Cristian Da
 
 [ConvoKit](http://convokit.cornell.edu/)
 
+*ConvoKit is funded in part by the U.S. National Science Foundation under Grant No. IIS-1750615 (CAREER). Any opinions, findings, and conclusions in this work are those of the author(s) and do not necessarily reflect the views of Cornell University or the National Science Foundation.*
+
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
