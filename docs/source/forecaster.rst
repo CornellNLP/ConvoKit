@@ -82,4 +82,38 @@ The following table is the current leaderboard comparing the performance of diff
 The performance is measured in accuracy (Acc), precision (P), recall (R), F1, false positive rate (FPR), mean horizon (Mean H), and Forecast Recovery (Recovery) along with the correct and incorrect recovery rates. Results are reported as averages over five runs with
 different random seeds.
 
++----------------+-------+------+-------+-------+------+----------+-------------------------+
+| Model          | Acc ↑ | P ↑  | R ↑   | F1 ↑  | FPR ↓| Mean H ↑ | Recovery ↑              |
++================+=======+======+=======+=======+======+==========+=========================+
+| Gemma2 9B      | 69.2  | 67.5 | 75.3  | 70.9  | 36.9 | 3.6      | +0.9 (4.1 - 3.2)        |
++----------------+-------+------+-------+-------+------+----------+-------------------------+
+| Phi4 14B       | 68.8  | 69.5 | 67.1  | 68.2  | 29.6 | 3.3      | +0.8 (3.7 - 2.9)        |
++----------------+-------+------+-------+-------+------+----------+-------------------------+
+| LlaMa3.1 8B    | 68.5  | 66.3 | 75.6  | 70.5  | 38.7 | 3.6      | +1.8 (5.5 - 3.7)        |
++----------------+-------+------+-------+-------+------+----------+-------------------------+
+| RoBERTa-large  | 68.2  | 67.8 | 69.7  | 68.6  | 33.3 | 3.6      | +0.3 (3.9 - 3.5)        |
++----------------+-------+------+-------+-------+------+----------+-------------------------+
+| SpanBERT-large | 67.9  | 66.5 | 72.6  | 69.3  | 36.7 | 3.6      | +0.1 (4.9 - 4.8)        |
++----------------+-------+------+-------+-------+------+----------+-------------------------+
+| Mistral 7B     | 67.8  | 65.9 | 74.4  | 69.8  | 38.8 | 3.8      | +1.1 (5.1 - 4.0)        |
++----------------+-------+------+-------+-------+------+----------+-------------------------+
+| DeBERTaV3-large| 67.8  | 66.9 | 70.9  | 68.7  | 35.3 | 3.7      | +0.8 (3.8 - 3.0)        |
++----------------+-------+------+-------+-------+------+----------+-------------------------+
+| RoBERTa-base   | 67.6  | 65.7 | 73.9  | 69.5  | 38.6 | 3.6      | +0.5 (3.4 - 2.8)        |
++----------------+-------+------+-------+-------+------+----------+-------------------------+
+| DeBERTaV3-base | 67.5  | 67.0 | 69.2  | 68.0  | 34.3 | 3.6      | +0.5 (2.7 - 2.3)        |
++----------------+-------+------+-------+-------+------+----------+-------------------------+
+| SpanBERT-base  | 66.7  | 66.1 | 68.7  | 67.3  | 35.2 | 3.3      | -0.7 (4.5 - 5.2)        |
++----------------+-------+------+-------+-------+------+----------+-------------------------+
+| BERT-base      | 66.5  | 66.5 | 66.3  | 66.4  | 33.4 | 3.6      | -1.6 (5.6 - 7.2)        |
++----------------+-------+------+-------+-------+------+----------+-------------------------+
+| BERT-large     | 65.7  | 65.6 | 67.0  | 66.0  | 35.6 | 3.6      | +0.0 (5.6 - 5.6)        |
++----------------+-------+------+-------+-------+------+----------+-------------------------+
+| CRAFT          | 64.8  | 63.4 | 70.1  | 66.5  | 40.5 | 3.5      | +0.4 (3.7 - 2.9)        |
++----------------+-------+------+-------+-------+------+----------+-------------------------+
+
+**Table 2: Forecasting derailment on CGA-Wikiconv conversations.**
+The performance is measured in accuracy (Acc), precision (P), recall (R), F1, false positive rate (FPR), mean horizon (Mean H), and Forecast Recovery (Recovery) along with the correct and incorrect recovery rates. Results are reported as averages over five runs with
+different random seeds.
+
 For more information on how to produce a leaderboard string here, see the `Run Transformer Fine-tuned Models.ipynb <https://github.com/CornellNLP/ConvoKit/blob/master/examples/forecaster/Run%20Transformer%20Fine-tuned%20Models.ipynb>`_ notebook. If you would like to include your model in the leaderboard, please make a pull request adding the respective ForecasterModel and the version of the demo generating the leaderboard line. Please contact us on `Discord <https://discord.gg/R2ej9Kyr3K>`_ for assistance.
