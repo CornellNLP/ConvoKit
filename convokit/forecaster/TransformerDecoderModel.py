@@ -1,3 +1,5 @@
+import warnings
+
 try:
     import unsloth
     from unsloth import FastLanguageModel, is_bfloat16_supported
@@ -8,13 +10,18 @@ try:
     from datasets import Dataset
 
     UNSLOTH_AVAILABLE = True
-except (ModuleNotFoundError, ImportError) as e:
+except (ModuleNotFoundError, ImportError, ValueError) as e:
+    UNSLOTH_AVAILABLE = False
     if "Unsloth GPU requirement not met" in str(e):
-        raise ImportError("Unsloth GPU requirement not met") from e
+        warnings.warn("TransformerDecoderModel: Unsloth GPU requirement not met")
+    elif "unsloth" in str(e).lower():
+        warnings.warn(
+            "TransformerDecoderModel: If you are a mac user, unsloth is currently not available on macOS. For other users, please use 'pip install convokit[llm]' to install LLM related dependencies."
+        )
     else:
-        raise ModuleNotFoundError(
-            "unsloth, torch, trl, or datasets is not currently installed. Run 'pip install convokit[llm]' if you would like to use the TransformerDecoderModel."
-        ) from e
+        warnings.warn(
+            "TransformerDecoderModel: torch or trl is not currently installed. Run 'pip install convokit[llm]' if you would like to use the TransformerDecoderModel (or 'pip install convokit[llmmac]' for macOS users)."
+        )
 
 import json
 import os

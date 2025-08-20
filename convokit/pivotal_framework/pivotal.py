@@ -8,10 +8,14 @@ import matplotlib.pyplot as plt
 from convokit.forecaster.forecasterModel import ForecasterModel
 from convokit.forecaster.forecaster import Forecaster
 
+import warnings
+
 try:
     from convokit.utterance_simulator.utteranceSimulatorModel import UtteranceSimulatorModel
-except NotImplementedError as e:
-    raise ImportError("Unsloth GPU requirement not met") from e
+except (ImportError, NotImplementedError) as e:
+    warnings.warn(
+        "PivotalMomentMeasure: UtteranceSimulatorModel could not be imported due to missing dependencies, some functionality may not be available."
+    )
 from convokit.utterance_simulator.utteranceSimulator import UtteranceSimulator
 from .util import ContextTuple, DEFAULT_LABELER
 

@@ -1,3 +1,5 @@
+import warnings
+
 try:
     import torch
     import torch.nn.functional as F
@@ -12,9 +14,9 @@ try:
 
     TRANSFORMERS_AVAILABLE = True
 except (ModuleNotFoundError, ImportError) as e:
-    raise ModuleNotFoundError(
-        "torch, transformers, or datasets is not currently installed. Run 'pip install convokit[llm]' if you would like to use the TransformerEncoderModel."
-    ) from e
+    warnings.warn(
+        "TransformerEncoderModel: torch or transformers is not currently installed. Run 'pip install convokit[llm]' if you would like to use the TransformerEncoderModel (or 'pip install convokit[llmmac]' for macOS users)."
+    )
 
 import os
 import pandas as pd

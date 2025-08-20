@@ -9,6 +9,11 @@ Package Installation
 ====================
 ConvoKit can be installed via pip: ``pip3 install convokit``
 
+Optional Package Installation
+=============================
+ConvoKit also supports optional LLM-related packages, which can be installed via pip: ``pip3 install 'convokit[llm]'`` (or ``pip3 install 'convokit[llmmac]'`` for macOS users).
+These packages are not required for basic ConvoKit functionality, but are required for certain features such as the Transformer Decoder Model and Pivotal Framework.
+
 Post-install Steps
 ==================
 ConvoKit relies on NLTK and SpaCy to implement certain basic NLP functions.
