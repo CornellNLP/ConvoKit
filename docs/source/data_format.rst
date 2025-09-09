@@ -40,7 +40,7 @@ utterances.jsonl
 
 Each utterance is stored on its own line and represented as a json object, with six mandatory fields:
 
-* id: unique index of the utterance
+* id: index of the utterance (unique across the entire corpus)
 * speaker: the speaker who authored the utterance
 * conversation_id: id of the first utterance in the conversation this utterance belongs to
 * reply_to: index of the utterance to which this utterance replies to (None if the utterance is not a reply)
