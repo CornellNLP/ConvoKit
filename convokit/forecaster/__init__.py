@@ -11,25 +11,25 @@ if "torch" in sys.modules:
 # Import Transformer models with proper error handling
 try:
     from .TransformerDecoderModel import *
-except ImportError as e:
+except (ImportError, ModuleNotFoundError) as e:
     if "Unsloth GPU requirement not met" in str(e):
-        print(
+        raise ImportError(
             "Error from Unsloth: NotImplementedError: Unsloth currently only works on NVIDIA GPUs and Intel GPUs."
-        )
-    elif "not currently installed" in str(e):
-        print(
+        ) from e
+    elif "not currently installed" in str(e) or "torch" in str(e) or "unsloth" in str(e) or "trl" in str(e) or "datasets" in str(e):
+        raise ImportError(
             "TransformerDecoderModel requires ML dependencies. Run 'pip install convokit[llm]' to install them."
-        )
+        ) from e
     else:
         raise
 
 try:
     from .TransformerEncoderModel import *
-except ImportError as e:
-    if "not currently installed" in str(e):
-        print(
+except (ImportError, ModuleNotFoundError) as e:
+    if "not currently installed" in str(e) or "torch" in str(e) or "transformers" in str(e) or "datasets" in str(e):
+        raise ImportError(
             "TransformerEncoderModel requires ML dependencies. Run 'pip install convokit[llm]' to install them."
-        )
+        ) from e
     else:
         raise
 
