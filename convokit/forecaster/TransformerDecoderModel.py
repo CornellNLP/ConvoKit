@@ -1,25 +1,33 @@
 try:
     import unsloth
-except NotImplementedError as e:
-    raise ImportError("Unsloth GPU requirement not met") from e
-from unsloth import FastLanguageModel, is_bfloat16_supported
-from unsloth.chat_templates import get_chat_template
-import torch
-import torch.nn.functional as F
+    from unsloth import FastLanguageModel, is_bfloat16_supported
+    from unsloth.chat_templates import get_chat_template
+    import torch
+    import torch.nn.functional as F
+    from trl import SFTTrainer, SFTConfig
+    from datasets import Dataset
+
+    UNSLOTH_AVAILABLE = True
+except (ModuleNotFoundError, ImportError) as e:
+    if "Unsloth GPU requirement not met" in str(e):
+        raise ImportError("Unsloth GPU requirement not met") from e
+    else:
+        raise ModuleNotFoundError(
+            "unsloth, torch, trl, or datasets is not currently installed. Run 'pip install convokit[llm]' if you would like to use the TransformerDecoderModel."
+        ) from e
+
 import json
 import os
 from tqdm import tqdm
 import pandas as pd
 import numpy as np
 from sklearn.metrics import roc_curve
-from datasets import Dataset
-from trl import SFTTrainer, SFTConfig
 from .forecasterModel import ForecasterModel
 from .TransformerForecasterConfig import TransformerForecasterConfig
 import shutil
 
 
-def _get_templet_map(model_name_or_path):
+def _get_template_map(model_name_or_path):
     """
     Map a model name or path to its corresponding prompt template family.
 
@@ -28,12 +36,12 @@ def _get_templet_map(model_name_or_path):
     :raises ValueError: If the model is not recognized.
     """
     TEMPLATE_PATTERNS = [
-        ("google/gemma-2-", "gemma2"),
-        ("google/gemma-3-", "gemma3"),
-        ("mistralai/mistral", "mistral"),
-        ("HuggingFaceH4/zephyr", "zephyr"),
-        ("microsoft/phi-4", "phi-4"),
-        ("meta-llama/Llama-3", "llama3"),
+        ("gemma-2", "gemma2"),
+        ("gemma-3", "gemma3"),
+        ("mistral", "mistral"),
+        ("zephyr", "zephyr"),
+        ("phi-4", "phi-4"),
+        ("llama-3", "llama3"),
     ]
 
     for pattern, template in TEMPLATE_PATTERNS:
@@ -84,7 +92,7 @@ class TransformerDecoderModel(ForecasterModel):
 
         self.tokenizer = get_chat_template(
             tokenizer,
-            chat_template=_get_templet_map(model_name_or_path),  # TO-DO: Define this
+            chat_template=_get_template_map(self.model.config.name_or_path),
             mapping={"role": "from", "content": "value", "user": "human", "assistant": "model"},
         )
         # Custom prompt

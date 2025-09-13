@@ -6,7 +6,7 @@ setup(
     author_email="cristian@cs.cornell.edu",
     url="https://github.com/CornellNLP/ConvoKit",
     description="ConvoKit",
-    version="3.3.0",
+    version="3.4.1",
     packages=[
         "convokit",
         "convokit.bag_of_words",
@@ -53,7 +53,6 @@ setup(
         "numpy>=2.0.0",
         "msgpack-numpy>=0.4.3.2",
         "spacy>=3.8.2",
-        "scipy>=1.1.0",
         "scikit-learn>=1.0",
         "nltk>=3.4",
         "dill>=0.2.9",
@@ -79,6 +78,7 @@ setup(
         "tf-keras>=2.17.0,<3.0.0",
         "evaluate",
         "sentence-transformers",
+        "datasets",
     ],
     extras_require={
         "craft": ["torch>=0.12"],
@@ -86,6 +86,16 @@ setup(
         "genai": [
             "openai>=1.3.5",
             "google-genai",
+        "llm": [
+            "torch>=0.12",
+            "accelerate",
+            "peft",
+            "bitsandbytes",
+            "transformers",
+            "unsloth",
+            "trl>=0.12.2",
+            "tensorflow>=2.18.0",
+            "tf-keras>=2.17.0,<3.0.0",
         ],
     },
     classifiers=[

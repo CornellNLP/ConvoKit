@@ -1,5 +1,6 @@
 Pivotal Moment Measure
 ====================================
+Please note: this transformer requires installing convokit with the optional LLM packages via `pip install convokit[llm]`
 
 The `PivotalMomentMeasure` transformer identifies pivotal moments in conversations 
 as described in this `paper <http://www.cs.cornell.edu/~cristian/Pivotal_Moments.html>`_. 

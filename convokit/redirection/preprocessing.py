@@ -1,4 +1,11 @@
-from datasets import Dataset
+try:
+    from datasets import Dataset
+
+    DATASETS_AVAILABLE = True
+except (ModuleNotFoundError, ImportError) as e:
+    raise ModuleNotFoundError(
+        "datasets is not currently installed. Run 'pip install convokit[llm]' if you would like to use the redirection preprocessing functionality."
+    ) from e
 
 
 def default_speaker_prefixes(roles):
