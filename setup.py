@@ -86,6 +86,7 @@ setup(
         "genai": [
             "openai>=1.3.5",
             "google-genai",
+        ],
         "llm": [
             "torch>=0.12",
             "accelerate",
