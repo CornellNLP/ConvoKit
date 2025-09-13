@@ -22,7 +22,7 @@ Once you have created a Corpus representation of your dataset, follow these step
 
 * Use `Corpus.dump()` to write the Corpus to disk
 * Locate the resulting folder and compress it into a zip file
-* Open a new issue on GitHub with the "dataset" tag
+* Open a new issue on GitHub (title should start with "[Dataset]")
 * Include the following information in the issue:
   * the name of the dataset
   * brief description
@@ -36,7 +36,6 @@ Once you have created a Corpus representation of your dataset, follow these step
 
 If we decide to accept your dataset contribution, we will notify you on the submitted issue, and upon the next public release you will be able to access the dataset through `convokit.download()`!
 
-NOTE: the "datasets" issue tag should **only** be used for submitting completed datasets. _Requests_ for new datasets should instead be submitted following the procedure for feature requests described in the previous section.
 
 ## Contributing code
 
