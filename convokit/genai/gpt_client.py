@@ -10,10 +10,10 @@ class GPTClient(LLMClient):
     Handles authentication, request formatting, and error retry logic.
 
     :param api_key: OpenAI API key for authentication
-    :param model: Name of the GPT model to use (default: "gpt-4o-mini-2024-07-18")
+    :param model: Name of the GPT model to use (default: "gpt-4o-mini")
     """
 
-    def __init__(self, api_key: str, model: str = "gpt-4o-mini-2024-07-18"):
+    def __init__(self, api_key: str, model: str = "gpt-4o-mini"):
         self.client = OpenAI(api_key=api_key)
         self.model = model
 

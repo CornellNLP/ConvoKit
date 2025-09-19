@@ -94,26 +94,21 @@ class SCD(Transformer):
 
         # Process selected conversations
         for conversation in corpus.iter_conversations(selector):
-            try:
-                # Format the conversation
-                transcript = formatter(conversation)
+            # Format the conversation
+            transcript = formatter(conversation)
 
-                # Generate SCD and/or SoP
-                if self.generate_scd and self.generate_sop:
-                    scd, sop = self.scd_writer.get_scd_and_sop(transcript)
-                    conversation.add_meta(self.scd_metadata_name, scd)
-                    conversation.add_meta(self.sop_metadata_name, sop)
-                elif self.generate_scd:
-                    scd = self.scd_writer.get_scd_summary(transcript)
-                    conversation.add_meta(self.scd_metadata_name, scd)
-                elif self.generate_sop:
-                    # For SoP, we need to generate SCD first, then extract SoP
-                    scd = self.scd_writer.get_scd_summary(transcript)
-                    sop = self.scd_writer.get_sop_from_summary(scd)
-                    conversation.add_meta(self.sop_metadata_name, sop)
-
-            except Exception as e:
-                print(f"Error processing conversation {conversation.id}: {str(e)}")
-                continue
+            # Generate SCD and/or SoP
+            if self.generate_scd and self.generate_sop:
+                scd, sop = self.scd_writer.get_scd_and_sop(transcript)
+                conversation.add_meta(self.scd_metadata_name, scd)
+                conversation.add_meta(self.sop_metadata_name, sop)
+            elif self.generate_scd:
+                scd = self.scd_writer.get_scd_summary(transcript)
+                conversation.add_meta(self.scd_metadata_name, scd)
+            elif self.generate_sop:
+                # For SoP, we need to generate SCD first, then extract SoP
+                scd = self.scd_writer.get_scd_summary(transcript)
+                sop = self.scd_writer.get_sop_from_summary(scd)
+                conversation.add_meta(self.sop_metadata_name, sop)
 
         return corpus

@@ -21,11 +21,11 @@ You will be given a transcript and a list of events describing conversational dy
 Provide your output as a Python dictionary with the following structure:
 _(Note: Do NOT use markdown, JSON formatting, or code block delimiters. Do not use any " or ' in ANALYSIS. Do not quote in ANALYSIS. Do not use 's in ANALYSIS.)_
 
-{
-    '0': {'analysis': 'ANALYSIS (<=20 words)', 'score': i (0 <= i <= 1) },
+{{
+    '0': {{'analysis': 'ANALYSIS (<=20 words)', 'score': i (0 <= i <= 1) }},
     '1': ...
     ...
-}
+}}
 
 List of events: {events}
 
