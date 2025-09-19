@@ -201,7 +201,7 @@ class SCDWriter:
         :return: SCD summary text
         """
         query = self.SUMMARY_PROMPT_TEMPLATE.format(transcript=transcript)
-        response = self.client.generate(query, model=self.model)
+        response = self.client.generate(query)
         return response.text
 
     def get_sop_from_summary(self, summary: str) -> dict:
@@ -215,7 +215,7 @@ class SCDWriter:
         :raises Exception: If the response cannot be parsed as a dictionary
         """
         query = self.BULLETPOINT_PROMPT_TEMPLATE + summary
-        response = self.client.generate(query, model=self.model)
+        response = self.client.generate(query)
 
         parsed_text = response.text.strip()
 

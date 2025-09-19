@@ -26,7 +26,8 @@ class GeminiClient(LLMClient):
         google_cloud_location: str = None,
         use_vertex_ai: bool = True,
     ):
-        os.environ["GOOGLE_API_KEY"] = api_key
+        if not use_vertex_ai:
+            os.environ["GOOGLE_API_KEY"] = api_key
         if use_vertex_ai:
             os.environ["GOOGLE_GENAI_USE_VERTEXAI"] = "true"
         if google_cloud_location:
