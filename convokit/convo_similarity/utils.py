@@ -55,6 +55,7 @@ def format_transcript_from_convokit(corpus, convo_id, truncated_by=3, start_at=0
         transcription.append("SPEAKER" + str(spk_list[utt.speaker.id]) + ": " + utt.text)
     return transcription
 
+
 def format_transcript_from_convokit_utt_lst(corpus, utt_lst, truncated_by=3, start_at=0):
     """Format a Reddit conversation from convokit Redditcorpus.
 
