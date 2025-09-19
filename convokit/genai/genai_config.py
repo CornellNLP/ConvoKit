@@ -58,3 +58,37 @@ class GenAIConfigManager:
         if env:
             return env
         return self._data.get("api_keys", {}).get(provider)
+
+    def set_google_cloud_config(self, project: str, location: str):
+        """Set Google Cloud configuration for Vertex AI.
+
+        :param project: Google Cloud project ID
+        :param location: Google Cloud location (e.g., "us-central1")
+        """
+        self._data.setdefault("google_cloud", {})["project"] = project
+        self._data["google_cloud"]["location"] = location
+        self._save()
+
+    def get_google_cloud_project(self) -> Optional[str]:
+        """Get the Google Cloud project ID.
+
+        First checks environment variables, then falls back to the configuration file.
+
+        :return: Google Cloud project ID if found, None otherwise
+        """
+        env = os.getenv("GOOGLE_CLOUD_PROJECT")
+        if env:
+            return env
+        return self._data.get("google_cloud", {}).get("project")
+
+    def get_google_cloud_location(self) -> Optional[str]:
+        """Get the Google Cloud location.
+
+        First checks environment variables, then falls back to the configuration file.
+
+        :return: Google Cloud location if found, None otherwise
+        """
+        env = os.getenv("GOOGLE_CLOUD_LOCATION")
+        if env:
+            return env
+        return self._data.get("google_cloud", {}).get("location")

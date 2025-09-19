@@ -1,5 +1,6 @@
 from openai import OpenAI, OpenAIError, RateLimitError, Timeout
 from .base import LLMClient, LLMResponse
+from .genai_config import GenAIConfigManager
 import time
 
 
@@ -7,13 +8,28 @@ class GPTClient(LLMClient):
     """Client for interacting with OpenAI GPT models.
 
     Provides an interface to generate text using OpenAI's GPT models through their API.
-    Handles authentication, request formatting, and error retry logic.
+    Handles authentication, request formatting, and error retry logic. API key is managed
+    through the GenAI config system.
 
-    :param api_key: OpenAI API key for authentication
     :param model: Name of the GPT model to use (default: "gpt-4o-mini")
+    :param config_manager: GenAIConfigManager instance (optional, will create one if not provided)
     """
 
-    def __init__(self, api_key: str, model: str = "gpt-4o-mini"):
+    def __init__(self, model: str = "gpt-4o-mini", config_manager: GenAIConfigManager = None):
+        if config_manager is None:
+            config_manager = GenAIConfigManager()
+
+        self.config_manager = config_manager
+
+        # Get API key from config
+        api_key = config_manager.get_api_key("gpt")
+        if not api_key:
+            raise ValueError(
+                "OpenAI API key is required. "
+                "Set it using config_manager.set_api_key('gpt', 'your-key') "
+                "or via GPT_API_KEY environment variable."
+            )
+
         self.client = OpenAI(api_key=api_key)
         self.model = model
 

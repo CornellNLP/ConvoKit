@@ -2,38 +2,54 @@ import os
 from google import genai
 from google.genai.types import GenerateContentConfig, HttpOptions
 from .base import LLMClient, LLMResponse
+from .genai_config import GenAIConfigManager
 import time
 
 
 class GeminiClient(LLMClient):
-    """Client for interacting with Google Gemini models.
+    """Client for interacting with Google Gemini models via Vertex AI.
 
-    Provides an interface to generate text using Google's Gemini models through their API.
-    Supports both Vertex AI and direct API access, with configurable project and location settings.
+    This client is configured to use Vertex AI and requires Google Cloud project and location
+    to be set. Configuration can be provided via the GenAI config system or environment variables.
 
-    :param api_key: Google API key for authentication
     :param model: Name of the Gemini model to use (default: "gemini-2.0-flash-001")
-    :param google_cloud_project: Google Cloud project ID (optional)
-    :param google_cloud_location: Google Cloud location (optional)
-    :param use_vertex_ai: Whether to use Vertex AI (default: True)
+    :param config_manager: GenAIConfigManager instance (optional, will create one if not provided)
     """
 
     def __init__(
         self,
-        api_key: str,
         model: str = "gemini-2.0-flash-001",
-        google_cloud_project: str = None,
-        google_cloud_location: str = None,
-        use_vertex_ai: bool = True,
+        config_manager: GenAIConfigManager = None,
     ):
-        if not use_vertex_ai:
-            os.environ["GOOGLE_API_KEY"] = api_key
-        if use_vertex_ai:
-            os.environ["GOOGLE_GENAI_USE_VERTEXAI"] = "true"
-        if google_cloud_location:
-            os.environ["GOOGLE_CLOUD_PROJECT"] = google_cloud_location
-        if google_cloud_project:
-            os.environ["GOOGLE_CLOUD_LOCATION"] = google_cloud_project
+        if config_manager is None:
+            config_manager = GenAIConfigManager()
+
+        self.config_manager = config_manager
+
+        # Get required Vertex AI configuration
+        google_cloud_project = config_manager.get_google_cloud_project()
+        google_cloud_location = config_manager.get_google_cloud_location()
+
+        # Validate required fields
+        if not google_cloud_project:
+            raise ValueError(
+                "Google Cloud project is required for Vertex AI. "
+                "Set it using config_manager.set_google_cloud_config(project, location) "
+                "or via GOOGLE_CLOUD_PROJECT environment variable."
+            )
+
+        if not google_cloud_location:
+            raise ValueError(
+                "Google Cloud location is required for Vertex AI. "
+                "Set it using config_manager.set_google_cloud_config(project, location) "
+                "or via GOOGLE_CLOUD_LOCATION environment variable."
+            )
+
+        # Set up Vertex AI environment
+        os.environ["GOOGLE_GENAI_USE_VERTEXAI"] = "true"
+        os.environ["GOOGLE_CLOUD_PROJECT"] = google_cloud_project
+        os.environ["GOOGLE_CLOUD_LOCATION"] = google_cloud_location
+
         self.client = genai.Client(http_options=HttpOptions(api_version="v1"))
         self.model = model
 

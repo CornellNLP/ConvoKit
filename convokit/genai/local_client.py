@@ -1,4 +1,5 @@
 from .base import LLMClient, LLMResponse
+from .genai_config import GenAIConfigManager
 import time
 
 
@@ -10,9 +11,14 @@ class LocalClient(LLMClient):
     Currently returns mock responses for testing purposes.
 
     :param model_path: Path to the local model files (e.g., llama.cpp or GGUF model)
+    :param config_manager: GenAIConfigManager instance (optional, will create one if not provided)
     """
 
-    def __init__(self, model_path: str):
+    def __init__(self, model_path: str = "./", config_manager: GenAIConfigManager = None):
+        if config_manager is None:
+            config_manager = GenAIConfigManager()
+
+        self.config_manager = config_manager
         self.model_path = model_path  # e.g., load a llama.cpp or GGUF-backed model
 
     def generate(self, messages, **kwargs) -> LLMResponse:
