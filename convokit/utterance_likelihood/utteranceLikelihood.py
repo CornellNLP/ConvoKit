@@ -2,20 +2,13 @@ from convokit import Transformer
 import random
 import numpy as np
 
-try:
-    from convokit.redirection.likelihoodModel import LikelihoodModel
-    from convokit.redirection.contextSelector import (
-        default_previous_context_selector,
-        default_future_context_selector,
-    )
-    import torch
-    from convokit.redirection.preprocessing import format_conversations, get_chunk_dataset
-
-    UTTERANCE_LIKELIHOOD_ML_AVAILABLE = True
-except (ModuleNotFoundError, ImportError) as e:
-    raise ModuleNotFoundError(
-        "torch, datasets, or other ML dependencies are not currently installed. Run 'pip install convokit[llm]' if you would like to use the utterance likelihood functionality."
-    ) from e
+from convokit.redirection.likelihoodModel import LikelihoodModel
+from convokit.redirection.contextSelector import (
+    default_previous_context_selector,
+    default_future_context_selector,
+)
+import torch
+from convokit.redirection.preprocessing import format_conversations, get_chunk_dataset
 
 
 class UtteranceLikelihood(Transformer):

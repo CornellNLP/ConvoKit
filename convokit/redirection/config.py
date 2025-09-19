@@ -1,13 +1,6 @@
-try:
-    from peft import LoraConfig
-    from transformers import BitsAndBytesConfig
-    import torch
-
-    REDIRECTION_ML_AVAILABLE = True
-except (ModuleNotFoundError, ImportError) as e:
-    raise ModuleNotFoundError(
-        "peft, transformers, or torch is not currently installed. Run 'pip install convokit[llm]' if you would like to use the redirection module."
-    ) from e
+from peft import LoraConfig
+from transformers import BitsAndBytesConfig
+import torch
 
 DEFAULT_BNB_CONFIG = BitsAndBytesConfig(
     load_in_4bit=True,
