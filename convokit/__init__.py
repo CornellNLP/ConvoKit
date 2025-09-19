@@ -32,6 +32,8 @@ _LAZY_MODULES = {
     "utterance_likelihood": ".utterance_likelihood",
     "speaker_convo_helpers": ".speaker_convo_helpers",
     "politeness_collections": ".politeness_collections",
+    "genai": ".genai",
+    "convo_similarity": ".convo_similarity",
 }
 
 # Cache for loaded modules
