@@ -55,6 +55,29 @@ def format_transcript_from_convokit(corpus, convo_id, truncated_by=3, start_at=0
         transcription.append("SPEAKER" + str(spk_list[utt.speaker.id]) + ": " + utt.text)
     return transcription
 
+def format_transcript_from_convokit_utt_lst(corpus, utt_lst, truncated_by=3, start_at=0):
+    """Format a Reddit conversation from convokit Redditcorpus.
+
+    Converts a conversation from a ConvoKit corpus into a formatted transcript
+    suitable for Reddit-style conversations, handling removed comments and truncation.
+
+    :param corpus: ConvoKit corpus containing the conversation
+    :param convo_id: ID of the conversation to format
+    :param truncated_by: Number of utterances to truncate from the end (default: 3)
+    :param start_at: Index to start from in the utterance list (default: 0)
+    :return: List of formatted transcript lines
+    """
+    utt_list = utt_lst
+    transcription = []
+    spk_list = {}
+    utt_list = utt_list[: len(utt_list) - truncated_by]
+    utt_list = utt_list[start_at:]
+    for utt in utt_list:
+        if utt.speaker.id not in spk_list.keys():
+            spk_list[utt.speaker.id] = len(spk_list) + 1
+        transcription.append("SPEAKER" + str(spk_list[utt.speaker.id]) + ": " + utt.text)
+    return transcription
+
 
 def format_transcript_from_convokit_delta(
     corpus, convo_id, truncate_first_op_utt=True, truncate_last_op_utt=False
