@@ -1,3 +1,5 @@
+import warnings
+
 try:
     import unsloth
     from unsloth import FastLanguageModel
@@ -9,13 +11,18 @@ try:
     from transformers import TrainingArguments, DataCollatorForSeq2Seq
 
     UNSLOTH_AVAILABLE = True
-except (ModuleNotFoundError, ImportError) as e:
+except (ModuleNotFoundError, ImportError, ValueError) as e:
+    UNSLOTH_AVAILABLE = False
     if "Unsloth GPU requirement not met" in str(e):
-        raise ImportError("Unsloth GPU requirement not met") from e
+        warnings.warn("UnslothUtteranceSimulatorModel: Unsloth GPU requirement not met")
+    elif "unsloth" in str(e).lower():
+        warnings.warn(
+            "UnslothUtteranceSimulatorModel: If you are a mac user, unsloth is currently not available on macOS. For other users, please use 'pip install convokit[llm]' to install LLM related dependencies."
+        )
     else:
-        raise ModuleNotFoundError(
-            "unsloth, torch, trl, transformers, or datasets is not currently installed. Run 'pip install convokit[llm]' if you would like to use the UnslothUtteranceSimulatorModel."
-        ) from e
+        warnings.warn(
+            "UnslothUtteranceSimulatorModel: torch, trl, or transformers is not currently installed. Run 'pip install convokit[llm]' if you would like to use the UnslothUtteranceSimulatorModel."
+        )
 
 from typing import Callable, Optional, Union, Any, List, Iterator
 from tqdm import tqdm
@@ -55,12 +62,20 @@ class UnslothUtteranceSimulatorModel(UtteranceSimulatorModel):
         model_name="unsloth/Meta-Llama-3.1-8B-bnb-4bit",
         chat_template=DEFAULT_LLAMA_CHAT_TEMPLATE,
         chat_template_mapping=DEFAULT_LLAMA_CHAT_TEMPLATE_MAPPING,
-        device="cuda" if torch.cuda.is_available() else "cpu",
+        device=None,
         model_config=DEFAULT_MODEL_CONFIG,
         train_config=DEFAULT_TRAIN_CONFIG,
         num_simulations=DEFAULT_NUM_SIMULATIONS,
         prompt_fn=default_prompt_fn,
     ):
+        # Set default device based on torch availability
+        if device is None:
+            try:
+                import torch
+
+                device = "cuda" if torch.cuda.is_available() else "cpu"
+            except ImportError:
+                device = "cpu"
         self.model, self.tokenizer = FastLanguageModel.from_pretrained(
             model_name=model_name,
             max_seq_length=model_config["max_seq_length"],

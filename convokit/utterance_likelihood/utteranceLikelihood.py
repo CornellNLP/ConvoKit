@@ -14,7 +14,7 @@ try:
     UTTERANCE_LIKELIHOOD_ML_AVAILABLE = True
 except (ModuleNotFoundError, ImportError) as e:
     raise ModuleNotFoundError(
-        "torch, datasets, or other ML dependencies are not currently installed. Run 'pip install convokit[llm]' if you would like to use the utterance likelihood functionality."
+        "UtteranceLikelihood: torch or other LLM dependencies are not currently installed. Run 'pip install convokit[llm]' if you would like to use the utterance likelihood functionality (or 'pip install convokit[llmmac]' for macOS users)."
     ) from e
 
 
