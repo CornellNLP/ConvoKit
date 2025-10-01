@@ -30,7 +30,9 @@ class GenAITransformer(Transformer):
         prompt: str,
         formatter: Callable[[Union[Corpus, Conversation, Speaker, Utterance]], str],
         metadata_name: str,
-        selector: Optional[Callable[[Union[Corpus, Conversation, Speaker, Utterance]], bool]] = None,
+        selector: Optional[
+            Callable[[Union[Corpus, Conversation, Speaker, Utterance]], bool]
+        ] = None,
         config_manager: Optional[GenAIConfigManager] = None,
         llm_kwargs: Optional[Dict[str, Any]] = None,
     ):

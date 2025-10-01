@@ -223,7 +223,7 @@ class NaiveConDynS:
 
         :param corpus: The ConvoKit Corpus containing the conversations
         :param convo_id1: ID of the first conversation
-        :param convo_id2: ID of the second conversation  
+        :param convo_id2: ID of the second conversation
         :param sop_meta_name: Name of the metadata field containing SoP data
         :return: The computed NaiveConDynS score
         :raises KeyError: If conversations don't exist or required metadata is missing
@@ -249,14 +249,14 @@ class NaiveConDynS:
 
         # Compute bidirectional NaiveConDynS similarity
         results = self.compute_bidirectional_naive_condyns(sop1, sop2)
-        
+
         # Compute the mean score from bidirectional results
         naive_condyns_score = np.mean(self.compute_score_from_results(results))
 
         # Store the score in both conversations' metadata
         score_key1 = f"condyns_{convo_id1}_{convo_id2}"
         score_key2 = f"condyns_{convo_id2}_{convo_id1}"
-        
+
         convo1.meta[score_key1] = naive_condyns_score
         convo2.meta[score_key2] = naive_condyns_score
 

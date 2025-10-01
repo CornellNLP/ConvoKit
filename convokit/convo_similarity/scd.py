@@ -8,6 +8,7 @@ from convokit.model import Corpus, Conversation
 try:
     from convokit.genai import GenAITransformer
     from convokit.genai.genai_config import GenAIConfigManager
+
     GENAI_AVAILABLE = True
 except ImportError:
     GENAI_AVAILABLE = False
@@ -35,11 +36,11 @@ class SCD(Transformer):
         Should take a Conversation object and return a string. If None, uses default formatting.
     :param llm_kwargs: Additional keyword arguments to pass to the LLM client
     """
-    
+
     # Class variables for lazy loading of prompts
     SUMMARY_PROMPT_TEMPLATE = None
     BULLETPOINT_PROMPT_TEMPLATE = None
-    
+
     @classmethod
     def _load_prompts(cls):
         """Lazy load prompts into class variables."""
@@ -70,10 +71,8 @@ class SCD(Transformer):
         llm_kwargs: Optional[dict] = None,
     ):
         if not GENAI_AVAILABLE:
-            raise ImportError(
-                "GenAI dependencies not available. Please install required packages."
-            )
-        
+            raise ImportError("GenAI dependencies not available. Please install required packages.")
+
         self.model_provider = model_provider
         self.config = config
         self.model = model
@@ -84,20 +83,20 @@ class SCD(Transformer):
         self.sop_metadata_name = sop_metadata_name
         self.conversation_formatter = conversation_formatter
         self.llm_kwargs = llm_kwargs or {}
-        
+
         # Load default prompts
         self._load_prompts()
-        
+
         # Set up prompts (use custom if provided)
         self.scd_prompt = custom_scd_prompt or self.SUMMARY_PROMPT_TEMPLATE
         self.sop_prompt = custom_sop_prompt or self.BULLETPOINT_PROMPT_TEMPLATE
-        
+
         # Save custom prompts if provided
         if custom_scd_prompt is not None:
             self._save_custom_prompt("scd_prompt.txt", custom_scd_prompt)
         if custom_sop_prompt is not None:
             self._save_custom_prompt("sop_prompt.txt", custom_sop_prompt)
-        
+
     def _save_custom_prompt(self, filename: str, prompt_content: str):
         """Save custom prompt to the specified directory."""
         if self.custom_prompt_dir:
@@ -106,7 +105,7 @@ class SCD(Transformer):
         else:
             base_path = os.path.dirname(__file__)
             filepath = os.path.join(base_path, "prompts", filename)
-        
+
         with open(filepath, "w", encoding="utf-8") as f:
             f.write(prompt_content)
 
@@ -125,19 +124,19 @@ class SCD(Transformer):
             transcript_parts.append(f"{speaker_name}: {utt.text}")
 
         return "\n".join(transcript_parts)
-    
+
     def set_custom_scd_prompt(self, prompt_text: str, save_to_file: bool = True):
         """Set a custom SCD prompt template."""
         self.scd_prompt = prompt_text
         if save_to_file:
             self._save_custom_prompt("scd_prompt.txt", prompt_text)
-    
+
     def set_custom_sop_prompt(self, prompt_text: str, save_to_file: bool = True):
         """Set a custom SoP prompt template."""
         self.sop_prompt = prompt_text
         if save_to_file:
             self._save_custom_prompt("sop_prompt.txt", prompt_text)
-    
+
     def load_custom_prompts_from_directory(self, prompt_dir: str):
         """Load custom prompts from a specified directory."""
         scd_path = os.path.join(prompt_dir, "scd_prompt.txt")
@@ -176,14 +175,14 @@ class SCD(Transformer):
                 llm_kwargs=self.llm_kwargs,
             )
             scd_transformer.transform(corpus)
-        
+
         if self.generate_sop:
             # Formatter that gets the SCD from conversation metadata
             def scd_formatter(conversation):
                 if self.scd_metadata_name not in conversation.meta:
                     raise ValueError(f"SCD not found for conversation {conversation.id}")
                 return conversation.meta.get(self.scd_metadata_name, "")
-            
+
             sop_transformer = GenAITransformer(
                 provider=self.model_provider,
                 model=self.model,
