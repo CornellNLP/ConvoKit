@@ -22,6 +22,7 @@ except ImportError:
 
 from .factory import get_llm_client
 from .llm_transformer import LLM
+from .genai_transformer import GenAITransformer
 
 __all__ = [
     "LLMClient",
@@ -32,4 +33,5 @@ __all__ = [
     "get_llm_client",
     "GenAIConfigManager",
     "LLM",
+    "GenAITransformer",
 ]

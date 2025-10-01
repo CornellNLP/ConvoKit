@@ -211,3 +211,53 @@ class NaiveConDynS:
         for result in results:
             scores.append(self.measure_score(result))
         return scores
+
+    def compare_conversations(self, corpus, convo_id1: str, convo_id2: str, sop_meta_name: str):
+        """Compare two conversations using NaiveConDynS and store the result in both conversations' metadata.
+
+        This method retrieves two conversations from the corpus, extracts their SoP data
+        from metadata, computes the NaiveConDynS score between them, and stores the result in both
+        conversations' metadata with the key format "condyns_{convo_id1}_{convo_id2}".
+
+        Note: NaiveConDynS only uses SoP data for comparison, not conversation transcripts.
+
+        :param corpus: The ConvoKit Corpus containing the conversations
+        :param convo_id1: ID of the first conversation
+        :param convo_id2: ID of the second conversation  
+        :param sop_meta_name: Name of the metadata field containing SoP data
+        :return: The computed NaiveConDynS score
+        :raises KeyError: If conversations don't exist or required metadata is missing
+        :raises ValueError: If SoP data is malformed
+        """
+        # Get conversations from corpus
+        try:
+            convo1 = corpus.get_conversation(convo_id1)
+            convo2 = corpus.get_conversation(convo_id2)
+        except KeyError as e:
+            raise KeyError(f"Conversation not found in corpus: {e}")
+
+        # Extract SoP data from metadata
+        try:
+            sop1 = convo1.meta[sop_meta_name]
+            sop2 = convo2.meta[sop_meta_name]
+        except KeyError as e:
+            raise KeyError(f"SoP metadata '{sop_meta_name}' not found in conversation: {e}")
+
+        # Validate that SoP data is properly formatted (should be dict with ordered keys)
+        if not isinstance(sop1, dict) or not isinstance(sop2, dict):
+            raise ValueError("SoP data must be dictionaries")
+
+        # Compute bidirectional NaiveConDynS similarity
+        results = self.compute_bidirectional_naive_condyns(sop1, sop2)
+        
+        # Compute the mean score from bidirectional results
+        naive_condyns_score = np.mean(self.compute_score_from_results(results))
+
+        # Store the score in both conversations' metadata
+        score_key1 = f"condyns_{convo_id1}_{convo_id2}"
+        score_key2 = f"condyns_{convo_id2}_{convo_id1}"
+        
+        convo1.meta[score_key1] = naive_condyns_score
+        convo2.meta[score_key2] = naive_condyns_score
+
+        return naive_condyns_score

@@ -225,3 +225,89 @@ class ConDynS:
         for result in results:
             scores.append(self.measure_score(result))
         return scores
+
+    def _format_conversation_to_transcript(self, conversation):
+        """Format a ConvoKit conversation into a transcript string.
+
+        Converts a conversation into a formatted transcript suitable for ConDynS analysis.
+        Uses chronological order and assigns speaker labels.
+
+        :param conversation: ConvoKit Conversation object
+        :return: Formatted transcript string
+        """
+        utt_list = conversation.get_chronological_utterance_list()
+        transcript_lines = []
+        speaker_map = {}
+        speaker_counter = 1
+        
+        for utt in utt_list:
+            # Assign speaker labels (SPEAKER1, SPEAKER2, etc.)
+            if utt.speaker.id not in speaker_map:
+                speaker_map[utt.speaker.id] = f"SPEAKER{speaker_counter}"
+                speaker_counter += 1
+            
+            speaker_label = speaker_map[utt.speaker.id]
+            transcript_lines.append(f"{speaker_label}: {utt.text}")
+        
+        return " ".join(transcript_lines)
+
+    def compare_conversations(self, corpus, convo_id1: str, convo_id2: str, sop_meta_name: str, 
+                            formatter=None):
+        """Compare two conversations using ConDynS and store the result in both conversations' metadata.
+
+        This method retrieves two conversations from the corpus, formats them into transcripts,
+        extracts their SoP data from metadata, computes the ConDynS score between them, and stores 
+        the result in both conversations' metadata with the key format "condyns_{convo_id1}_{convo_id2}".
+
+        :param corpus: The ConvoKit Corpus containing the conversations
+        :param convo_id1: ID of the first conversation
+        :param convo_id2: ID of the second conversation  
+        :param sop_meta_name: Name of the metadata field containing SoP data
+        :param formatter: Optional custom formatter function that takes a Conversation object and returns a transcript string.
+                         If None, uses the default formatter.
+        :return: The computed ConDynS score
+        :raises KeyError: If conversations don't exist or required metadata is missing
+        :raises ValueError: If SoP data is malformed
+        :raises TypeError: If custom formatter is not callable
+        """
+        # Get conversations from corpus
+        try:
+            convo1 = corpus.get_conversation(convo_id1)
+            convo2 = corpus.get_conversation(convo_id2)
+        except KeyError as e:
+            raise KeyError(f"Conversation not found in corpus: {e}")
+
+        # Validate custom formatter if provided
+        if formatter is not None and not callable(formatter):
+            raise TypeError("Custom formatter must be a callable function")
+
+        # Format conversations into transcripts using custom or default formatter
+        if formatter is not None:
+            transcript1 = formatter(convo1)
+            transcript2 = formatter(convo2)
+        else:
+            transcript1 = self._format_conversation_to_transcript(convo1)
+            transcript2 = self._format_conversation_to_transcript(convo2)
+
+        # Extract SoP data from metadata
+        try:
+            sop1 = convo1.meta[sop_meta_name]
+            sop2 = convo2.meta[sop_meta_name]
+        except KeyError as e:
+            raise KeyError(f"SoP metadata '{sop_meta_name}' not found in conversation: {e}")
+
+        # Validate that SoP data is properly formatted (should be dict with ordered keys)
+        if not isinstance(sop1, dict) or not isinstance(sop2, dict):
+            raise ValueError("SoP data must be dictionaries")
+
+        # Compute ConDynS score
+        condyns_score = self.get_condyns_score(transcript1, transcript2, sop1, sop2)
+
+        # Store the score in both conversations' metadata
+        score_key1 = f"condyns_{convo_id1}_{convo_id2}"
+        score_key2 = f"condyns_{convo_id2}_{convo_id1}"
+        
+        convo1.meta[score_key1] = condyns_score
+        convo2.meta[score_key2] = condyns_score
+
+        return condyns_score
