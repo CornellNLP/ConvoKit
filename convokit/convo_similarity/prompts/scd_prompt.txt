@@ -19,7 +19,7 @@ Multiple users discuss minimum wage. Four speakers express their different point
 
 Now, provide the trajectory summary for the following conversation.
 Conversation Transcript:
-{transcript}
+{formatted_object}
 
 Now, summarize this conversation. Remember, do not include specific topics, claims, or arguments from the conversation. Instead, try to capture the speakers' sentiments, intentions, and conversational/persuasive strategies. Limit the trajectory summary to 80 words. 
 

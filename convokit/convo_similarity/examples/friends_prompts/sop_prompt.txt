@@ -1,3 +1,4 @@
+
 Here is a trajectory summary of a conversation that lays out how the dynamics of the conversation developed. You need to parse the summary into events in order. 
 Follow the following guidelines:
 1. Try to maintain the original language of the summary as much as you can. 

@@ -23,7 +23,7 @@ class ConDynS:
     :param model_provider: The LLM provider to use (e.g., "gpt", "gemini")
     :param config: The GenAIConfigManager instance to use
     :param model: Optional specific model name
-    :param custom_condyns_prompt: Custom text for the condyns prompt template
+    :param custom_condyns_prompt: Custom prompt for the condyns prompt template
     :param custom_prompt_dir: Directory to save custom prompts (if not provided, overwrites default prompts in ./prompts)
     """
 
@@ -54,7 +54,7 @@ class ConDynS:
         :param model_provider: The LLM provider to use (e.g., "gpt", "gemini")
         :param config: The GenAIConfigManager instance to use
         :param model: Optional specific model name
-        :param custom_condyns_prompt: Custom text for the condyns prompt template
+        :param custom_condyns_prompt: Custom prompt for the condyns prompt template
         :param custom_prompt_dir: Directory to save custom prompts (if not provided, overwrites defaults in ./prompts)
         :raises ImportError: If genai dependencies are not available
         """
@@ -163,7 +163,7 @@ class ConDynS:
         :return: ConDynS score
         """
         condyns_score = self.compute_bidirectional_similarity(transcript1, transcript2, sop1, sop2)
-        return np.mean(self.compute_score_from_results(condyns_score))
+        return condyns_score, np.mean(self.compute_score_from_results(condyns_score))
 
     def compute_unidirectional_similarity(self, sop1, transcript2):
         """Compute unidirectional similarity between SoPs and a transcript.
@@ -171,8 +171,8 @@ class ConDynS:
         Analyzes how well the SoPs from one conversation match the dynamics
         observed in another conversation's transcript.
 
-        :param sop1: Dictionary of SoPs with ordered keys ('0', '1', etc.) from the first conversation
-        :param transcript2: Conversation transcript to analyze from the second conversation
+        :param sop1: SoPs from the first conversation
+        :param transcript2: Conversation transcript from the second conversation
         :return: Dictionary with analysis and scores for each event in sop1
         """
         # Format the prompt with the events and transcript
@@ -297,18 +297,20 @@ class ConDynS:
         except KeyError as e:
             raise KeyError(f"SoP metadata '{sop_meta_name}' not found in conversation: {e}")
 
-        # Validate that SoP data is properly formatted (should be dict with ordered keys)
-        if not isinstance(sop1, dict) or not isinstance(sop2, dict):
-            raise ValueError("SoP data must be dictionaries")
-
         # Compute ConDynS score
-        condyns_score = self.get_condyns_score(transcript1, transcript2, sop1, sop2)
+        result, condyns_score = self.get_condyns_score(transcript1, transcript2, sop1, sop2)
 
         # Store the score in both conversations' metadata
         score_key1 = f"condyns_{convo_id1}_{convo_id2}"
         score_key2 = f"condyns_{convo_id2}_{convo_id1}"
 
+        result_key1 = f"condyns_result_{convo_id1}_{convo_id2}"
+        result_key2 = f"condyns_result_{convo_id2}_{convo_id1}"
+
+        convo1.meta[result_key1] = result
+        convo2.meta[result_key2] = result
+
         convo1.meta[score_key1] = condyns_score
         convo2.meta[score_key2] = condyns_score
 
-        return condyns_score
+        return result, condyns_score

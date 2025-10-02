@@ -22,7 +22,7 @@ class NaiveConDynS:
     :param model_provider: The LLM provider to use (e.g., "gpt", "gemini")
     :param config: The GenAIConfigManager instance to use
     :param model: Optional specific model name
-    :param custom_naive_condyns_prompt: Custom text for the naive condyns prompt template
+    :param custom_naive_condyns_prompt: Custom prompt for the naive condyns prompt template
     :param custom_prompt_dir: Directory to save custom prompts (if not provided, overwrites defaults in ./prompts)
     """
 
@@ -56,7 +56,7 @@ class NaiveConDynS:
         :param model_provider: The LLM provider to use (e.g., "gpt", "gemini")
         :param config: The GenAIConfigManager instance to use
         :param model: Optional specific model name
-        :param custom_naive_condyns_prompt: Custom text for the naive condyns prompt template
+        :param custom_naive_condyns_prompt: Custom prompt for the naive condyns prompt template
         :param custom_prompt_dir: Directory to save custom prompts (if not provided, overwrites defaults in ./prompts)
         :raises ImportError: If genai dependencies are not available
         """
@@ -159,8 +159,8 @@ class NaiveConDynS:
         Compares the SoPs from one conversation against another to measure how well
         the dynamics of one conversation match those of another.
 
-        :param sop1: Dictionary of patterns from the first conversation with ordered keys ('0', '1', etc.)
-        :param sop2: Dictionary of patterns from the second conversation with ordered keys ('0', '1', etc.)
+        :param sop1: SoP from the first conversation
+        :param sop2: SoP from the second conversation
         :return: Dictionary with analysis and scores for each pattern in sop1
         """
         # Format the prompt with the two sequences of patterns
@@ -181,8 +181,8 @@ class NaiveConDynS:
         Computes similarity in both directions: sop1 vs sop2 and sop2 vs sop1
         to capture the full dynamics of both conversations.
 
-        :param sop1: Dictionary of patterns from the first conversation with ordered keys ('0', '1', etc.)
-        :param sop2: Dictionary of patterns from the second conversation with ordered keys ('0', '1', etc.)
+        :param sop1: SoP from the first conversation
+        :param sop2: SoP from the second conversation
         :return: List of [response_dict1, response_dict2] where each dict contains
             analysis and scores for each pattern
         """
@@ -242,10 +242,6 @@ class NaiveConDynS:
             sop2 = convo2.meta[sop_meta_name]
         except KeyError as e:
             raise KeyError(f"SoP metadata '{sop_meta_name}' not found in conversation: {e}")
-
-        # Validate that SoP data is properly formatted (should be dict with ordered keys)
-        if not isinstance(sop1, dict) or not isinstance(sop2, dict):
-            raise ValueError("SoP data must be dictionaries")
 
         # Compute bidirectional NaiveConDynS similarity
         results = self.compute_bidirectional_naive_condyns(sop1, sop2)
