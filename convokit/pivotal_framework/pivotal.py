@@ -8,10 +8,7 @@ import matplotlib.pyplot as plt
 from convokit.forecaster.forecasterModel import ForecasterModel
 from convokit.forecaster.forecaster import Forecaster
 
-try:
-    from convokit.utterance_simulator.utteranceSimulatorModel import UtteranceSimulatorModel
-except NotImplementedError as e:
-    raise ImportError("Unsloth GPU requirement not met") from e
+from convokit.utterance_simulator.utteranceSimulatorModel import UtteranceSimulatorModel
 from convokit.utterance_simulator.utteranceSimulator import UtteranceSimulator
 from .util import ContextTuple, DEFAULT_LABELER
 

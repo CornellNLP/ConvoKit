@@ -6,3 +6,12 @@ twine
 sphinx
 m2r2
 sphinx-rtd-theme
+torch>=0.12
+accelerate
+peft
+bitsandbytes
+transformers
+unsloth
+trl>=0.12.2
+tensorflow>=2.18.0
+tf-keras>=2.17.0,<3.0.0

@@ -1,20 +1,13 @@
-try:
-    import torch
-    import torch.nn.functional as F
-    from datasets import Dataset, DatasetDict
-    from transformers import (
-        AutoConfig,
-        AutoModelForSequenceClassification,
-        AutoTokenizer,
-        TrainingArguments,
-        Trainer,
-    )
-
-    TRANSFORMERS_AVAILABLE = True
-except (ModuleNotFoundError, ImportError) as e:
-    raise ModuleNotFoundError(
-        "torch, transformers, or datasets is not currently installed. Run 'pip install convokit[llm]' if you would like to use the TransformerEncoderModel."
-    ) from e
+import torch
+import torch.nn.functional as F
+from datasets import Dataset, DatasetDict
+from transformers import (
+    AutoConfig,
+    AutoModelForSequenceClassification,
+    AutoTokenizer,
+    TrainingArguments,
+    Trainer,
+)
 
 import os
 import pandas as pd

@@ -376,4 +376,12 @@ autodoc_mock_imports = [
     "bson",
     "dnspython",
     "datasets",
+    "transformers",
+    "unsloth",
+    "sentence_transformers",
+    "evaluate",
+    "openai",
+    "google",
+    "google.genai",
+    "google.genai.types",
 ]

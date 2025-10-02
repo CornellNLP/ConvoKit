@@ -1,20 +1,10 @@
-try:
-    import unsloth
-    from unsloth import FastLanguageModel, is_bfloat16_supported
-    from unsloth.chat_templates import get_chat_template
-    import torch
-    import torch.nn.functional as F
-    from trl import SFTTrainer, SFTConfig
-    from datasets import Dataset
-
-    UNSLOTH_AVAILABLE = True
-except (ModuleNotFoundError, ImportError) as e:
-    if "Unsloth GPU requirement not met" in str(e):
-        raise ImportError("Unsloth GPU requirement not met") from e
-    else:
-        raise ModuleNotFoundError(
-            "unsloth, torch, trl, or datasets is not currently installed. Run 'pip install convokit[llm]' if you would like to use the TransformerDecoderModel."
-        ) from e
+import unsloth
+from unsloth import FastLanguageModel, is_bfloat16_supported
+from unsloth.chat_templates import get_chat_template
+import torch
+import torch.nn.functional as F
+from trl import SFTTrainer, SFTConfig
+from datasets import Dataset
 
 import json
 import os
