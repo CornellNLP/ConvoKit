@@ -29,9 +29,9 @@ class SCD(Transformer):
     :param model_provider: The LLM provider to use (e.g., "gpt", "gemini")
     :param config: The GenAIConfigManager instance to use for LLM configuration
     :param model: Optional specific model name
-    :param custom_scd_prompt: Custom text for the SCD prompt template. Should include {formatted_output} 
+    :param custom_scd_prompt: Custom text for the SCD prompt template. Should include {formatted_output}
         placeholder for the conversation transcript.
-    :param custom_sop_prompt: Custom text for the SoP prompt template. Should include {formatted_output} 
+    :param custom_sop_prompt: Custom text for the SoP prompt template. Should include {formatted_output}
         placeholder for the SCD summary.
     :param custom_prompt_dir: Directory to save custom prompts
     :param generate_scd: Whether to generate SCD summaries (default: True)
