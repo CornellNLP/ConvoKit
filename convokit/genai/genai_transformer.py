@@ -14,8 +14,8 @@ class GenAITransformer(Transformer):
     :param provider: LLM provider name ("gpt", "gemini", "local", etc.)
     :param model: LLM model name
     :param object_level: Object level at which to apply the transformer ("conversation", "speaker", "utterance", "corpus")
-    :param prompt: Template string for the prompt. Use {formatted_object} as placeholder for the formatted object data
-    :param formatter: Function that takes an object and returns a string representation for the prompt
+    :param prompt: Template string for the prompt. Must contain '{formatted_object}' as a placeholder where the formatted object data will be inserted
+    :param formatter: Function that takes an object and returns a string representation that will replace the '{formatted_object}' placeholder in the prompt
     :param metadata_name: Name of the metadata field to store the LLM response
     :param selector: Optional function to filter which objects to process. Defaults to processing all objects
     :param config_manager: GenAIConfigManager instance for LLM API key management

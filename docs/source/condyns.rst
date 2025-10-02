@@ -5,16 +5,16 @@ ConDynS is a similarity measure for comparing conversations with respect to thei
 
 In this module, we provide a comprehensive framework for computing ConDynS, including:
 
-* **SCDWriter**: Generates Summary of Conversation Dynamics (SCD) from conversation transcripts and extracts Sequence of Patterns (SoP) from SCD
+* **SCD**: A ConvoKit Transformer that generates Summary of Conversation Dynamics (SCD) from conversation transcripts and extracts Sequence of Patterns (SoP) from SCD
 * **ConDynS**: Main similarity computation using bidirectional comparison between SCD patterns and conversation transcripts
 * **NaiveConDynS**: Simplified similarity computation using only SoP comparison without transcripts
 * **ConDynSBaselines**: Baseline methods for comparison including BERTScore, cosine similarity, and LLM-based direct comparison
 
 Note that ConDynS computation requires access to a LLM. We provide a unified interface for working with LLMs in the `GenAI module <genai.html>`_. It is recommended to setup for GenAI models in the module beforehand to compute ConDynS.
 
-We provide validation experiments from the paper: `validation experiments <https://github.com/CornellNLP/ConvoKit/blob/master/convokit/convo_similarity/examples/validation/validation.ipynb>`_ and showcase the baseline methods in `baseline methods <https://github.com/CornellNLP/ConvoKit/blob/master/convokit/convo_similarity/examples/validation/baselines.ipynb>`_.
+We provide experiments notebooksfrom the paper: `validation <https://github.com/CornellNLP/ConvoKit/blob/master/convokit/convo_similarity/examples/validation/validation.ipynb>`_, `baseline <https://github.com/CornellNLP/ConvoKit/blob/master/convokit/convo_similarity/examples/validation/baselines.ipynb>`_, `applications to online communities <https://github.com/CornellNLP/ConvoKit/blob/master/convokit/convo_similarity/examples/applications/applications.ipynb>`_, and applications on `WikiConv German <https://github.com/CornellNLP/ConvoKit/blob/master/convokit/convo_similarity/examples/applications/wiki_german/wiki_german_condyns.ipynb>`_ and `Friends <https://github.com/CornellNLP/ConvoKit/blob/master/convokit/convo_similarity/examples/applications/friends/friends_condyns.ipynb>`_.
 
-We also provide example usages with different applications with ConDynS: `applications to online communities <https://github.com/CornellNLP/ConvoKit/blob/master/convokit/convo_similarity/examples/applications/applications.ipynb>`_.
+To showcase the usage of SCD and ConDynS modules, we provide a simple example in `this example notebook <https://github.com/CornellNLP/ConvoKit/blob/master/convokit/convo_similarity/examples/example.ipynb>`_.
 
 Modules
 -------
@@ -31,10 +31,10 @@ NaiveConDynS
 .. automodule:: convokit.convo_similarity.naive_condyns
     :members:
 
-SCDWriter
-^^^^^^^^^
+SCD
+^^^
 
-.. automodule:: convokit.convo_similarity.summary
+.. automodule:: convokit.convo_similarity.scd
     :members:
 
 Baseline Methods
