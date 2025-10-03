@@ -31,17 +31,12 @@ Basic Interface and Configuration
 .. automodule:: convokit.genai.factory
     :members:
 
-GenAI Transformer
-------------------
+LLMPromptTransformer
+^^^^^^^^^^^^^^^^^^^^
 
-The GenAI module provides a ConvoKit transformer that make it easy to apply LLM processing to corpus objects at different levels. The transformer handle the integration between ConvoKit's data structures and LLM clients, allowing you to seamlessly incorporate AI analysis into your conversational data processing pipelines.
+The LLMPromptTransformer is a flexible transformer that allows you to apply custom prompts and formatters to any level of corpus objects (utterances, conversations, speakers, or the entire corpus). It provides fine-grained control over how objects are formatted for LLM processing and where the results are stored.
 
-GenAITransformer
-^^^^^^^^^^^^^^^^
-
-The GenAITransformer is a flexible transformer that allows you to apply custom prompts and formatters to any level of corpus objects (utterances, conversations, speakers, or the entire corpus). It provides fine-grained control over how objects are formatted for LLM processing and where the results are stored.
-
-.. automodule:: convokit.genai.genai_transformer
+.. automodule:: convokit.genai.llmprompttransformer
     :members:
 
 Provider Clients

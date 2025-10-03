@@ -4,7 +4,7 @@ from .factory import get_llm_client
 from .genai_config import GenAIConfigManager
 
 
-class GenAITransformer(Transformer):
+class LLMPromptTransformer(Transformer):
     """
     A ConvoKit Transformer that uses GenAI clients to process objects and store outputs as metadata.
 

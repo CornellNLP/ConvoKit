@@ -6,7 +6,7 @@ from convokit.transformer import Transformer
 from convokit.model import Corpus, Conversation
 
 try:
-    from convokit.genai import GenAITransformer
+    from convokit.genai import LLMPromptTransformer
     from convokit.genai.genai_config import GenAIConfigManager
 
     GENAI_AVAILABLE = True
@@ -77,7 +77,9 @@ class SCD(Transformer):
         llm_kwargs: Optional[dict] = None,
     ):
         if not GENAI_AVAILABLE:
-            raise ImportError("GenAI dependencies not available. Please install required packages.")
+            raise ImportError(
+                "GenAI dependencies not available. Please install via `pip install convokit[genai]`."
+            )
 
         self.model_provider = model_provider
         self.config = config
@@ -169,7 +171,7 @@ class SCD(Transformer):
         """
         if self.generate_scd:
             formatter = self.conversation_formatter or self._default_conversation_formatter
-            scd_transformer = GenAITransformer(
+            scd_transformer = LLMPromptTransformer(
                 provider=self.model_provider,
                 model=self.model,
                 object_level="conversation",
@@ -189,7 +191,7 @@ class SCD(Transformer):
                     raise ValueError(f"SCD not found for conversation {conversation.id}")
                 return conversation.meta.get(self.scd_metadata_name, "")
 
-            sop_transformer = GenAITransformer(
+            sop_transformer = LLMPromptTransformer(
                 provider=self.model_provider,
                 model=self.model,
                 object_level="conversation",

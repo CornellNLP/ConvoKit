@@ -59,7 +59,9 @@ class ConDynS:
         :raises ImportError: If genai dependencies are not available
         """
         if not GENAI_AVAILABLE:
-            raise ImportError("GenAI dependencies not available. Please install required packages.")
+            raise ImportError(
+                "GenAI dependencies not available. Please install via `pip install convokit[genai]`."
+            )
 
         self.model_provider = model_provider
         self.config = config
