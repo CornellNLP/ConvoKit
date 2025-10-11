@@ -196,7 +196,7 @@ class TalkTimeSharing(Transformer):
         """
         Summarizes the talk-time sharing dynamics across conversations in the corpus.
 
-        Categorizes conversations into balance types (high_balance, mid_balance, low_balance) and 
+        Categorizes conversations into balance types (high_balance, mid_balance, low_balance) and
         more fine-grained talk-time sharing dynamics types introduced in the paper (dominating_throughout, back_and_forth, alter_dominance) based on configurable thresholds.
 
         If conversations are missing required metadata (balance_score, balance_lst), the transformer
@@ -210,93 +210,93 @@ class TalkTimeSharing(Transformer):
         :param dominating_throughout_threshold: Percentage threshold for dominating_throughout type (default: 75.0)
         :param back_and_forth_threshold: Percentage threshold for back_and_forth type (default: 60.0)
         :param alter_dominance_threshold: Percentage threshold for alter_dominance type (default: 25.0)
-        
+
         :return: Dictionary containing counts for each category
         """
         # Initialize counters
-        balance_counts = {
-            'high_balance': 0,
-            'mid_balance': 0,
-            'low_balance': 0,
-            'invalid': 0
-        }
-        
+        balance_counts = {"high_balance": 0, "mid_balance": 0, "low_balance": 0, "invalid": 0}
+
         triangle_counts = {
-            'dominating_throughout': 0,
-            'back_and_forth': 0,
-            'alter_dominance': 0,
-            'no_label': 0
+            "dominating_throughout": 0,
+            "back_and_forth": 0,
+            "alter_dominance": 0,
+            "no_label": 0,
         }
-        
+
         # Check if any conversations need annotation
         needs_annotation = False
         for convo in corpus.iter_conversations():
-            if selector(convo) and ('balance_score' not in convo.meta or 'balance_lst' not in convo.meta):
+            if selector(convo) and (
+                "balance_score" not in convo.meta or "balance_lst" not in convo.meta
+            ):
                 needs_annotation = True
                 break
-        
+
         # If any conversations need annotation, run the transformer on the entire corpus
         if needs_annotation:
             self.transform(corpus, selector=selector)
-        
+
         total_conversations = 0
-        
+
         # Process each conversation
         for convo in corpus.iter_conversations():
             if not selector(convo):
                 continue
-                
+
             total_conversations += 1
-            
-            if 'balance_score' not in convo.meta or 'balance_lst' not in convo.meta:
-                balance_counts['invalid'] += 1
-                triangle_counts['no_label'] += 1
+
+            if "balance_score" not in convo.meta or "balance_lst" not in convo.meta:
+                balance_counts["invalid"] += 1
+                triangle_counts["no_label"] += 1
                 continue
-            
+
             # Categorize by balance type
-            balance_score = convo.meta['balance_score']
+            balance_score = convo.meta["balance_score"]
             if balance_score >= low_balance_threshold:
-                balance_counts['low_balance'] += 1
+                balance_counts["low_balance"] += 1
             elif balance_score >= mid_balance_threshold:
-                balance_counts['mid_balance'] += 1
+                balance_counts["mid_balance"] += 1
             elif balance_score >= high_balance_threshold:
-                balance_counts['high_balance'] += 1
+                balance_counts["high_balance"] += 1
             else:
-                balance_counts['invalid'] += 1
-            
+                balance_counts["invalid"] += 1
+
             # Categorize by triangle type
-            balance_lst = convo.meta['balance_lst']
+            balance_lst = convo.meta["balance_lst"]
             if not balance_lst:  # Empty balance list
-                triangle_counts['no_label'] += 1
+                triangle_counts["no_label"] += 1
                 continue
-            
+
             # Check for dominating throughout (blue windows)
             count_ones = balance_lst.count(1)
             count_neg_ones = balance_lst.count(-1)
             percent_ones = (count_ones / len(balance_lst)) * 100
             percent_neg_ones = (count_neg_ones / len(balance_lst)) * 100
-            
-            if percent_ones >= dominating_throughout_threshold or percent_neg_ones >= dominating_throughout_threshold:
-                triangle_counts['dominating_throughout'] += 1
+
+            if (
+                percent_ones >= dominating_throughout_threshold
+                or percent_neg_ones >= dominating_throughout_threshold
+            ):
+                triangle_counts["dominating_throughout"] += 1
             # Check for back and forth (gray windows)
             elif balance_lst.count(0) / len(balance_lst) * 100 >= back_and_forth_threshold:
-                triangle_counts['back_and_forth'] += 1
+                triangle_counts["back_and_forth"] += 1
             # Check for alternating dominance (red windows)
             elif count_neg_ones / len(balance_lst) * 100 > alter_dominance_threshold:
-                triangle_counts['alter_dominance'] += 1
+                triangle_counts["alter_dominance"] += 1
             else:
-                triangle_counts['no_label'] += 1
-        
+                triangle_counts["no_label"] += 1
+
         return {
-            'total_conversations': total_conversations,
-            'balance_types': balance_counts,
-            'triangle_types': triangle_counts,
-            'parameters': {
-                'high_balance_threshold': high_balance_threshold,
-                'mid_balance_threshold': mid_balance_threshold,
-                'low_balance_threshold': low_balance_threshold,
-                'dominating_throughout_threshold': dominating_throughout_threshold,
-                'back_and_forth_threshold': back_and_forth_threshold,
-                'alter_dominance_threshold': alter_dominance_threshold,
-            }
+            "total_conversations": total_conversations,
+            "balance_types": balance_counts,
+            "triangle_types": triangle_counts,
+            "parameters": {
+                "high_balance_threshold": high_balance_threshold,
+                "mid_balance_threshold": mid_balance_threshold,
+                "low_balance_threshold": low_balance_threshold,
+                "dominating_throughout_threshold": dominating_throughout_threshold,
+                "back_and_forth_threshold": back_and_forth_threshold,
+                "alter_dominance_threshold": alter_dominance_threshold,
+            },
         }
