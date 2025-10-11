@@ -28,7 +28,7 @@ setup(
         "convokit.prompt_types",
         "convokit.ranker",
         "convokit.redirection",
-        "convokit.balance",
+        "convokit.talktimesharing",
         "convokit.text_processing",
         "convokit.speaker_convo_helpers",
         "convokit.speakerConvoDiversity",

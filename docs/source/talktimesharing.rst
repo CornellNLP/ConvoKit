@@ -1,7 +1,7 @@
 Talk-Time Sharing Dynamics
 ====================================
 
-The `Balance` transformer measures how talk-time is distributed 
+The `TalkTimeSharing` transformer measures how talk-time is distributed 
 between speakers throughout a conversation—--capturing both the 
 overall conversation-level imbalance and the fine-grained dynamics 
 that lead to it. The method and analysis are presented in the paper: 
@@ -14,12 +14,12 @@ overall, their temporal talk-time dynamics can lead to diverging speaker
 experiences. This framework can be extended to a wide range of dialogue 
 settings, including multi-party and role-asymmetric interactions.  
 
-We present a demo, which applies the `Balance` transformer to 
+We present a demo, which applies the `TalkTimeSharing` transformer to 
 the `CANDOR corpus <https://convokit.cornell.edu/documentation/candor.html>`_,
 highlighting conversational patterns in video-chat settings. We then extend the 
 analysis to `Supreme Court oral arguments <https://convokit.cornell.edu/documentation/supreme.html>`_ 
 to demonstrate the method's adaptability across different conversational domains.
-The demo is publically available: `Talk-Time Sharing Dynamics in CANDOR Corpus and Supreme Court Oral Arguments <https://github.com/CornellNLP/ConvoKit/tree/master/convokit/balance/balance_example.ipynb>`_
+The demo is publically available: `Talk-Time Sharing Dynamics in CANDOR Corpus and Supreme Court Oral Arguments <https://github.com/CornellNLP/ConvoKit/tree/master/convokit/talktimesharing/talktimesharing_example.ipynb>`_
 
-.. automodule:: convokit.balance.balance
+.. automodule:: convokit.talktimesharing.talktimesharing
     :members:
