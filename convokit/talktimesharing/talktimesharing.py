@@ -73,7 +73,7 @@ class TalkTimeSharing(Transformer):
 
     It assigns each conversation a primary speaker group (more talkative), a secondary
     speaker group (less talkative), and a scalar imbalance score. It also computes a
-    list of windowed imbalance scores over a sliding windows of the conversation to capture how talk-time 
+    list of windowed imbalance scores over a sliding windows of the conversation to capture how talk-time
     sharing distribution unfolds over time.
 
     Each utterance is expected to have a speaker group label under `utt.meta['utt_group']`,
@@ -119,7 +119,7 @@ class TalkTimeSharing(Transformer):
 
         Annotates the corpus with speaker group labels and if utterances `utt_group` metadata is missing, the data
         is assumed to be labeled in `convo.meta['speaker_groups']`.
-        
+
         Each conversation is then annotated with its primary and secondary speaker groups, an overall conversation level
         imbalance score, and a list of windowed imbalance score computed via sliding window analysis.
 
@@ -144,7 +144,9 @@ class TalkTimeSharing(Transformer):
                         utt.meta["utt_group"] = speaker_groups_dict[utt.speaker.id]
 
         ### Annotate conversations with talk-time sharing information
-        for convo in tqdm(corpus.iter_conversations(), desc="Annotating conversation talk-time sharing"):
+        for convo in tqdm(
+            corpus.iter_conversations(), desc="Annotating conversation talk-time sharing"
+        ):
             if selector(convo):
                 convo.meta["primary_speaker"] = _get_ps(
                     corpus,
