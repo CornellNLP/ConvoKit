@@ -362,6 +362,25 @@
         "doc",
         "example"
       ]
+    },
+    {
+      "login": "jeeyonkang",
+      "name": "Jeeyon Kang",
+      "avatar_url": "https://avatars.githubusercontent.com/u/135584717?v=4",
+      "profile": "https://github.com/jeeyonkang",
+      "contributions": [
+        "data",
+        "example"
+      ]
+    },
+    {
+      "login": "kakeith",
+      "name": "Katherine A. Keith",
+      "avatar_url": "https://avatars.githubusercontent.com/u/18640437?v=4",
+      "profile": "https://kakeith.github.io/",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,

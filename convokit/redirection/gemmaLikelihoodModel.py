@@ -1,4 +1,3 @@
-from .likelihoodModel import LikelihoodModel
 import torch
 from peft import LoraConfig, get_peft_model, AutoPeftModelForCausalLM, PeftModel
 from transformers import (
@@ -9,6 +8,8 @@ from transformers import (
     TrainingArguments,
 )
 from trl import SFTTrainer
+
+from .likelihoodModel import LikelihoodModel
 from .config import DEFAULT_TRAIN_CONFIG, DEFAULT_BNB_CONFIG, DEFAULT_LORA_CONFIG
 
 

@@ -1,12 +1,7 @@
-try:
-    import unsloth
-except NotImplementedError as e:
-    raise ImportError("Unsloth GPU requirement not met") from e
-
+import unsloth
 from unsloth import FastLanguageModel
 from unsloth import is_bfloat16_supported
 from unsloth.chat_templates import get_chat_template
-
 import torch
 from datasets import load_from_disk, DatasetDict
 from trl import SFTTrainer

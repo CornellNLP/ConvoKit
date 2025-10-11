@@ -1,13 +1,14 @@
 from convokit import Transformer
+import random
+import numpy as np
+
 from convokit.redirection.likelihoodModel import LikelihoodModel
 from convokit.redirection.contextSelector import (
     default_previous_context_selector,
     default_future_context_selector,
 )
 import torch
-import random
 from convokit.redirection.preprocessing import format_conversations, get_chunk_dataset
-import numpy as np
 
 
 class UtteranceLikelihood(Transformer):

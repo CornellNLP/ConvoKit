@@ -36,9 +36,11 @@ def download(
         - "conversations-gone-awry-corpus": Wiki Personal Attacks Corpus
             Wikipedia talk page conversations that derail into personal attacks as labeled by crowdworkers
             (see http://www.cs.cornell.edu/~cristian/Conversations_gone_awry.html)
+        - "conversations-gone-awry-cmv-corpus-large"
+            Discussion threads on the subreddit ChangeMyView (CMV) that derail into rule-violating behavior, now updated with conversations up to 2022.
+            (see http://www.cs.cornell.edu/~cristian/Conversations_gone_awry.html)
         - "conversations-gone-awry-cmv-corpus"
             Discussion threads on the subreddit ChangeMyView (CMV) that derail into rule-violating behavior
-            (see http://www.cs.cornell.edu/~cristian/Conversations_gone_awry.html)
         -  "movie-corpus": Cornell Movie-Dialogs Corpus
             A large metadata-rich collection of fictional conversations extracted from raw movie scripts.
             (see https://www.cs.cornell.edu/~cristian/Chameleons_in_imagined_conversations.html)
@@ -182,6 +184,14 @@ def download(
         print("Dataset already exists at {}".format(dataset_path))
         dataset_path = os.path.join(downloaded_paths[name], name)
 
+    # Check if the corpus directory exists, otherwise use the parent directory
+    if needs_download:
+        potential_corpus_dir = os.path.join(os.path.dirname(dataset_path), name)
+        if os.path.exists(potential_corpus_dir):
+            dataset_path = potential_corpus_dir
+        else:
+            dataset_path = os.path.dirname(dataset_path)
+
     return dataset_path
 
 
@@ -274,19 +284,37 @@ def _download_helper(
                 os.mkdir(corpus_dir)
             zipf.extractall(corpus_dir)
 
-    elif url.lower().endswith(".corpus") or url.lower().endswith(".zip"):
-        # print(dataset_path)
+    elif (
+        url.lower().endswith(".corpus")
+        or url.lower().endswith(".corpus.zip")
+        or url.lower().endswith(".zip")
+    ):
         with zipfile.ZipFile(dataset_path, "r") as zipf:
-            zipf.extractall(os.path.dirname(dataset_path))
+            # Check if the zip contains a directory with the corpus name
+            zip_contents = zipf.namelist()
+            has_corpus_dir = any(item.startswith(f"{name}/") for item in zip_contents)
+
+            if has_corpus_dir:
+                # If zip contains a corpus directory, extract to parent directory
+                zipf.extractall(os.path.dirname(dataset_path))
+            else:
+                # If zip contains files at root level, create corpus directory and extract there
+                corpus_dir = os.path.join(os.path.dirname(dataset_path), name)
+                if not os.path.exists(corpus_dir):
+                    os.mkdir(corpus_dir)
+                zipf.extractall(corpus_dir)
 
     if verbose:
         print("Done")
     # for Corpus objects only: check the Corpus version
     if is_corpus:
         with open(downloadeds_path, "a") as f:
-            fn = os.path.join(
-                os.path.dirname(dataset_path), name
-            )  # os.path.join(os.path.dirname(data), name)
+            # Check if the corpus directory exists, otherwise use the parent directory
+            potential_corpus_dir = os.path.join(os.path.dirname(dataset_path), name)
+            if os.path.exists(potential_corpus_dir):
+                fn = potential_corpus_dir
+            else:
+                fn = os.path.dirname(dataset_path)
             f.write(
                 "{}$#${}$#${}\n".format(
                     name, os.path.realpath(os.path.dirname(dataset_path) + "/"), corpus_version(fn)
