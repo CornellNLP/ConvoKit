@@ -1548,7 +1548,7 @@ class Corpus:
                 df["id"] = df.index
 
         # checking if dataframes contain their respective required columns
-        missing_fields = pd.Index(columns).difference(utterances_df.columns).all()
+        missing_fields = pd.Index(columns).difference(utterances_df.columns)
         assert (
             len(missing_fields) == 0
         ), f"Utterances dataframe is missing the following required fields: {missing_fields}"
