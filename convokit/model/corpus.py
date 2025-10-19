@@ -1548,9 +1548,10 @@ class Corpus:
                 df["id"] = df.index
 
         # checking if dataframes contain their respective required columns
+        missing_fields = pd.Index(columns).difference(utterances_df.columns).all()
         assert (
-            pd.Series(columns).isin(utterances_df.columns).all()
-        ), "Utterances dataframe must contain all primary data fields"
+            len(missing_fields) == 0
+        ), f"Utterances dataframe is missing the following required fields: {missing_fields}"
 
         utterance_meta_cols = extract_meta_from_df(utterances_df)
 
