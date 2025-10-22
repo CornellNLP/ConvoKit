@@ -19,3 +19,6 @@ These are the transformers related to generating some analysis of the Corpus.
    SpeakerConvoDiversity <speakerConvoDiversity.rst>
    SCD <scd.rst>
    ConvoDynamicsSimilarity <condyns.rst>
+   Redirection <redirectionAndUtteranceLikelihood.rst>
+   UtteranceLikelihood <redirectionAndUtteranceLikelihood.rst>
+   TalkTimeSharingDynamics <talktimesharing.rst>
