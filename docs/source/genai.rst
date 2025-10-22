@@ -47,8 +47,8 @@ Supported Providers
 
 Currently supported LLM providers:
 
-* **OpenAI GPT**: Access to OpenAI GPT models through the OpenAI API
-* **Google Gemini**: Access to Google Gemini models via Vertex AI
+* **OpenAI GPT**: Access to OpenAI GPT models through the OpenAI API. See `OpenAI API setup <https://platform.openai.com/docs/quickstart>`_.
+* **Google Gemini**: Access to Google Gemini models via Vertex AI. See `Vertex AI setup guide <https://cloud.google.com/vertex-ai/docs/start/cloud-environment>`_.
 * **Local Models**: Template implementation for local LLM models (requires custom implementation)
 
 GPT Client
