@@ -1,0 +1,36 @@
+You will be given two lists of events describing conversational dynamics and trajectories. You are tasked with determining how closely the first sequence of dynamics is seen in the second sequence of dynamics, both in occurrence and order.
+
+### Input:
+- Both sequences of events is provided as a dictionary, where:
+  - Keys: indicate the order of events, starting from '0'.
+  - Values: describe each event.
+
+### Task:
+- Analysis: Analyze how closely the first sequence of events follows the second sequence. Think and analyze whether you see any event in the second sequence resemble each event in the first. Remember that the order of events also has to be considered.
+- Similarity Score: Give a float score ranging from 0 to 1 for each event in the first sequence based on your assessment of how closely the description of the trajectory.
+  - Order Penalty: If an event occurs before previous events (according to sequence keys), it should be scored significantly lower.
+  - Proximity of Events: The first sequence should closely follow the other. If there are many unrelated events between the matched key events, the score should be penalized accordingly.
+  - Speaker Independence: The event can occur between any speakers, and the actual speaker names do not affect the analysis.
+- Example:
+    - 0: No event in the second sequence matches the described event  of the first at all.
+    - 0.35: An event in the second sequence resembles the described event of the first sequence but it does not occur immediately after the previous bullet point event of the first.
+    - 0.6: A event resembles the described event of the first sequence
+    - 1: An event exactly matches the described event explicitly and is the very first event of the sequence or right after the previous event.
+
+### Output Format:
+Provide your output as a Python dictionary with the following structure:
+_(Note: Do NOT use markdown, JSON formatting, or code block delimiters. Do not use any " or ' in ANALYSIS. Do not quote in ANALYSIS. Do not use 's in ANALYSIS.)_
+
+{
+    '0': {'analysis': 'ANALYSIS (<=20 words)', 'score': i (0 <= i <= 1) },
+    '1': ...
+    ...
+}
+
+First sequence of events: {sop1}
+
+Second sequence of events: '{sop2}'
+
+Now, give your answer. Remember to follow the specified output format strictly. 
+
+Output:

@@ -9,3 +9,4 @@ Miscellaneous utility functions for managing datasets
    Util <util.rst>
    Speaker Conversation Utilities <speaker_convo_helpers.rst>
    Pipeline <convokitPipeline.rst>
+   GenAI <genai.rst>

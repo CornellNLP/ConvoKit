@@ -1,0 +1,36 @@
+You will be given a transcript and a list of events describing conversational dynamic and trajectories. You are tasked with determining how closely a predefined sequence of dynamics is seen in a provided conversation transcript, both in occurrence and order.
+
+### Input:
+- The sequence of events is provided as a dictionary, where:
+  - Keys: indicate the order of events, starting from '0'.
+  - Values: describe each event.
+
+### Task:
+- Analysis: Analyze how closely a given transcript follows the sequence of described events. Think and analyze whether you see any part of the transcript resembles the event. Remember that the sequence of events also has to be considered.
+- Similarity Score: Give a float score ranging from 0 to 1 based on your assessment of how closely the description of the trajectory.
+  - Order Penalty: If an event occurs before previous events (according to sequence keys), it should be scored significantly lower.
+  - Proximity of Events: Events in the transcript should closely follow the described sequence. If there are many unrelated events or long gaps between key events, the score should be penalized accordingly.
+  - Speaker Independence: The event can occur between any speakers, and the actual speaker names do not affect the analysis.
+- Example:
+    - 0: No part of the transcript matches the described event at all.
+    - 0.35: A part resembles the described event but it occured couple utterances after the previous bullet point event.
+    - 0.6: A part resembles the described event.
+    - 1: A part exactly matches the described event explicitly and occurred either at the very first utterance or right after the previous event.
+
+### Output Format:
+Provide your output as a Python dictionary with the following structure:
+_(Note: Do NOT use markdown, JSON formatting, or code block delimiters. Do not use any " or ' in ANALYSIS. Do not quote in ANALYSIS. Do not use 's in ANALYSIS.)_
+
+{{
+    '0': {{'analysis': 'ANALYSIS (<=20 words)', 'score': i (0 <= i <= 1) }},
+    '1': ...
+    ...
+}}
+
+List of events: {events}
+
+Conversation: '{transcript}'
+
+Now, give your answer. Remember to follow the specified output format strictly, starting from 0 for the dictionary key. 
+
+Output:
