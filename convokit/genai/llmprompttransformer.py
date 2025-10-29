@@ -123,3 +123,46 @@ class LLMPromptTransformer(Transformer):
                 corpus.add_meta(self.metadata_name, None)
 
         return corpus
+
+    def transform_single(
+        self, obj: Union[str, Corpus, Conversation, Speaker, Utterance]
+    ) -> Union[Corpus, Conversation, Speaker, Utterance]:
+        """
+        Transform a single object (utterance, conversation, speaker, or corpus) with the LLM prompt.
+        This method allows users to easily test their prompt on a single unit without processing an entire corpus.
+
+        :param obj: The object to transform. Can be:
+            - A string (will be converted to an Utterance with a default speaker)
+            - An Utterance, Conversation, or Speaker object
+        :return: The transformed object with LLM response stored in metadata
+        """
+        # Handle string input by converting to Utterance
+        if isinstance(obj, str):
+            if self.object_level != "utterance":
+                raise ValueError(
+                    f"Cannot convert string to {self.object_level}. String input is only supported for utterance-level transformation."
+                )
+            obj = Utterance(text=obj, speaker=Speaker(id="speaker"))
+
+        # Validate object type matches the transformer's object_level
+        if self.object_level == "utterance" and not isinstance(obj, Utterance):
+            raise ValueError(
+                f"Expected Utterance object for utterance-level transformation, got {type(obj).__name__}"
+            )
+        elif self.object_level == "conversation" and not isinstance(obj, Conversation):
+            raise ValueError(
+                f"Expected Conversation object for conversation-level transformation, got {type(obj).__name__}"
+            )
+        elif self.object_level == "speaker" and not isinstance(obj, Speaker):
+            raise ValueError(
+                f"Expected Speaker object for speaker-level transformation, got {type(obj).__name__}"
+            )
+
+        # Check if object passes the selector
+        if not self.selector(obj):
+            obj.add_meta(self.metadata_name, None)
+            return obj
+
+        # Process the object
+        self._process_object(obj)
+        return obj
