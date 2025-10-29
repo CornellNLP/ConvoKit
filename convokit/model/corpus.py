@@ -1551,7 +1551,7 @@ class Corpus:
         missing_fields = pd.Index(columns).difference(utterances_df.columns)
         assert (
             len(missing_fields) == 0
-        ), f"Utterances dataframe is missing the following required fields: {missing_fields}"
+        ), f"Utterances dataframe is missing the following required fields: {list(missing_fields)}"
 
         utterance_meta_cols = extract_meta_from_df(utterances_df)
 
