@@ -16,3 +16,4 @@ These are the transformers related to extracting features from the corpus and it
    Redirection <redirectionAndUtteranceLikelihood.rst>
    UtteranceLikelihood <redirectionAndUtteranceLikelihood.rst>
    PivotalMomentMeasure <pivotal.rst>
+   LLMPromptTransformer <llmprompttransformer.rst>
