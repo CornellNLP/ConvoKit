@@ -3,7 +3,7 @@ GenAI
 
 The GenAI module provides a unified interface for working with LLMs while doing conversational analysis in ConvoKit. The current implementation supports multiple providers including OpenAI GPT and Google Gemini, but is designed to be extensible to LLMs from other model providers and local models. This module makes it easy to integrate AI-powered text generation into your ConvoKit workflows for diverse tasks. The module handles API key management, response formatting, and provides consistent interfaces across different LLM providers.
 
-The module includes a ConvoKit transformer that allow you to apply LLM processing directly to corpus objects at different levels (utterances, conversations, speakers, or entire corpus), making it seamless to integrate AI analysis into your conversational data processing pipelines.
+The module includes ConvoKit transformers that allow you to apply LLM processing directly to corpus objects at different levels (utterances, conversations, speakers, or entire corpus), making it seamless to integrate AI analysis into your conversational data processing pipelines.
 
 Example usage: `GenAI module demo <https://github.com/CornellNLP/ConvoKit/blob/master/convokit/genai/example/example.ipynb>`_.
 
@@ -17,7 +17,7 @@ The GenAI module consists of several key components:
 * **Factory Pattern**: Simple factory function to create appropriate client instances
 * **Configuration Management**: Centralized API key and configuration management
 * **Provider Clients**: Concrete implementations for different LLM providers (GPT, Gemini, Local)
-* **GenAI Transformers**: ConvoKit transformers that apply LLM processing to corpus objects
+* **LLMPromptTransformer**: Flexible ConvoKit transformer that applies custom LLM prompts to corpus objects at any level
 
 Basic Interface and Configuration
 ---------------------------------
@@ -29,14 +29,6 @@ Basic Interface and Configuration
     :members:
 
 .. automodule:: convokit.genai.factory
-    :members:
-
-LLMPromptTransformer
-^^^^^^^^^^^^^^^^^^^^
-
-The LLMPromptTransformer is a flexible transformer that allows you to apply custom prompts and formatters to any level of corpus objects (utterances, conversations, speakers, or the entire corpus). It provides fine-grained control over how objects are formatted for LLM processing and where the results are stored.
-
-.. automodule:: convokit.genai.llmprompttransformer
     :members:
 
 Provider Clients
@@ -107,3 +99,10 @@ The GenAIConfigManager handles API key storage and retrieval for different LLM p
     
     # Configuration is automatically saved and can be reused
 
+LLMPromptTransformer
+--------------------
+
+The LLMPromptTransformer is a flexible and powerful ConvoKit transformer that allows you to apply custom LLM prompts to corpus objects at different levels (utterances, conversations, speakers, or the entire corpus). It provides fine-grained control over how objects are formatted for LLM processing and where the results are stored.
+
+.. toctree::
+    LLMPromptTransformer <llmprompttransformer.rst>
