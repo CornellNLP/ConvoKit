@@ -1,21 +1,11 @@
-try:
-    import unsloth
-    from unsloth import FastLanguageModel
-    from unsloth import is_bfloat16_supported
-    from unsloth.chat_templates import get_chat_template
-    import torch
-    from datasets import load_from_disk, DatasetDict
-    from trl import SFTTrainer
-    from transformers import TrainingArguments, DataCollatorForSeq2Seq
-
-    UNSLOTH_AVAILABLE = True
-except (ModuleNotFoundError, ImportError) as e:
-    if "Unsloth GPU requirement not met" in str(e):
-        raise ImportError("Unsloth GPU requirement not met") from e
-    else:
-        raise ModuleNotFoundError(
-            "unsloth, torch, trl, transformers, or datasets is not currently installed. Run 'pip install convokit[llm]' if you would like to use the UnslothUtteranceSimulatorModel."
-        ) from e
+import unsloth
+from unsloth import FastLanguageModel
+from unsloth import is_bfloat16_supported
+from unsloth.chat_templates import get_chat_template
+import torch
+from datasets import load_from_disk, DatasetDict
+from trl import SFTTrainer
+from transformers import TrainingArguments, DataCollatorForSeq2Seq
 
 from typing import Callable, Optional, Union, Any, List, Iterator
 from tqdm import tqdm

@@ -6,7 +6,7 @@ setup(
     author_email="cristian@cs.cornell.edu",
     url="https://github.com/CornellNLP/ConvoKit",
     description="ConvoKit",
-    version="3.4.1",
+    version="4.0.0",
     packages=[
         "convokit",
         "convokit.bag_of_words",
@@ -28,6 +28,7 @@ setup(
         "convokit.prompt_types",
         "convokit.ranker",
         "convokit.redirection",
+        "convokit.talktimesharing",
         "convokit.text_processing",
         "convokit.speaker_convo_helpers",
         "convokit.speakerConvoDiversity",
@@ -35,12 +36,15 @@ setup(
         "convokit.surprise",
         "convokit.pivotal_framework",
         "convokit.utterance_simulator",
+        "convokit.genai",
+        "convokit.convo_similarity",
     ],
     package_data={
         "convokit": [
             "data/*.txt",
             "politeness_collections/politeness_local/lexicons/*.json",
             "politeness_collections/politeness_cscw_zh/lexicons/*.json",
+            "convo_similarity/prompts/*.txt",
         ]
     },
     install_requires=[
@@ -65,11 +69,25 @@ setup(
         "numexpr>=2.8.0",
         "ruff>=0.4.8",
         "bottleneck",
+        "accelerate",
+        "peft",
+        "bitsandbytes",
+        "transformers",
+        "unsloth",
+        "trl>=0.12.2",
+        "tensorflow>=2.18.0",
+        "tf-keras>=2.17.0,<3.0.0",
+        "evaluate",
+        "sentence-transformers",
         "datasets",
     ],
     extras_require={
         "craft": ["torch>=0.12"],
         "forecaster": ["torch>=0.12", "datasets"],
+        "genai": [
+            "openai>=1.3.5",
+            "google-genai",
+        ],
         "llm": [
             "torch>=0.12",
             "accelerate",

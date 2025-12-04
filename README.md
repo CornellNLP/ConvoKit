@@ -1,6 +1,6 @@
 # [ConvoKit](http://convokit.cornell.edu/)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-36-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-37-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![pypi](https://img.shields.io/pypi/v/convokit.svg)](https://pypi.org/pypi/convokit/)
@@ -9,7 +9,7 @@
 [![license](https://img.shields.io/badge/license-MIT-green)](https://github.com/CornellNLP/ConvoKit/blob/master/LICENSE.md)
 [![Discord Community](https://img.shields.io/static/v1?logo=discord&style=flat&color=red&label=discord&message=community)](https://discord.gg/WMFqMWgz6P)
 
-This toolkit contains tools to extract conversational features and analyze social phenomena in conversations, using a [single unified interface](https://convokit.cornell.edu/documentation/architecture.html) inspired by (and compatible with) scikit-learn.  Several large [conversational datasets](https://github.com/CornellNLP/ConvoKit#datasets) are included together with scripts exemplifying the use of the toolkit on these datasets. The latest version is [3.4.1](https://github.com/CornellNLP/ConvoKit/releases/tag/v3.4.1) (released Aug. 15, 2025); follow the [project on GitHub](https://github.com/CornellNLP/ConvoKit) to keep track of updates.
+This toolkit contains tools to extract conversational features and analyze social phenomena in conversations, using a [single unified interface](https://convokit.cornell.edu/documentation/architecture.html) inspired by (and compatible with) scikit-learn.  Several large [conversational datasets](https://github.com/CornellNLP/ConvoKit#datasets) are included together with scripts exemplifying the use of the toolkit on these datasets. The latest version is [4.0.0](https://github.com/CornellNLP/ConvoKit/releases/tag/v4.0.0) (released Nov. 3, 2025); follow the [project on GitHub](https://github.com/CornellNLP/ConvoKit) to keep track of updates.
 
 Join our [Discord community](https://discord.gg/WMFqMWgz6P) to stay informed, connect with fellow developers, and be part of an engaging space where we share progress, discuss features, and tackle issues together.
 
@@ -233,6 +233,8 @@ Jonathan P. Chang, Caleb Chiam, Liye Fu, Andrew Wang, Justine Zhang, Cristian Da
 
 [ConvoKit](http://convokit.cornell.edu/)
 
+*ConvoKit is funded in part by the U.S. National Science Foundation under Grant No. IIS-1750615 (CAREER). Any opinions, findings, and conclusions in this work are those of the author(s) and do not necessarily reflect the views of Cornell University or the National Science Foundation.*
+
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -289,6 +291,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/jeeyonkang"><img src="https://avatars.githubusercontent.com/u/135584717?v=4?s=100" width="100px;" alt="Jeeyon Kang"/><br /><sub><b>Jeeyon Kang</b></sub></a><br /><a href="#data-jeeyonkang" title="Data">🔣</a> <a href="#example-jeeyonkang" title="Examples">💡</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://kakeith.github.io/"><img src="https://avatars.githubusercontent.com/u/18640437?v=4?s=100" width="100px;" alt="Katherine A. Keith"/><br /><sub><b>Katherine A. Keith</b></sub></a><br /><a href="https://github.com/CornellNLP/ConvoKit/issues?q=author%3Akakeith" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>
