@@ -406,29 +406,89 @@ class Corpus:
         """
         return speaker_id in self.speakers
 
-    def random_utterance(self) -> Utterance:
+    def random_utterance(self, selector: Optional[Callable[[Utterance], bool]] = None) -> Utterance:
         """
-        Get a random Utterance from the Corpus
+        Get a random Utterance from the Corpus, with an optional selector that filters for Utterances that should be considered.
 
-        :return: a random Utterance
+        :param selector: a (lambda) function that takes an Utterance and returns True or False (i.e. consider / not consider).
+            By default, the selector considers all Utterances in the Corpus.
+        :return: a random Utterance that in the Corpus that is considered based on the selector.
         """
-        return random.choice(list(self.utterances.values()))
+        count = 0
+        selected_utterance = None
 
-    def random_conversation(self) -> Conversation:
-        """
-        Get a random Conversation from the Corpus
+        if selector == None:
+            return random.choice(list(self.utterances.values()))
+        # Iterate over utterances directly from the generator
+        for utterance in self.iter_utterances():
+            # Apply the filter function if provided
+            if selector(utterance):
+                count += 1
+                # Reservoir sampling: Replace the current selection with decreasing probability
+                if random.randint(1, count) == 1:
+                    selected_utterance = utterance
+        if selected_utterance is None:
+            raise ValueError("No matching Utterance found in the Corpus.")
 
-        :return: a random Conversation
-        """
-        return random.choice(list(self.conversations.values()))
+        return selected_utterance
 
-    def random_speaker(self) -> Speaker:
+    def random_conversation(
+        self, selector: Optional[Callable[[Conversation], bool]] = None
+    ) -> Conversation:
         """
-        Get a random Speaker from the Corpus
+        Get a random Conversation from the Corpus, with an optional selector that filters for Conversations that should be considered.
 
-        :return: a random Speaker
+        :param selecter: a (lamda) function that takes a Conversation and returns True or False.(i.e. consider / not consider).
+            By default, the selector considers all Conversations in the Corpus.
+        :return: a random Conversation that in the Corpus that is considered based on the selector
         """
-        return random.choice(list(self.speakers.values()))
+        count = 0
+        selected_conversation = None
+        # if selector is not provided return random object
+        if selector == None:
+            return random.choice(list(self.conversations.values()))
+
+        # Iterate over conversations
+        for conversation in self.iter_conversations():
+            # Apply the filter function if provided
+            if selector(conversation):
+                count += 1
+                # Reservoir sampling: Replace the current selection with decreasing probability
+                if random.randint(1, count) == 1:
+                    selected_conversation = conversation
+        if selected_conversation is None:
+            raise ValueError("No matching Conversation found in the Corpus.")
+
+        return selected_conversation
+
+    def random_speaker(self, selector: Optional[Callable[[Speaker], bool]] = None) -> Speaker:
+        """
+        Get a random Speaker from the Corpus, with an optional selector that filters for Speakers that should be considered.
+
+        :param selector: a (lambda) function that takes a Speaker and returns True or False (i.e. consider / not consider).
+            By default, the selector considers all Speakers in the Corpus.
+        :return: a random Speaker that in the Corpus that is considered based on the selector.
+        """
+        count = 0
+        selected_speaker = None
+        # if selector is not provided return random object
+        if selector == None:
+            return random.choice(list(self.speakers.values()))
+
+        # iterate over speakers
+        for speaker in self.iter_speakers():
+
+            # Apply the filter function if provided
+            if selector(speaker):
+                count += 1
+                # Reservoir sampling: Replace the current selection with decreasing probability
+                if random.randint(1, count) == 1:
+                    selected_speaker = speaker
+
+        if selected_speaker is None:
+            raise ValueError("No matching Speaker found in the Corpus.")
+
+        return selected_speaker
 
     def iter_utterances(
         self, selector: Optional[Callable[[Utterance], bool]] = lambda utt: True
