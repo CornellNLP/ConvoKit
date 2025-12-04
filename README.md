@@ -1,6 +1,6 @@
 # [ConvoKit](http://convokit.cornell.edu/)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-31-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-36-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![pypi](https://img.shields.io/pypi/v/convokit.svg)](https://pypi.org/pypi/convokit/)
@@ -9,8 +9,7 @@
 [![license](https://img.shields.io/badge/license-MIT-green)](https://github.com/CornellNLP/ConvoKit/blob/master/LICENSE.md)
 [![Discord Community](https://img.shields.io/static/v1?logo=discord&style=flat&color=red&label=discord&message=community)](https://discord.gg/WMFqMWgz6P)
 
-
-This toolkit contains tools to extract conversational features and analyze social phenomena in conversations, using a [single unified interface](https://convokit.cornell.edu/documentation/architecture.html) inspired by (and compatible with) scikit-learn.  Several large [conversational datasets](https://github.com/CornellNLP/ConvoKit#datasets) are included together with scripts exemplifying the use of the toolkit on these datasets. The latest version is [3.1.0](https://github.com/CornellNLP/ConvoKit/releases/tag/v3.1.0) (released December 30, 2024); follow the [project on GitHub](https://github.com/CornellNLP/ConvoKit) to keep track of updates.
+This toolkit contains tools to extract conversational features and analyze social phenomena in conversations, using a [single unified interface](https://convokit.cornell.edu/documentation/architecture.html) inspired by (and compatible with) scikit-learn.  Several large [conversational datasets](https://github.com/CornellNLP/ConvoKit#datasets) are included together with scripts exemplifying the use of the toolkit on these datasets. The latest version is [3.4.1](https://github.com/CornellNLP/ConvoKit/releases/tag/v3.4.1) (released Aug. 15, 2025); follow the [project on GitHub](https://github.com/CornellNLP/ConvoKit) to keep track of updates.
 
 Join our [Discord community](https://discord.gg/WMFqMWgz6P) to stay informed, connect with fellow developers, and be part of an engaging space where we share progress, discuss features, and tackle issues together.
 
@@ -53,7 +52,13 @@ Example: [speaker conversation attributes and diversity example on ChangeMyView]
 A neural model for forecasting future outcomes of conversations (e.g., derailment into personal attacks) as they develop.
 Available as an interactive notebook: [full version (fine-tuning + inference)](https://colab.research.google.com/drive/1SH4iMEHdoH4IovN-b9QOSK4kG4DhAwmb) or [inference-only](https://colab.research.google.com/drive/1GvICZN0VwZQSWw3pJaEVY-EQGoO-L5lH).
 
+### [Redirection and Utterance Likelihood](https://www.cs.cornell.edu/~cristian/Redirection_in_Therapy.html) <sub><sup>[(API)](https://convokit.cornell.edu/documentation/redirectionAndUtteranceLikelihood.html)</sup></sub>
+The methods to compute the extent to which utterances redirect the flow of the conversation (Redirection) and to measure the log-likelihoods of utterances given a defined conversation context (Utterance Likelihood).
+Example: [redirection in supreme court oral arguments](https://github.com/CornellNLP/ConvoKit/blob/master/convokit/redirection/redirectionDemo.ipynb)
 
+### [Pivotal Moment Measure]( ) <sub><sup>[(API)](https://convokit.cornell.edu/documentation/pivotal.html)</sup></sub>
+A method to identify pivotal moments in conversations.
+Example: [pivotal moments in conversations gone awry](https://github.com/CornellNLP/ConvoKit/blob/master/convokit/pivotal_framework/pivotal_demo.ipynb)
 
 ## Datasets
 ConvoKit ships with several datasets ready for use "out-of-the-box".
@@ -61,8 +66,8 @@ These datasets can be downloaded using the `convokit.download()` [helper functio
 
 ### Conversations Gone Awry Datasets ([Wikipedia](https://convokit.cornell.edu/documentation/awry.html)/[CMV](https://convokit.cornell.edu/documentation/awry_cmv.html))
 
-Two related corpora of conversations that derail into antisocial behavior. One corpus (CGA-WIKI) consists of Wikipedia talk page conversations that derail into personal attacks as labeled by crowdworkers (4,188 conversations containing 30.021 comments). The other (CGA-CMV) consists of discussion threads on the subreddit ChangeMyView (CMV) that derail into rule-violating behavior as determined by the presence of a moderator intervention (6,842 conversations containing 42,964 comments).
-Name for download: `conversations-gone-awry-corpus` (for CGA-WIKI) or `conversations-gone-awry-cmv-corpus` (for CGA-CMV)
+Three related corpora of conversations that derail into antisocial behavior. One corpus (CGA-WIKI) consists of Wikipedia talk page conversations that derail into personal attacks as labeled by crowdworkers (4,188 conversations containing 30.021 comments). Another (CGA-CMV) consists of discussion threads on the subreddit ChangeMyView (CMV) that derail into rule-violating behavior as determined by the presence of a moderator intervention (6,842 conversations containing 42,964 comments). The last is a recent expansion of the CGA-CMV dataset, containing now 19,578 conversations and 116,793 utterances.
+Name for download: `conversations-gone-awry-corpus` (for CGA-WIKI), `conversations-gone-awry-cmv-corpus` (for CGA-CMV), and `conversations-gone-awry-cmv-corpus-large` (for CGA-CMV-Large)
 
 ### [Cornell Movie-Dialogs Corpus](https://convokit.cornell.edu/documentation/movie.html)
 
@@ -277,6 +282,13 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/oscarso2000"><img src="https://avatars.githubusercontent.com/u/20172573?v=4?s=100" width="100px;" alt="Oscar So"/><br /><sub><b>Oscar So</b></sub></a><br /><a href="https://github.com/CornellNLP/ConvoKit/commits?author=oscarso2000" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://justin-cho.com"><img src="https://avatars.githubusercontent.com/u/31977186?v=4?s=100" width="100px;" alt="Justin Cho"/><br /><sub><b>Justin Cho</b></sub></a><br /><a href="#data-wise-east" title="Data">🔣</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/seanzhangkx8"><img src="https://avatars.githubusercontent.com/u/106214464?v=4?s=100" width="100px;" alt="seanzhangkx8"/><br /><sub><b>seanzhangkx8</b></sub></a><br /><a href="https://github.com/CornellNLP/ConvoKit/commits?author=seanzhangkx8" title="Code">💻</a> <a href="#ideas-seanzhangkx8" title="Ideas, Planning, & Feedback">🤔</a> <a href="#maintenance-seanzhangkx8" title="Maintenance">🚧</a> <a href="https://github.com/CornellNLP/ConvoKit/commits?author=seanzhangkx8" title="Documentation">📖</a> <a href="https://github.com/CornellNLP/ConvoKit/pulls?q=is%3Apr+reviewed-by%3Aseanzhangkx8" title="Reviewed Pull Requests">👀</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ethanxia4"><img src="https://avatars.githubusercontent.com/u/96800594?v=4?s=100" width="100px;" alt="Ethan Xia"/><br /><sub><b>Ethan Xia</b></sub></a><br /><a href="https://github.com/CornellNLP/ConvoKit/commits?author=ethanxia4" title="Code">💻</a> <a href="https://github.com/CornellNLP/ConvoKit/commits?author=ethanxia4" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/vianxnguyen"><img src="https://avatars.githubusercontent.com/u/46759999?v=4?s=100" width="100px;" alt="vivian"/><br /><sub><b>vivian</b></sub></a><br /><a href="https://github.com/CornellNLP/ConvoKit/commits?author=vianxnguyen" title="Code">💻</a> <a href="https://github.com/CornellNLP/ConvoKit/commits?author=vianxnguyen" title="Documentation">📖</a> <a href="#example-vianxnguyen" title="Examples">💡</a> <a href="#ideas-vianxnguyen" title="Ideas, Planning, & Feedback">🤔</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/laerdon"><img src="https://avatars.githubusercontent.com/u/96972420?v=4?s=100" width="100px;" alt="Laerdon Kim"/><br /><sub><b>Laerdon Kim</b></sub></a><br /><a href="https://github.com/CornellNLP/ConvoKit/commits?author=laerdon" title="Documentation">📖</a> <a href="#example-laerdon" title="Examples">💡</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/yash-chatha"><img src="https://avatars.githubusercontent.com/u/62723967?v=4?s=100" width="100px;" alt="Yash Chatha"/><br /><sub><b>Yash Chatha</b></sub></a><br /><a href="https://github.com/CornellNLP/ConvoKit/commits?author=yash-chatha" title="Documentation">📖</a> <a href="#example-yash-chatha" title="Examples">💡</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/jeeyonkang"><img src="https://avatars.githubusercontent.com/u/135584717?v=4?s=100" width="100px;" alt="Jeeyon Kang"/><br /><sub><b>Jeeyon Kang</b></sub></a><br /><a href="#data-jeeyonkang" title="Data">🔣</a> <a href="#example-jeeyonkang" title="Examples">💡</a></td>
     </tr>
   </tbody>
 </table>

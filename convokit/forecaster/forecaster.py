@@ -216,6 +216,7 @@ class Forecaster(Transformer):
             "label": [],
             "score": [],
             "forecast": [],
+            "last_utterance_forecast": [],
         }
         for convo in corpus.iter_conversations():
             if selector(convo):
@@ -237,6 +238,7 @@ class Forecaster(Transformer):
                 )
                 conversational_forecasts_df["score"].append(np.max(forecast_scores))
                 conversational_forecasts_df["forecast"].append(np.max(forecasts))
+                conversational_forecasts_df["last_utterance_forecast"].append(forecasts[-1])
         conversational_forecasts_df = pd.DataFrame(conversational_forecasts_df).set_index(
             "conversation_id"
         )
@@ -260,21 +262,53 @@ class Forecaster(Transformer):
             (conversational_forecasts_df["label"] == 1)
             & (conversational_forecasts_df["forecast"] == 0)
         ).sum()
+        # Correct Adjustments
+        ca = (
+            (conversational_forecasts_df["label"] == 0)
+            & (conversational_forecasts_df["forecast"] == 1)
+            & (conversational_forecasts_df["last_utterance_forecast"] == 0)
+        ).mean()
+        # Incorrect Adjustments
+        ia = (
+            (conversational_forecasts_df["label"] == 1)
+            & (conversational_forecasts_df["forecast"] == 1)
+            & (conversational_forecasts_df["last_utterance_forecast"] == 0)
+        ).mean()
+
         p = tp / (tp + fp)
         r = tp / (tp + fn)
         fpr = fp / (fp + tn)
         f1 = 2 / (((tp + fp) / tp) + ((tp + fn) / tp))
-        metrics = {"Accuracy": acc, "Precision": p, "Recall": r, "FPR": fpr, "F1": f1}
-
-        print(pd.Series(metrics))
 
         comments_until_end = self._draw_horizon_plot(corpus, selector)
         comments_until_end_vals = list(comments_until_end.values())
+        mean_h = np.mean(comments_until_end_vals) - 1
         print(
             "Horizon statistics (# of comments between first positive forecast and conversation end):"
         )
-        print(
-            f"Mean = {np.mean(comments_until_end_vals)}, Median = {np.median(comments_until_end_vals)}"
-        )
+        print(f"Mean = {mean_h}, Median = {np.median(comments_until_end_vals) - 1}")
 
+        leaderboard_string = (
+            f"| MODEL_NAME     | "
+            f"{acc*100:.1f}   | "
+            f"{p*100:.1f}  | "
+            f"{r*100:.1f} | "
+            f"{f1*100:.1f}  | "
+            f"{fpr*100:.1f}   | "
+            f"{mean_h:.2f} | "
+            f"{(ca-ia)*100:.1f} ({ca*100:.1f} - {ia*100:.1f})  |"
+        )
+        metrics = {
+            "Accuracy": acc,
+            "Precision": p,
+            "Recall": r,
+            "FPR": fpr,
+            "F1": f1,
+            "Mean H": mean_h,
+            "Correct Adjustment": ca,
+            "Incorrect Adjustment": ia,
+            "Recovery": ca - ia,
+            "Leaderboard String": leaderboard_string,
+        }
+        print(pd.Series(metrics))
         return conversational_forecasts_df, metrics

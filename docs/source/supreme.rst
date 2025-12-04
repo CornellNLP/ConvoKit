@@ -2,11 +2,11 @@ Supreme Court Oral Arguments Corpus
 =======================================
 
 
-A collection of cases from the U.S. Supreme Court, along with transcripts of oral arguments. Contains approximately 1,700,000 utterances over 8,000 oral arguments transcripts from 7,700 cases.
+A collection of cases from the U.S. Supreme Court, along with transcripts of oral arguments. Contains approximately 1,800,000 utterances over 8,300 oral arguments transcripts from 8,000 cases.
 
 The data comes from two sources: transcripts were scraped from the `Oyez <https://www.oyez.org/>`_ website, while voting information comes from the `Supreme Court Database <http://scdb.wustl.edu/index.php>`_ (SCDB). 
 
-Along with the entire corpus, we release another version split up into different years spanning 1955 to 2019, each named "supreme-(year)". Additional metadata are also included for each case `here <https://zissou.infosci.cornell.edu/convokit/datasets/supreme-corpus/cases.jsonl>`_. 
+Along with the entire corpus, we release another version split up into different years spanning 1955 to 2023, each named "supreme-(year)". Additional metadata are also included for each case `here <https://zissou.infosci.cornell.edu/convokit/datasets/supreme-corpus/cases.jsonl>`_. 
 
 The following examples use this corpus: 
 
@@ -53,7 +53,7 @@ For each Speaker, we provide:
 
 Additional details: 
 
-* When possible, we tried to ensure Speaker information corresponds to information provided in Oyez. Oyez usualy provides explicit lists of the speakers involved in each oral argument, especially for more recent cases; earlier ones are missing these explicit lists. Otherwise we tried to follow the Oyez format for converting between names listed in transcripts and IDs (i.e., replacing spaces with underscores and lowercasing).
+* When possible, we tried to ensure Speaker information corresponds to information provided in Oyez. Oyez usually provides explicit lists of the speakers involved in each oral argument, especially for more recent cases; earlier ones are missing these explicit lists. Otherwise we tried to follow the Oyez format for converting between names listed in transcripts and IDs (i.e., replacing spaces with underscores and lowercasing).
 
 
 Conversation-level information
@@ -130,9 +130,13 @@ Citation and other versions
 
 This corpus extends a `smaller dataset <https://confluence.cornell.edu/display/llresearch/Supreme+Court+Dialogs+Corpus>`_ of oral arguments that we previously released together with `Echoes of power\: Language effects and power differences in social interaction <https://www.cs.cornell.edu/~cristian/Echoes_of_power.html>`_. Cristian Danescu-Niculescu-Mizil, Bo Pang, Lillian Lee and Jon Kleinberg. WWW 2012.  Please cite the Echoes of Powers paper if you use either version of the corpus.  If you use the ConvoKit version 	please additionally cite: `ConvoKit\: A Toolkit for the Analysis of Conversations <https://www.cs.cornell.edu/~cristian/ConvoKit_Demo_Paper_files/convokit-demo-paper.pdf>`_. Jonathan P. Chang, Caleb Chiam, Liye Fu, Andrew Wang, Justine Zhang, Cristian Danescu-Niculescu-Mizil. Proceedings of SIGDIAL. 2020.
 
+This work extends the original Supreme Court Corpus curated by the ConvoKit team to include data up to the year 2023. We preserve the structure and metadata of the original release while integrating updated transcripts from 2019 where appropriate. We thank Jeeyon Kang for the help with the 2023 extension of the corpus.
+
+**Note:** The original version of the corpus (prior to the 2023 extension) is still available for reproducibility purposes at `link <https://zissou.infosci.cornell.edu/convokit/datasets/supreme-corpus-deprecated/>`_. 
+
 
 Contact
 ^^^^^^^
 
 Please email any questions to: jz727@cornell.edu (Justine Zhang).
-
+For issues with the extended version (2023 extension) of the corpus, please email: jk26@williams.edu (Jeeyon Kang).

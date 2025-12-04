@@ -1,14 +1,22 @@
+try:
+    import torch
+    from peft import LoraConfig, get_peft_model, AutoPeftModelForCausalLM, PeftModel
+    from transformers import (
+        AutoTokenizer,
+        AutoModelForCausalLM,
+        BitsAndBytesConfig,
+        DataCollatorForLanguageModeling,
+        TrainingArguments,
+    )
+    from trl import SFTTrainer
+
+    GEMMA_ML_AVAILABLE = True
+except (ModuleNotFoundError, ImportError) as e:
+    raise ModuleNotFoundError(
+        "torch, peft, transformers, or trl is not currently installed. Run 'pip install convokit[llm]' if you would like to use the GemmaLikelihoodModel."
+    ) from e
+
 from .likelihoodModel import LikelihoodModel
-import torch
-from peft import LoraConfig, get_peft_model, AutoPeftModelForCausalLM, PeftModel
-from transformers import (
-    AutoTokenizer,
-    AutoModelForCausalLM,
-    BitsAndBytesConfig,
-    DataCollatorForLanguageModeling,
-    TrainingArguments,
-)
-from trl import SFTTrainer
 from .config import DEFAULT_TRAIN_CONFIG, DEFAULT_BNB_CONFIG, DEFAULT_LORA_CONFIG
 
 

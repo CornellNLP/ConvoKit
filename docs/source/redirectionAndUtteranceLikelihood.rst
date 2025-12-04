@@ -1,5 +1,6 @@
 Redirection and Utterance Likelihood
 ====================================
+Please note: this transformer requires installing convokit with the optional LLM packages via `pip install convokit[llm]`
 
 The `Redirection` transformer measures the extent to which utterances 
 redirect the flow of the conversation, 
@@ -20,5 +21,5 @@ Example usage: `redirection in supreme court oral arguments <https://github.com/
 .. automodule:: convokit.redirection.likelihoodModel
     :members:
 
-.. automodule:: convokit.utteranceLikelihood.utteranceLikelihood
+.. automodule:: convokit.utterance_likelihood.utteranceLikelihood
     :members:
