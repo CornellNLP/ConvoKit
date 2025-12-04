@@ -465,7 +465,7 @@ class Corpus:
         """
         Get a random Speaker from the Corpus, with an optional selector that filters for Speakers that should be considered.
 
-        :param selector: a (lambda) function that takes an Speaker and returns True or False (i.e. consider / not consider).
+        :param selector: a (lambda) function that takes a Speaker and returns True or False (i.e. consider / not consider).
             By default, the selector considers all Speakers in the Corpus.
         :return: a random Speaker that in the Corpus that is considered based on the selector.
         """
