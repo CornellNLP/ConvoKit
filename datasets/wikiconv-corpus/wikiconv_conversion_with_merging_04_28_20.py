@@ -100,6 +100,7 @@ def main():
 #             if (not(type(value) is dict)):
 #                 print (type(value))
 
+
 # function for files to merge
 def merge_files(final_directory, input_directory):
     input_subdirectory_paths = [x[0] for x in os.walk(input_directory)]
