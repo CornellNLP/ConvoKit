@@ -82,6 +82,7 @@ class GemmaLikelihoodModel(LikelihoodModel):
             args=training_args,
             peft_config=self.lora_config,
             max_seq_length=self.train_config["max_seq_length"],
+            dataset_text_field="text",
         )
         trainer.train()
 

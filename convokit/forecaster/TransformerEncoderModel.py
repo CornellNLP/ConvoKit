@@ -19,7 +19,6 @@ from .forecasterModel import ForecasterModel
 from .TransformerForecasterConfig import TransformerForecasterConfig
 import shutil
 
-
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 DEFAULT_CONFIG = TransformerForecasterConfig(
