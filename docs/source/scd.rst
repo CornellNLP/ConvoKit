@@ -10,9 +10,6 @@ SCD extracts structured representations of conversation dynamics in two forms:
 
 Note that SCD computation requires access to a LLM. We provide a unified interface for working with LLMs in the `GenAI module <genai.html>`_. It is recommended to setup for GenAI models in the module beforehand to compute SCD.
 
-Usage Examples
---------------
-
 To see the use of SCD Transformer in action, check out:
 
 * `Simple example notebook <https://github.com/CornellNLP/ConvoKit/blob/master/convokit/convo_similarity/examples/example.ipynb>`_ showcasing basic SCD usage.

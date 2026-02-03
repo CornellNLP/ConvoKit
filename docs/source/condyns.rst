@@ -13,9 +13,6 @@ ConDynS builds on top of the `SCD (Summary of Conversation Dynamics) <scd.html>`
 
 Note that ConDynS computation requires access to a LLM. We provide a unified interface for working with LLMs in the `GenAI module <genai.html>`_. It is recommended to setup for GenAI models in the module beforehand to compute ConDynS.
 
-Usage Examples
---------------
-
 We provide experiments notebooks from the paper:
 
 * `Validation experiments <https://github.com/CornellNLP/ConvoKit/blob/master/convokit/convo_similarity/examples/validation/validation.ipynb>`_

@@ -71,3 +71,23 @@ Ranker
 Speaker Convo Diversity
 -----------------------
 - `Speaker conversation attributes and diversity example on ChangeMyView <https://github.com/CornellNLP/ConvoKit/blob/master/examples/speaker-convo-attributes/speaker-convo-diversity-demo.ipynb>`_
+
+Redirection and Utterance Likelihood
+------------------------------------
+- `Redirections in supreme court oral arguments <https://github.com/CornellNLP/ConvoKit/tree/master/convokit/redirection/redirectionDemo.ipynb>`_
+
+Talk Time Sharing Dynamics
+--------------------------
+- `Talk-Time Sharing Dynamics in CANDOR Corpus and Supreme Court Oral Arguments <https://github.com/CornellNLP/ConvoKit/tree/master/convokit/talktimesharing/talktimesharing_example.ipynb>`_
+
+Summary of Conversation Dynamics (SCD)
+--------------------------------------
+- `Example notebook for creating SCDs <https://github.com/CornellNLP/ConvoKit/blob/master/convokit/convo_similarity/examples/example.ipynb>`_
+
+ConDynS
+-------
+- Comparing conversational dynamics of conversations in `WikiConv German <https://github.com/CornellNLP/ConvoKit/blob/master/convokit/convo_similarity/examples/applications/wiki_german/wiki_german_condyns.ipynb>`_ and `Friends <https://github.com/CornellNLP/ConvoKit/blob/master/convokit/convo_similarity/examples/applications/friends/friends_condyns.ipynb>`_
+
+Pivotal Moments
+---------------
+- `Pivotal moments demo in conversations gone awry <https://github.com/CornellNLP/ConvoKit/tree/master/convokit/pivotal_framework/pivotal_demo.ipynb>`_
