@@ -80,6 +80,10 @@ Talk Time Sharing Dynamics
 --------------------------
 - `Talk-Time Sharing Dynamics in CANDOR Corpus and Supreme Court Oral Arguments <https://github.com/CornellNLP/ConvoKit/tree/master/convokit/talktimesharing/talktimesharing_example.ipynb>`_
 
+Summary of Conversation Dynamics (SCD)
+--------------------------------------
+- `Example notebook for creating SCDs <https://github.com/CornellNLP/ConvoKit/blob/master/convokit/convo_similarity/examples/example.ipynb>`_
+
 ConDynS
 -------
 - Comparing conversational dynamics of conversations in `WikiConv German <https://github.com/CornellNLP/ConvoKit/blob/master/convokit/convo_similarity/examples/applications/wiki_german/wiki_german_condyns.ipynb>`_ and `Friends <https://github.com/CornellNLP/ConvoKit/blob/master/convokit/convo_similarity/examples/applications/friends/friends_condyns.ipynb>`_
