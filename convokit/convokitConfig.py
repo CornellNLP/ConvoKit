@@ -2,7 +2,6 @@ import os
 from typing import Optional
 from yaml import load, Loader
 
-
 DEFAULT_CONFIG_CONTENTS = (
     "# Default Backend Parameters\n"
     "db_host: localhost:27017\n"

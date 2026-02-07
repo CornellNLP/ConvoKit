@@ -10,7 +10,6 @@ from convokit import TextParser
 from pandas import DataFrame
 from typing import List, Dict, Set
 
-
 DATA_DIR = "Stanford_politeness_corpus/"
 OUT_DIR = "/convokit_data"
 

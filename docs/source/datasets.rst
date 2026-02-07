@@ -32,3 +32,4 @@ Datasets
    Federal Open Market Committee Corpus <fomc.rst>
    FORA Corpus <fora.rst>
    DeliData Corpus <deli.rst>
+   MediaSum Corpus <mediasum.rst>
