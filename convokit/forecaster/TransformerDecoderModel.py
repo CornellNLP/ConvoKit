@@ -262,7 +262,7 @@ class TransformerDecoderModel(ForecasterModel):
             train_dataset=train_dataset,
             args=SFTConfig(
                 dataset_text_field="text",
-                max_seq_length=self.max_seq_length,
+                max_length=self.max_seq_length,
                 per_device_train_batch_size=self.config.per_device_batch_size,
                 gradient_accumulation_steps=self.config.gradient_accumulation_steps,
                 warmup_steps=10,
@@ -282,7 +282,7 @@ class TransformerDecoderModel(ForecasterModel):
             ),
         )
         trainer.train()
-        _ = self._tune_threshold(self, val_contexts)
+        _ = self._tune_threshold(val_contexts)
         return
 
     def _tune_threshold(self, val_contexts):
