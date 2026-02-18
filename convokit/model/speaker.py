@@ -1,6 +1,8 @@
 from functools import total_ordering
 from typing import Dict, List, Optional
 
+from tqdm import tqdm
+
 from .corpusComponent import CorpusComponent
 from .corpusUtil import *
 
@@ -77,7 +79,7 @@ class Speaker(CorpusComponent):
                         By default, the selector includes all Utterances in the Corpus.
         :return: An iterator of the Utterances made by the speaker
         """
-        for v in self.utterances.values():
+        for v in tqdm(self.utterances.values()):
             if selector(v):
                 yield v
 
@@ -117,7 +119,7 @@ class Speaker(CorpusComponent):
 
         :return: An iterator of the Conversations that the speaker has participated in
         """
-        for v in self.conversations.values():
+        for v in tqdm(self.conversations.values()):
             if selector(v):
                 yield v
 
