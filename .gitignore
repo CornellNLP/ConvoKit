@@ -39,3 +39,4 @@ venv-triadmotif/
 *.tsv
 !/docs/source/img/*
 env/
+website/docs/build

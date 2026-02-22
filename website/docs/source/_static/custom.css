@@ -1,0 +1,977 @@
+/* docs/source/_static/custom.css */
+
+/* Search container styling */
+.dataset-search-container,
+.feature-search-container {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+#dataset-search,
+#feature-search {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 16px;
+    border: 2px solid #2980b9;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    transition: border-color 0.3s;
+}
+
+#dataset-search:focus,
+#feature-search:focus {
+    outline: none;
+    border-color: #1f5a7a;
+    box-shadow: 0 0 0 3px rgba(41, 128, 185, 0.1);
+}
+
+/* Tag filters container */
+.tag-filters {
+    min-height: 40px;
+    margin-bottom: 1rem;
+}
+
+.filter-label {
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+/* Tag filters */
+.tag-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.filter-label {
+    font-weight: 600;
+    color: #555;
+    margin-right: 0.5rem;
+}
+
+/* Tag groups container */
+.tag-groups {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.tag-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.tag-group-header {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+    cursor: pointer;
+    padding: 8px 12px;
+    background: #ecf0f1;
+    border-radius: 6px;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tag-group-header:hover {
+    background: #d5dbdb;
+}
+
+.tag-group-header.expanded::before {
+    content: '▼';
+    font-size: 0.7rem;
+}
+
+.tag-group-header.collapsed::before {
+    content: '▶';
+    font-size: 0.7rem;
+}
+
+.tag-group-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding-left: 1.5rem;
+}
+
+.tag-group-tags.collapsed {
+    display: none;
+}
+
+/* Individual tag filter buttons */
+.tag-filter {
+    padding: 6px 14px;
+    background: white;
+    border: 1px solid;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.tag-filter:hover {
+    opacity: 0.8;
+    transform: translateY(-1px);
+}
+
+.tag-filter.active {
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Tag type color coding */
+.tag-filter[data-type="location"],
+.tag-group-header[data-type="location"] {
+    border-color: #e74c3c;
+    color: #e74c3c;
+}
+
+.tag-filter[data-type="location"].active {
+    background: #e74c3c;
+    color: white;
+}
+
+.tag-filter[data-type="conversation-type"],
+.tag-group-header[data-type="conversation-type"] {
+    border-color: #f08c08;
+    color: #f08c08;
+}
+
+.tag-filter[data-type="conversation-type"].active {
+    background: #f08c08;
+    color: white;
+}
+
+.tag-filter[data-type="metadata"],
+.tag-group-header[data-type="metadata"] {
+    border-color: #d4b21c;
+    color: #d4b21c;
+}
+
+.tag-filter[data-type="metadata"].active {
+    background: #d4b21c;
+    color: white;
+}
+
+.tag-filter[data-type="source"],
+.tag-group-header[data-type="source"] {
+    border-color: #356f0b;
+    color: #356f0b;
+}
+
+.tag-filter[data-type="source"].active {
+    background: #356f0b;
+    color: white;
+}
+
+.tag-filter[data-type="dataset-size"],
+.tag-group-header[data-type="dataset-size"] {
+    border-color: #0fc27a;
+    color: #0fc27a;
+}
+
+.tag-filter[data-type="dataset-size"].active {
+    background: #0fc27a;
+    color: white;
+}
+
+.tag-filter[data-type="conversation-length"],
+.tag-group-header[data-type="conversation-length"] {
+    border-color: #1eafba;
+    color: #1eafba;
+}
+
+.tag-filter[data-type="conversation-length"].active {
+    background: #1eafba;
+    color: white;
+}
+
+.tag-filter[data-type="topics"],
+.tag-group-header[data-type="topics"] {
+    border-color: #187db4;
+    color: #187db4;
+}
+
+.tag-filter[data-type="topics"].active {
+    background: #187db4;
+    color: white;
+}
+
+.tag-filter[data-type="language"],
+.tag-group-header[data-type="language"] {
+    border-color: #3b378e;
+    color: #3b378e;
+}
+
+.tag-filter[data-type="language"].active {
+    background: #3b378e;
+    color: white;
+}
+
+.tag-filter[data-type="format"],
+.tag-group-header[data-type="format"] {
+    border-color: #7f3bb9;
+    color: #7f3bb9;
+}
+
+.tag-filter[data-type="format"].active {
+    background: #7f3bb9;
+    color: white;
+}
+
+.tag-filter[data-type="dynamics"],
+.tag-group-header[data-type="dynamics"] {
+    border-color: #920d56;
+    color: #920d56;
+}
+
+.tag-filter[data-type="dynamics"].active {
+    background: #920d56;
+    color: white;
+}
+
+.clear-filters {
+    padding: 8px 16px;
+    background: #95a5a6;
+    border: none;
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s;
+    margin-top: 0.5rem;
+    display: inline-block;
+}
+
+.clear-filters:hover {
+    background: #7f8c8d;
+}
+
+.clear-filters:active {
+    background: #e74c3c;
+}
+
+/* Dataset and Feature cards */
+.dataset-card,
+.feature-card {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: all 0.3s;
+}
+
+.dataset-card:hover,
+.feature-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-color: #2980b9;
+}
+
+.dataset-card.hidden,
+.feature-card.hidden {
+    display: none;
+}
+
+.dataset-card h3,
+.feature-card h3 {
+    color: #2c3e50;
+    margin-top: 0;
+}
+
+.dataset-card ul,
+.feature-card ul {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+}
+
+.dataset-card li,
+.feature-card li {
+    margin: 0.5rem 0;
+}
+
+.dataset-card strong,
+.feature-card strong {
+    color: #2980b9;
+}
+
+.dataset-card a,
+.feature-card a {
+    color: #2980b9;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.dataset-card a:hover,
+.feature-card a:hover {
+    color: #1f5a7a;
+    text-decoration: underline;
+}
+
+/* Code blocks in cards */
+.dataset-card .highlight,
+.feature-card .highlight {
+    margin: 1rem 0;
+    border-radius: 4px;
+}
+
+/* No results message */
+.no-results {
+    text-align: center;
+    padding: 3rem;
+    color: #7f8c8d;
+    font-size: 1.1rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .dataset-search-container,
+    .feature-search-container {
+        padding: 1rem;
+    }
+
+    .tag-filters {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .tag-filter,
+    .clear-filters {
+        width: 100%;
+        text-align: center;
+    }
+
+    .dataset-card,
+    .feature-card {
+        padding: 1rem;
+    }
+}
+
+/* Dark mode support
+   ─────────────────────────────────────────────────────────────────────────────
+   The .convokit-dark class is stamped on <body> by custom.js whenever the
+   effective theme is dark (OS setting OR Sphinx theme-toggle override).
+   Using a body class means it wins over @media queries and avoids any
+   specificity clash with the Sphinx theme's own attribute selectors.
+
+   The @media block below is kept as a baseline so styles still apply on
+   first paint before JavaScript runs, but body.convokit-dark always wins.
+   ───────────────────────────────────────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+    /* Search container */
+    .dataset-search-container,
+    .feature-search-container {
+        background: #1e1e1e;
+        border-color: #404040;
+    }
+
+    /* Search input */
+    #dataset-search,
+    #feature-search {
+        background: #2d2d2d;
+        border-color: #4a90c0;
+        color: #e0e0e0;
+    }
+
+    #dataset-search::placeholder,
+    #feature-search::placeholder {
+        color: #a0a0a0;
+        opacity: 1;
+    }
+
+    #dataset-search:focus,
+    #feature-search:focus {
+        border-color: #5aa5d9;
+        box-shadow: 0 0 0 3px rgba(90, 165, 217, 0.2);
+    }
+
+    /* Filter label */
+    .filter-label {
+        color: #c0c0c0;
+    }
+
+    /* Tag group headers */
+    .tag-group-header {
+        background: #2d2d2d;
+        color: #e0e0e0;
+    }
+
+    .tag-group-header:hover {
+        background: #3a3a3a;
+    }
+
+    /* Tag filter buttons */
+    .tag-filter {
+        background: #2d2d2d;
+    }
+
+    .tag-filter:hover {
+        opacity: 0.9;
+    }
+
+    /* Dataset and Feature cards */
+    .dataset-card,
+    .feature-card {
+        background: #312f2f;
+        border-color: #404040;
+        color: #d0d0d0;
+    }
+
+    .dataset-card:hover,
+    .feature-card:hover {
+        border-color: #4a90c0;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .dataset-card h3,
+    .feature-card h3 {
+        color: #e8e8e8;
+    }
+
+    .dataset-card p,
+    .feature-card p,
+    .dataset-card > p,
+    .feature-card > p {
+        color: #d0d0d0 !important;
+    }
+
+    .dataset-card p:first-of-type,
+    .feature-card p:first-of-type {
+        color: #d8d8d8 !important;
+    }
+
+    .dataset-card li,
+    .feature-card li,
+    .dataset-card ul li,
+    .feature-card ul li {
+        color: #d0d0d0 !important;
+    }
+
+    .dataset-card strong,
+    .feature-card strong {
+        color: #5aa5d9;
+    }
+
+    .dataset-card a,
+    .feature-card a {
+        color: #5aa5d9;
+    }
+
+    .dataset-card a:hover,
+    .feature-card a:hover {
+        color: #7bb9e6;
+    }
+
+    /* Tag badges */
+    .tag-badge {
+        background: #2d2d2d;
+        color: #c0c0c0;
+    }
+
+    /* Buttons */
+    .dataset-card .btn,
+    .feature-card .btn {
+        background: #4a90c0;
+    }
+
+    .dataset-card .btn:hover,
+    .feature-card .btn:hover {
+        background: #5aa5d9;
+    }
+
+    .clear-filters {
+        background: #6d7278;
+    }
+
+    .clear-filters:hover {
+        background: #848a91;
+    }
+
+    .clear-filters:active {
+        background: #c45b4d;
+    }
+
+    /* No results message */
+    .no-results {
+        color: #909090;
+    }
+
+    /* Code blocks */
+    .dataset-card .highlight,
+    .feature-card .highlight {
+        background: #2d2d2d;
+    }
+
+    /* Tag colors for dark mode - slightly desaturated for better readability */
+    .tag-filter[data-type="location"],
+    .tag-group-header[data-type="location"] {
+        border-color: #e74c3c;
+        color: #e74c3c;
+    }
+
+    .tag-filter[data-type="location"].active {
+        background: #e74c3c;
+        color: white;
+    }
+
+    .tag-filter[data-type="conversation-type"],
+    .tag-group-header[data-type="conversation-type"] {
+        border-color: #f08c08;
+        color: #f08c08;
+    }
+
+    .tag-filter[data-type="conversation-type"].active {
+        background: #f08c08;
+        color: white;
+    }
+
+    .tag-filter[data-type="metadata"],
+    .tag-group-header[data-type="metadata"] {
+        border-color: #d4b21c;
+        color: #d4b21c;
+    }
+
+    .tag-filter[data-type="metadata"].active {
+        background: #d4b21c;
+        color: white;
+    }
+
+    .tag-filter[data-type="source"],
+    .tag-group-header[data-type="source"] {
+        border-color: #356f0b;
+        color: #356f0b;
+    }
+
+    .tag-filter[data-type="source"].active {
+        background: #356f0b;
+        color: white;
+    }
+
+    .tag-filter[data-type="dataset-size"],
+    .tag-group-header[data-type="dataset-size"] {
+        border-color: #0fc27a;
+        color: #0fc27a;
+    }
+
+    .tag-filter[data-type="dataset-size"].active {
+        background: #0fc27a;
+        color: white;
+    }
+
+    .tag-filter[data-type="conversation-length"],
+    .tag-group-header[data-type="conversation-length"] {
+        border-color: #1eafba;
+        color: #1eafba;
+    }
+
+    .tag-filter[data-type="conversation-length"].active {
+        background: #1eafba;
+        color: white;
+    }
+
+    .tag-filter[data-type="topics"],
+    .tag-group-header[data-type="topics"] {
+        border-color: #187db4;
+        color: #187db4;
+    }
+
+    .tag-filter[data-type="topics"].active {
+        background: #187db4;
+        color: white;
+    }
+
+    .tag-filter[data-type="language"],
+    .tag-group-header[data-type="language"] {
+        border-color: #3b378e;
+        color: #3b378e;
+    }
+
+    .tag-filter[data-type="language"].active {
+        background: #3b378e;
+        color: white;
+    }
+
+    .tag-filter[data-type="format"],
+    .tag-group-header[data-type="format"] {
+        border-color: #7f3bb9;
+        color: #7f3bb9;
+    }
+
+    .tag-filter[data-type="format"].active {
+        background: #7f3bb9;
+        color: white;
+    }
+
+    .tag-filter[data-type="dynamics"],
+    .tag-group-header[data-type="dynamics"] {
+        border-color: #920d56;
+        color: #920d56;
+    }
+
+    .tag-filter[data-type="dynamics"].active {
+        background: #920d56;
+        color: white;
+    }
+}
+
+/* ─── body.convokit-dark – JS-controlled dark mode ───────────────────────────
+   These rules mirror the @media block above but are applied via a class that
+   custom.js stamps on <body>.  They take precedence over both the media query
+   AND any html[data-theme] rules the Sphinx theme itself might inject, because
+   they appear later in the stylesheet and have equal-or-higher specificity.
+   ─────────────────────────────────────────────────────────────────────────── */
+body.convokit-dark .dataset-search-container,
+body.convokit-dark .feature-search-container {
+    background: #1e1e1e;
+    border-color: #404040;
+}
+
+body.convokit-dark #dataset-search,
+body.convokit-dark #feature-search {
+    background: #2d2d2d;
+    border-color: #4a90c0;
+    color: #e0e0e0;
+}
+
+body.convokit-dark #dataset-search::placeholder,
+body.convokit-dark #feature-search::placeholder {
+    color: #a0a0a0;
+    opacity: 1;
+}
+
+body.convokit-dark #dataset-search:focus,
+body.convokit-dark #feature-search:focus {
+    border-color: #5aa5d9;
+    box-shadow: 0 0 0 3px rgba(90, 165, 217, 0.2);
+}
+
+body.convokit-dark .filter-label {
+    color: #c0c0c0;
+}
+
+body.convokit-dark .tag-group-header {
+    background: #2d2d2d;
+    color: #e0e0e0;
+}
+
+body.convokit-dark .tag-group-header:hover {
+    background: #3a3a3a;
+}
+
+body.convokit-dark .tag-filter {
+    background: #2d2d2d;
+}
+
+body.convokit-dark .dataset-card,
+body.convokit-dark .feature-card {
+    background: #312f2f;
+    border-color: #404040;
+    color: #d0d0d0;
+}
+
+body.convokit-dark .dataset-card:hover,
+body.convokit-dark .feature-card:hover {
+    border-color: #4a90c0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+body.convokit-dark .dataset-card h3,
+body.convokit-dark .feature-card h3 {
+    color: #e8e8e8;
+}
+
+body.convokit-dark .dataset-card p,
+body.convokit-dark .feature-card p,
+body.convokit-dark .dataset-card > p,
+body.convokit-dark .feature-card > p {
+    color: #d0d0d0 !important;
+}
+
+body.convokit-dark .dataset-card p:first-of-type,
+body.convokit-dark .feature-card p:first-of-type {
+    color: #d8d8d8 !important;
+}
+
+body.convokit-dark .dataset-card li,
+body.convokit-dark .feature-card li,
+body.convokit-dark .dataset-card ul li,
+body.convokit-dark .feature-card ul li {
+    color: #d0d0d0 !important;
+}
+
+body.convokit-dark .dataset-card strong,
+body.convokit-dark .feature-card strong {
+    color: #5aa5d9;
+}
+
+body.convokit-dark .dataset-card a,
+body.convokit-dark .feature-card a {
+    color: #5aa5d9;
+}
+
+body.convokit-dark .dataset-card a:hover,
+body.convokit-dark .feature-card a:hover {
+    color: #7bb9e6;
+}
+
+body.convokit-dark .tag-badge {
+    background: #2d2d2d;
+    color: #c0c0c0;
+}
+
+body.convokit-dark .dataset-card .btn,
+body.convokit-dark .feature-card .btn {
+    background: #4a90c0;
+}
+
+body.convokit-dark .dataset-card .btn:hover,
+body.convokit-dark .feature-card .btn:hover {
+    background: #5aa5d9;
+}
+
+body.convokit-dark .clear-filters {
+    background: #6d7278;
+}
+
+body.convokit-dark .clear-filters:hover {
+    background: #848a91;
+}
+
+body.convokit-dark .clear-filters:active {
+    background: #c45b4d;
+}
+
+body.convokit-dark .no-results {
+    color: #909090;
+}
+
+body.convokit-dark .dataset-card .highlight,
+body.convokit-dark .feature-card .highlight {
+    background: #2d2d2d;
+}
+
+body.convokit-dark .tag-filter[data-type="location"],
+body.convokit-dark .tag-group-header[data-type="location"] { border-color: #e74c3c; color: #e74c3c; }
+body.convokit-dark .tag-filter[data-type="location"].active { background: #e74c3c; color: white; }
+
+body.convokit-dark .tag-filter[data-type="conversation-type"],
+body.convokit-dark .tag-group-header[data-type="conversation-type"] { border-color: #f08c08; color: #f08c08; }
+body.convokit-dark .tag-filter[data-type="conversation-type"].active { background: #f08c08; color: white; }
+
+body.convokit-dark .tag-filter[data-type="metadata"],
+body.convokit-dark .tag-group-header[data-type="metadata"] { border-color: #d4b21c; color: #d4b21c; }
+body.convokit-dark .tag-filter[data-type="metadata"].active { background: #d4b21c; color: white; }
+
+body.convokit-dark .tag-filter[data-type="source"],
+body.convokit-dark .tag-group-header[data-type="source"] { border-color: #356f0b; color: #356f0b; }
+body.convokit-dark .tag-filter[data-type="source"].active { background: #356f0b; color: white; }
+
+body.convokit-dark .tag-filter[data-type="dataset-size"],
+body.convokit-dark .tag-group-header[data-type="dataset-size"] { border-color: #0fc27a; color: #0fc27a; }
+body.convokit-dark .tag-filter[data-type="dataset-size"].active { background: #0fc27a; color: white; }
+
+body.convokit-dark .tag-filter[data-type="conversation-length"],
+body.convokit-dark .tag-group-header[data-type="conversation-length"] { border-color: #1eafba; color: #1eafba; }
+body.convokit-dark .tag-filter[data-type="conversation-length"].active { background: #1eafba; color: white; }
+
+body.convokit-dark .tag-filter[data-type="topics"],
+body.convokit-dark .tag-group-header[data-type="topics"] { border-color: #187db4; color: #187db4; }
+body.convokit-dark .tag-filter[data-type="topics"].active { background: #187db4; color: white; }
+
+body.convokit-dark .tag-filter[data-type="language"],
+body.convokit-dark .tag-group-header[data-type="language"] { border-color: #3b378e; color: #3b378e; }
+body.convokit-dark .tag-filter[data-type="language"].active { background: #3b378e; color: white; }
+
+body.convokit-dark .tag-filter[data-type="format"],
+body.convokit-dark .tag-group-header[data-type="format"] { border-color: #7f3bb9; color: #7f3bb9; }
+body.convokit-dark .tag-filter[data-type="format"].active { background: #7f3bb9; color: white; }
+
+body.convokit-dark .tag-filter[data-type="dynamics"],
+body.convokit-dark .tag-group-header[data-type="dynamics"] { border-color: #920d56; color: #920d56; }
+body.convokit-dark .tag-filter[data-type="dynamics"].active { background: #920d56; color: white; }
+
+/* ─── body:not(.convokit-dark) – explicit light-mode overrides ───────────────
+   When the JS class is absent (light mode), ensure our components always show
+   light styles even if the OS is dark (i.e. the user has overridden to light).
+   ─────────────────────────────────────────────────────────────────────────── */
+body:not(.convokit-dark) .dataset-search-container,
+body:not(.convokit-dark) .feature-search-container {
+    background: #f8f9fa;
+    border-color: #e0e0e0;
+}
+
+body:not(.convokit-dark) #dataset-search,
+body:not(.convokit-dark) #feature-search {
+    background: white;
+    border-color: #2980b9;
+    color: inherit;
+}
+
+body:not(.convokit-dark) #dataset-search::placeholder,
+body:not(.convokit-dark) #feature-search::placeholder {
+    opacity: 0.6;
+}
+
+body:not(.convokit-dark) #dataset-search:focus,
+body:not(.convokit-dark) #feature-search:focus {
+    border-color: #1f5a7a;
+    box-shadow: 0 0 0 3px rgba(41, 128, 185, 0.1);
+}
+
+body:not(.convokit-dark) .filter-label {
+    color: #555;
+}
+
+body:not(.convokit-dark) .tag-group-header {
+    background: #ecf0f1;
+    /* color is intentionally omitted here so the [data-type] rules below apply */
+}
+
+body:not(.convokit-dark) .tag-group-header:hover {
+    background: #d5dbdb;
+}
+
+/* Restore per-type header colors in light mode */
+body:not(.convokit-dark) .tag-group-header[data-type="location"]            { color: #e74c3c; }
+body:not(.convokit-dark) .tag-group-header[data-type="conversation-type"]   { color: #f08c08; }
+body:not(.convokit-dark) .tag-group-header[data-type="metadata"]            { color: #d4b21c; }
+body:not(.convokit-dark) .tag-group-header[data-type="source"]              { color: #356f0b; }
+body:not(.convokit-dark) .tag-group-header[data-type="dataset-size"]        { color: #0fc27a; }
+body:not(.convokit-dark) .tag-group-header[data-type="conversation-length"] { color: #1eafba; }
+body:not(.convokit-dark) .tag-group-header[data-type="topics"]              { color: #187db4; }
+body:not(.convokit-dark) .tag-group-header[data-type="language"]            { color: #3b378e; }
+body:not(.convokit-dark) .tag-group-header[data-type="format"]              { color: #7f3bb9; }
+body:not(.convokit-dark) .tag-group-header[data-type="dynamics"]            { color: #920d56; }
+
+body:not(.convokit-dark) .tag-filter {
+    background: white;
+}
+
+body:not(.convokit-dark) .dataset-card,
+body:not(.convokit-dark) .feature-card {
+    background: white;
+    border-color: #e0e0e0;
+    color: inherit;
+}
+
+body:not(.convokit-dark) .dataset-card:hover,
+body:not(.convokit-dark) .feature-card:hover {
+    border-color: #2980b9;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+body:not(.convokit-dark) .dataset-card h3,
+body:not(.convokit-dark) .feature-card h3 {
+    color: #2c3e50;
+}
+
+body:not(.convokit-dark) .dataset-card p,
+body:not(.convokit-dark) .feature-card p {
+    color: inherit !important;
+}
+
+body:not(.convokit-dark) .dataset-card p:first-of-type,
+body:not(.convokit-dark) .feature-card p:first-of-type {
+    color: #34495e !important;
+}
+
+body:not(.convokit-dark) .dataset-card li,
+body:not(.convokit-dark) .feature-card li {
+    color: inherit !important;
+}
+
+body:not(.convokit-dark) .dataset-card strong,
+body:not(.convokit-dark) .feature-card strong {
+    color: #2980b9;
+}
+
+body:not(.convokit-dark) .dataset-card a,
+body:not(.convokit-dark) .feature-card a {
+    color: #2980b9;
+}
+
+body:not(.convokit-dark) .dataset-card a:hover,
+body:not(.convokit-dark) .feature-card a:hover {
+    color: #1f5a7a;
+}
+
+body:not(.convokit-dark) .tag-badge {
+    background: #ecf0f1;
+    color: #2c3e50;
+}
+
+body:not(.convokit-dark) .clear-filters {
+    background: #95a5a6;
+}
+
+body:not(.convokit-dark) .clear-filters:hover {
+    background: #7f8c8d;
+}
+
+body:not(.convokit-dark) .clear-filters:active {
+    background: #e74c3c;
+}
+
+body:not(.convokit-dark) .no-results {
+    color: #7f8c8d;
+}
+
+/* Enhanced typography */
+.dataset-card p:first-of-type,
+.feature-card p:first-of-type {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: #34495e;
+}
+
+/* Badge styling for tags */
+.tag-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    margin: 2px;
+    background: #ecf0f1;
+    color: #2c3e50;
+    border-radius: 3px;
+    font-size: 0.85rem;
+}
+
+/* Improved link buttons */
+.dataset-card .btn,
+.feature-card .btn {
+    display: inline-block;
+    padding: 8px 16px;
+    margin: 4px;
+    background: #3498db;
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background 0.3s;
+}
+
+.dataset-card .btn:hover,
+.feature-card .btn:hover {
+    background: #2980b9;
+    text-decoration: none;
+}
+
+.toc-column {
+    display: none !important;
+}
+
+/* Expand main content to fill the freed space */
+.content-container {
+    max-width: 100% !important;
+    grid-template-columns: 1fr !important;
+}

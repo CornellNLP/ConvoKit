@@ -1,0 +1,29 @@
+name: Build main site
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install Dependencies
+      run: |
+        pip install sphinx sphinx-rtd-theme m2r2
+    - name: Sphinx Build
+      uses: ammaraskar/sphinx-action@master
+      with:
+        docs-folder: "docs/"
+        build-command: "sphinx-build -b html ./source ./build"
+    - name: rsync docs
+      uses: burnett01/rsync-deployments@master
+      with:
+        switches: -vzr
+        path: docs/build/
+        remote_path: ${{ secrets.DEPLOY_DOCS_PATH }}
+        remote_host: ${{ secrets.DEPLOY_HOST }}
+        remote_user: ${{ secrets.DEPLOY_USER }}
+        remote_key: ${{ secrets.DEPLOY_KEY }}

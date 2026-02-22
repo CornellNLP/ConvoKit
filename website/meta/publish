@@ -1,8 +1,0 @@
-#!/bin/bash
-# This script is run during `nanosite publish`
-
-cp -R output/ ~/dev/qema.github.io/convokit/
-pushd .
-cd ~/dev/qema.github.io
-nanosite p
-popd
