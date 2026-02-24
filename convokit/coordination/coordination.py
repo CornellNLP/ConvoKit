@@ -376,9 +376,7 @@ class Coordination(Transformer):
 
     # helper functions
     def _compute_liwc_reverse_dict(self) -> None:
-        with open(
-            resources.files("convokit").joinpath("data/coord-liwc-patterns.txt"), "r"
-        ) as f:
+        with open(resources.files("convokit").joinpath("data/coord-liwc-patterns.txt"), "r") as f:
             all_words = []
             for line in f:
                 cat, pat = line.strip().split("\t")
