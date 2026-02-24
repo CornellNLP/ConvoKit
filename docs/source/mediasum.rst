@@ -92,9 +92,9 @@ To download directly with ConvoKit:
 For some quick stats:
 
 >>> corpus.print_summary_stats()
-Number of Speakers: 700
-Number of Utterances: 67373
-Number of Conversations: 3107
+Number of Speakers: 718483
+Number of Utterances: 13919244
+Number of Conversations: 463596
 
 Get all paraphrase pairs from the corpus metadata
 
