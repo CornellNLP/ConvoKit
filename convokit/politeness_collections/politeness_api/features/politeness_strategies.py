@@ -1,5 +1,4 @@
-import pkg_resources
-import os
+from importlib import resources
 
 #####
 # Word lists
@@ -107,17 +106,14 @@ hedges = [
 ]
 
 # Positive and negative words from Liu
-pos_filename = pkg_resources.resource_filename(
-    "convokit", os.path.join("data", "liu-positive-words.txt")
-)
-neg_filename = pkg_resources.resource_filename(
-    "convokit", os.path.join("data", "liu-negative-words.txt")
-)
+data_root = resources.files("convokit").joinpath("data")
+pos_filename = data_root.joinpath("liu-positive-words.txt")
+neg_filename = data_root.joinpath("liu-negative-words.txt")
 
 
-positive_words = set(map(lambda x: x.strip(), open(pos_filename).read().splitlines()))
+positive_words = set(map(lambda x: x.strip(), pos_filename.read_text().splitlines()))
 negative_words = set(
-    map(lambda x: x.strip(), open(neg_filename, encoding="ISO-8859-1").read().splitlines())
+    map(lambda x: x.strip(), neg_filename.read_text(encoding="ISO-8859-1").splitlines())
 )
 
 #####
