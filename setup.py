@@ -48,7 +48,6 @@ setup(
         ]
     },
     install_requires=[
-        "setuptools",
         "matplotlib>=3.0.0",
         "scipy>1.14",
         "pandas>=1.5.0",
