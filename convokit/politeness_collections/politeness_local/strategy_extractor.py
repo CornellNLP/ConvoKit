@@ -1,8 +1,7 @@
 import json
-import os
 import re
 from itertools import chain
-import pkg_resources
+from importlib import resources
 from collections import defaultdict
 from typing import Dict, List, Tuple, Set, Optional
 
@@ -14,17 +13,10 @@ from convokit.politeness_collections.marker_utils import (
 
 LEXICON_DIR = "politeness_collections/politeness_local/lexicons"
 
-ngram_path = pkg_resources.resource_filename(
-    "convokit", os.path.join(LEXICON_DIR, "ngram_markers.json")
-)
-
-starter_path = pkg_resources.resource_filename(
-    "convokit", os.path.join(LEXICON_DIR, "starter_markers.json")
-)
-
-non_starter_path = pkg_resources.resource_filename(
-    "convokit", os.path.join(LEXICON_DIR, "non_starter_markers.json")
-)
+lexicon_root = resources.files("convokit").joinpath(LEXICON_DIR)
+ngram_path = lexicon_root.joinpath("ngram_markers.json")
+starter_path = lexicon_root.joinpath("starter_markers.json")
+non_starter_path = lexicon_root.joinpath("non_starter_markers.json")
 
 # strategy functions
 

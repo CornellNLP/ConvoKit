@@ -2,7 +2,7 @@ from collections import defaultdict
 from typing import Callable, Tuple, List, Dict, Optional, Collection, Union
 import copy
 
-import pkg_resources
+from importlib import resources
 
 from convokit.model import Corpus, Speaker, Utterance
 from convokit.transformer import Transformer
@@ -377,7 +377,7 @@ class Coordination(Transformer):
     # helper functions
     def _compute_liwc_reverse_dict(self) -> None:
         with open(
-            pkg_resources.resource_filename("convokit", "data/coord-liwc-patterns.txt"), "r"
+            resources.files("convokit").joinpath("data/coord-liwc-patterns.txt"), "r"
         ) as f:
             all_words = []
             for line in f:
