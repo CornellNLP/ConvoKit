@@ -371,7 +371,7 @@ def _get_wikiconv_year_info(language: str, year: str = None) -> str:
     wikiconv_base = "http://zissou.infosci.cornell.edu/convokit/datasets/wikiconv-corpus/"
     data_dir = wikiconv_base + "corpus-zipped/"
     final_dir = (
-        data_dir + language + "/" + year + "/full.corpus.zip"
+        data_dir + language + "/wikiconv-" + year + "/full.corpus.zip"
         if year is not None
         else data_dir + language + "/full.corpus.zip"
     )

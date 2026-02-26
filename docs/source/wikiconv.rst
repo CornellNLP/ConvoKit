@@ -64,7 +64,9 @@ Metadata for each conversation include:
 
 Usage
 -----
-Each Corpus, except the Greek dataset, is named as "wikiconv-<language>-<year>". For example, the Corpus containing the English WikiConv data from year 2003 can be downloaded as follows:
+Each Corpus, except the Greek dataset, is named as "wikiconv-<language>-<year>". The language key is the language's full lowercase name, so "english", "russian", "chinese", or "german". The available years for each language differ slightly. The English and German datasets contain data from 2001 to 2018, and the Russian and Chinese datasets contain data from 2002 to 2018.
+
+As an example, the Corpus containing the English WikiConv data from year 2003 can be downloaded as follows:
 
 >>> from convokit import Corpus, download
 >>> corpus = Corpus(filename=download("wikiconv-english-2003"))
@@ -76,7 +78,7 @@ Number of Speakers: 9168
 Number of Utterances: 140265
 Number of Conversations: 91787
 
-The Greek corpus, which is not split by year, is named as "wikiconv-greek" instead:
+The Greek corpus, which is not split by year and instead contains data from 2002 to 2018 in one corpus, is named as "wikiconv-greek":
 
 >>> from convokit import Corpus, download
 >>> corpus = Corpus(filename=download("wikiconv-greek"))
