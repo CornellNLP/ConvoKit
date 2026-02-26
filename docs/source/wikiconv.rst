@@ -1,14 +1,14 @@
 Cornell Wikiconv Dataset
 ========================
-WikiConv is a multilingual corpus encompassing the history of conversations on Wikipedia Talk Pages—including the deletion, modification and restoration of comments. More information is available at: https://github.com/conversationai/wikidetox/tree/master/wikiconv. 
-Distributed together with `WikiConv A Corpus of the Complete Conversational History of a Large Online Collaborative Community <Http://www.cs.cornell.edu/~cristian/index_files/wikiconv-conversation-corpus.pdf>`_. 
-Yiqing Hua, Cristian Danescu-Niculescu-Mizil, Dario Taraborelli, Nithum Thain, Jeffery Sorensen, Lucas Dixon. EMNLP 2018. 
+WikiConv is a multilingual corpus encompassing the history of conversations on Wikipedia Talk Pages—including the deletion, modification and restoration of comments. More information is available at: https://github.com/conversationai/wikidetox/tree/master/wikiconv.
+Distributed together with `WikiConv A Corpus of the Complete Conversational History of a Large Online Collaborative Community <Http://www.cs.cornell.edu/~cristian/index_files/wikiconv-conversation-corpus.pdf>`_.
+Yiqing Hua, Cristian Danescu-Niculescu-Mizil, Dario Taraborelli, Nithum Thain, Jeffery Sorensen, Lucas Dixon. EMNLP 2018.
 
 Summary
 -------
-Organize the conversations of the Wikiconv Dataset to mirror the most up-to-date version of the conversation at the time of data collection. This most up-to-date version of the conversation reflects the "final" state of each utterance (the utterance after all edits at time of data collection have been performed on the utterance) in the conversation. 
+The WikiConv corpus currently supports five languages: English, German, Russian, Chinese, and Greek. Due to their large size, all language datasets except Greek are split by year into individual corpuses. For example, the English dataset is split into 18 corpora, each containing the conversations that took place in a given year from 2001 to 2018. The Greek dataset is kept as one corpus due to its smaller size.
 
-Due to the large number of conversations in WikiConv, the data is distributed as multiple Corpuses, with each Corpus corresponding to one year of data.
+The conversations of the dataset mirror the most up-to-date version of the conversation at the time of data collection. This most up-to-date version of the conversation reflects the "final" state of each utterance (the utterance after all edits at time of data collection have been performed on the utterance) in the conversation.
 
 Dataset Details
 ---------------
@@ -46,7 +46,7 @@ Metadata for each utterance includes:
 - parent_id: For modification, removal, and restoration actions, this provides the id of the action that was modified, removed, or restored respectively.
 - toxicity: Score assigned by Perspective API given the content using TOXICITY attribute (only available for English corpus).
 - sever_toxicity: Score given by Perspective API given the content using SEVERE_TOXICITY attribute (only available for English corpus).
-- original: Original Utterance if the original utterance was modified or deleted in any way 
+- original: Original Utterance if the original utterance was modified or deleted in any way
 - modification: A list of utterances indicating modification edits on this utterance, ordered by timestamp (earliest first)
 - deletion: A list of utterances (of size 1 unless the utterance was restored and then deleted again) indicating deletion edits on this utterance, ordered by timestamp (earliest first)
 - restoration: A list of utterances (of size 1 unless the utterance was deleted, restored, deleted and restored again) indicating restoration edits on this utterance, ordered by timestamp (earliest first)
@@ -64,10 +64,12 @@ Metadata for each conversation include:
 
 Usage
 -----
-Each Corpus is named as "wikiconv-<year>". For example, the Corpus containing the WikiConv data from year 2003 can be downloaded as follows: 
+Each Corpus, except the Greek dataset, is named as "wikiconv-<language>-<year>". The language key is the language's full lowercase name, so "english", "russian", "chinese", or "german". The available years for each language differ slightly. The English and German datasets contain data from 2001 to 2018, and the Russian and Chinese datasets contain data from 2002 to 2018.
+
+As an example, the Corpus containing the English WikiConv data from year 2003 can be downloaded as follows:
 
 >>> from convokit import Corpus, download
->>> corpus = Corpus(filename=download("wikiconv-2003"))
+>>> corpus = Corpus(filename=download("wikiconv-english-2003"))
 
 For some quick stats on this subreddit:
 
@@ -75,6 +77,11 @@ For some quick stats on this subreddit:
 Number of Speakers: 9168
 Number of Utterances: 140265
 Number of Conversations: 91787
+
+The Greek corpus, which is not split by year and instead contains data from 2002 to 2018 in one corpus, is named as "wikiconv-greek":
+
+>>> from convokit import Corpus, download
+>>> corpus = Corpus(filename=download("wikiconv-greek"))
 
 Combining different years
 ^^^^^^^^^^^^^^^^^^^^^^^^^

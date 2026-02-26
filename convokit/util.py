@@ -98,9 +98,11 @@ def download(
         DatasetURLs[name] = get_subreddit_info(subreddit_name)
         # print(DatasetURLs[name])
     elif name.startswith("wikiconv"):
-        wikiconv_year = name.split("-")[1]
+        parts = name.split("-")
+        wikiconv_language = parts[1]
+        wikiconv_year = parts[2] if len(parts) == 3 else None
         cur_version[name] = cur_version["wikiconv"]
-        DatasetURLs[name] = _get_wikiconv_year_info(wikiconv_year)
+        DatasetURLs[name] = _get_wikiconv_year_info(wikiconv_language, wikiconv_year)
     elif name.startswith("supreme-"):
         supreme_year = name.split("-")[1]
         cur_version[name] = cur_version["supreme"]
@@ -362,14 +364,19 @@ def subreddit_in_grouping(subreddit: str, grouping_key: str) -> bool:
     return bounds[0] <= subreddit <= bounds[1]
 
 
-def _get_wikiconv_year_info(year: str) -> str:
+def _get_wikiconv_year_info(language: str, year: str = None) -> str:
     """completes the download link for wikiconv"""
 
     # base directory of wikicon corpuses
     wikiconv_base = "http://zissou.infosci.cornell.edu/convokit/datasets/wikiconv-corpus/"
     data_dir = wikiconv_base + "corpus-zipped/"
+    final_dir = (
+        data_dir + language + "/wikiconv-" + year + "/full.corpus.zip"
+        if year is not None
+        else data_dir + language + "/full.corpus.zip"
+    )
 
-    return data_dir + year + "/full.corpus.zip"
+    return final_dir
 
 
 def _get_supreme_info(year: str) -> str:
