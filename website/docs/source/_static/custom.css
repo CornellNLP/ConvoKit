@@ -166,12 +166,12 @@
 
 .tag-filter[data-type="source"],
 .tag-group-header[data-type="source"] {
-    border-color: #356f0b;
-    color: #356f0b;
+    border-color: #418e0a;
+    color: #418e0a;
 }
 
 .tag-filter[data-type="source"].active {
-    background: #356f0b;
+    background: #418e0a;
     color: white;
 }
 
@@ -232,12 +232,57 @@
 
 .tag-filter[data-type="dynamics"],
 .tag-group-header[data-type="dynamics"] {
-    border-color: #920d56;
-    color: #920d56;
+    border-color: #a50e61;
+    color: #a50e61;
 }
 
 .tag-filter[data-type="dynamics"].active {
-    background: #920d56;
+    background: #a50e61;
+    color: white;
+}
+
+/* Feature page tag type colors */
+.tag-filter[data-type="analysis-type"],
+.tag-group-header[data-type="analysis-type"] {
+    border-color: #c0392b;
+    color: #c0392b;
+}
+
+.tag-filter[data-type="analysis-type"].active {
+    background: #c0392b;
+    color: white;
+}
+
+.tag-filter[data-type="analysis-method"],
+.tag-group-header[data-type="analysis-method"] {
+    border-color: #16a085;
+    color: #16a085;
+}
+
+.tag-filter[data-type="analysis-method"].active {
+    background: #16a085;
+    color: white;
+}
+
+.tag-filter[data-type="analysis-level"],
+.tag-group-header[data-type="analysis-level"] {
+    border-color: #8e44ad;
+    color: #8e44ad;
+}
+
+.tag-filter[data-type="analysis-level"].active {
+    background: #8e44ad;
+    color: white;
+}
+
+.tag-filter[data-type="analysis-focus"],
+.tag-group-header[data-type="analysis-focus"] {
+    border-color: #2471a3;
+    color: #2471a3;
+}
+
+.tag-filter[data-type="analysis-focus"].active {
+    background: #2471a3;
     color: white;
 }
 
@@ -550,12 +595,12 @@
 
     .tag-filter[data-type="source"],
     .tag-group-header[data-type="source"] {
-        border-color: #356f0b;
-        color: #356f0b;
+        border-color: #418e0a;
+        color: #418e0a;
     }
 
     .tag-filter[data-type="source"].active {
-        background: #356f0b;
+        background: #418e0a;
         color: white;
     }
 
@@ -616,12 +661,57 @@
 
     .tag-filter[data-type="dynamics"],
     .tag-group-header[data-type="dynamics"] {
-        border-color: #920d56;
-        color: #920d56;
+        border-color: #a50e61;
+        color: #a50e61;
     }
 
     .tag-filter[data-type="dynamics"].active {
-        background: #920d56;
+        background: #a50e61;
+        color: white;
+    }
+
+    /* Feature page tag type colors */
+    .tag-filter[data-type="analysis-type"],
+    .tag-group-header[data-type="analysis-type"] {
+        border-color: #c0392b;
+        color: #c0392b;
+    }
+
+    .tag-filter[data-type="analysis-type"].active {
+        background: #c0392b;
+        color: white;
+    }
+
+    .tag-filter[data-type="analysis-method"],
+    .tag-group-header[data-type="analysis-method"] {
+        border-color: #16a085;
+        color: #16a085;
+    }
+
+    .tag-filter[data-type="analysis-method"].active {
+        background: #16a085;
+        color: white;
+    }
+
+    .tag-filter[data-type="analysis-level"],
+    .tag-group-header[data-type="analysis-level"] {
+        border-color: #8e44ad;
+        color: #8e44ad;
+    }
+
+    .tag-filter[data-type="analysis-level"].active {
+        background: #8e44ad;
+        color: white;
+    }
+
+    .tag-filter[data-type="analysis-focus"],
+    .tag-group-header[data-type="analysis-focus"] {
+        border-color: #2471a3;
+        color: #2471a3;
+    }
+
+    .tag-filter[data-type="analysis-focus"].active {
+        background: #2471a3;
         color: white;
     }
 }
@@ -775,8 +865,8 @@ body.convokit-dark .tag-group-header[data-type="metadata"] { border-color: #d4b2
 body.convokit-dark .tag-filter[data-type="metadata"].active { background: #d4b21c; color: white; }
 
 body.convokit-dark .tag-filter[data-type="source"],
-body.convokit-dark .tag-group-header[data-type="source"] { border-color: #356f0b; color: #356f0b; }
-body.convokit-dark .tag-filter[data-type="source"].active { background: #356f0b; color: white; }
+body.convokit-dark .tag-group-header[data-type="source"] { border-color: #418e0a; color: #418e0a; }
+body.convokit-dark .tag-filter[data-type="source"].active { background: #418e0a; color: white; }
 
 body.convokit-dark .tag-filter[data-type="dataset-size"],
 body.convokit-dark .tag-group-header[data-type="dataset-size"] { border-color: #0fc27a; color: #0fc27a; }
@@ -799,8 +889,24 @@ body.convokit-dark .tag-group-header[data-type="format"] { border-color: #7f3bb9
 body.convokit-dark .tag-filter[data-type="format"].active { background: #7f3bb9; color: white; }
 
 body.convokit-dark .tag-filter[data-type="dynamics"],
-body.convokit-dark .tag-group-header[data-type="dynamics"] { border-color: #920d56; color: #920d56; }
-body.convokit-dark .tag-filter[data-type="dynamics"].active { background: #920d56; color: white; }
+body.convokit-dark .tag-group-header[data-type="dynamics"] { border-color: #a50e61; color: #a50e61; }
+body.convokit-dark .tag-filter[data-type="dynamics"].active { background: #a50e61; color: white; }
+
+body.convokit-dark .tag-filter[data-type="analysis-type"],
+body.convokit-dark .tag-group-header[data-type="analysis-type"] { border-color: #c0392b; color: #c0392b; }
+body.convokit-dark .tag-filter[data-type="analysis-type"].active { background: #c0392b; color: white; }
+
+body.convokit-dark .tag-filter[data-type="analysis-method"],
+body.convokit-dark .tag-group-header[data-type="analysis-method"] { border-color: #16a085; color: #16a085; }
+body.convokit-dark .tag-filter[data-type="analysis-method"].active { background: #16a085; color: white; }
+
+body.convokit-dark .tag-filter[data-type="analysis-level"],
+body.convokit-dark .tag-group-header[data-type="analysis-level"] { border-color: #8e44ad; color: #8e44ad; }
+body.convokit-dark .tag-filter[data-type="analysis-level"].active { background: #8e44ad; color: white; }
+
+body.convokit-dark .tag-filter[data-type="analysis-focus"],
+body.convokit-dark .tag-group-header[data-type="analysis-focus"] { border-color: #2471a3; color: #2471a3; }
+body.convokit-dark .tag-filter[data-type="analysis-focus"].active { background: #2471a3; color: white; }
 
 /* ─── body:not(.convokit-dark) – explicit light-mode overrides ───────────────
    When the JS class is absent (light mode), ensure our components always show
@@ -847,13 +953,18 @@ body:not(.convokit-dark) .tag-group-header:hover {
 body:not(.convokit-dark) .tag-group-header[data-type="location"]            { color: #e74c3c; }
 body:not(.convokit-dark) .tag-group-header[data-type="conversation-type"]   { color: #f08c08; }
 body:not(.convokit-dark) .tag-group-header[data-type="metadata"]            { color: #d4b21c; }
-body:not(.convokit-dark) .tag-group-header[data-type="source"]              { color: #356f0b; }
+body:not(.convokit-dark) .tag-group-header[data-type="source"]              { color: #418e0a; }
 body:not(.convokit-dark) .tag-group-header[data-type="dataset-size"]        { color: #0fc27a; }
 body:not(.convokit-dark) .tag-group-header[data-type="conversation-length"] { color: #1eafba; }
 body:not(.convokit-dark) .tag-group-header[data-type="topics"]              { color: #187db4; }
 body:not(.convokit-dark) .tag-group-header[data-type="language"]            { color: #3b378e; }
 body:not(.convokit-dark) .tag-group-header[data-type="format"]              { color: #7f3bb9; }
-body:not(.convokit-dark) .tag-group-header[data-type="dynamics"]            { color: #920d56; }
+body:not(.convokit-dark) .tag-group-header[data-type="dynamics"]            { color: #a50e61; }
+/* Feature page tag group header colors */
+body:not(.convokit-dark) .tag-group-header[data-type="analysis-type"]      { color: #c0392b; }
+body:not(.convokit-dark) .tag-group-header[data-type="analysis-method"]    { color: #16a085; }
+body:not(.convokit-dark) .tag-group-header[data-type="analysis-level"]     { color: #8e44ad; }
+body:not(.convokit-dark) .tag-group-header[data-type="analysis-focus"]     { color: #2471a3; }
 
 body:not(.convokit-dark) .tag-filter {
     background: white;
@@ -964,14 +1075,4 @@ body:not(.convokit-dark) .no-results {
 .feature-card .btn:hover {
     background: #2980b9;
     text-decoration: none;
-}
-
-.toc-column {
-    display: none !important;
-}
-
-/* Expand main content to fill the freed space */
-.content-container {
-    max-width: 100% !important;
-    grid-template-columns: 1fr !important;
 }

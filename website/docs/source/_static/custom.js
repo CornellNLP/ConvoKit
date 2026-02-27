@@ -53,7 +53,7 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', app
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-// Tag type definitions with their categories
+// Tag type definitions for DATASET pages
 const TAG_TYPES = {
     'Location': 'location',
     'Conversation Type': 'conversation-type',
@@ -67,13 +67,42 @@ const TAG_TYPES = {
     'Dynamics': 'dynamics'
 };
 
+// Tag type definitions for FEATURE pages
+const FEATURE_TAG_TYPES = {
+    'Analysis Type': 'analysis-type',
+    'Analysis Method': 'analysis-method',
+    'Analysis Level': 'analysis-level',
+    'Analysis Focus': 'analysis-focus'
+};
+
+// Canonical tag sets for feature pages — used for context-aware classification
+const FEATURE_TAG_SETS = {
+    'analysis-type': new Set([
+        'prediction', 'classification', 'structural', 'sorting', 'measurement',
+        'feature extraction', 'pre-processing'
+    ]),
+    'analysis-method': new Set([
+        'statistical', 'modeling', 'graph', 'machine learning', 'neural', 'llm',
+        'simulation', 'parsing', 'vectorization'
+    ]),
+    'analysis-level': new Set([
+        'utterance', 'exchange', 'conversation', 'speaker', 'corpus'
+    ]),
+    'analysis-focus': new Set([
+        'linguistic', 'power', 'influence', 'social', 'development', 'politeness',
+        'context', 'pattern', 'diversity', 'conversation-flow', 'turning-points',
+        'forecasting', 'detection', 'representation', 'labeling', 'comparison',
+        'pragmatics'
+    ])
+};
+
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize dataset search and filters
-    initializeSearch('dataset-search', '.dataset-card');
-    initializeSearch('feature-search', '.feature-card');
+    initializeSearch('dataset-search', '.dataset-card', 'dataset');
+    initializeSearch('feature-search', '.feature-card', 'feature');
 });
 
-function initializeSearch(searchInputId, cardSelector) {
+function initializeSearch(searchInputId, cardSelector, context) {
     const searchInput = document.getElementById(searchInputId);
     if (!searchInput) return;
 
@@ -117,8 +146,8 @@ function initializeSearch(searchInputId, cardSelector) {
             cardTags.forEach(tag => {
                 if (!tag) return;
 
-                // Determine tag type
-                const tagType = determineTagType(tag);
+                // Determine tag type — pass context so feature/dataset tags resolve correctly
+                const tagType = determineTagType(tag, context);
 
                 if (!allTags.has(tag)) {
                     allTags.set(tag, { type: tagType, count: 0 });
@@ -128,9 +157,19 @@ function initializeSearch(searchInputId, cardSelector) {
         });
     }
 
-    function determineTagType(tag) {
-        const tagLower = tag.toLowerCase();
+    function determineTagType(tag, ctx) {
+        const tagLower = tag.toLowerCase().trim();
 
+        // ── Feature page context ──────────────────────────────────────────────
+        if (ctx === 'feature') {
+            for (const [typeId, tagSet] of Object.entries(FEATURE_TAG_SETS)) {
+                if (tagSet.has(tagLower)) return typeId;
+            }
+            // Default for unknown feature tags
+            return 'analysis-focus';
+        }
+
+        // ── Dataset page context ──────────────────────────────────────────────
         // Location tags
         if (tagLower.includes('in person') || tagLower.includes('online') ||
             tagLower.includes('fictional')){
@@ -251,7 +290,8 @@ function initializeSearch(searchInputId, cardSelector) {
         });
 
         // Create groups for each tag type that has tags
-        Object.entries(TAG_TYPES).forEach(([typeName, typeId]) => {
+        const activeTagTypes = context === 'feature' ? FEATURE_TAG_TYPES : TAG_TYPES;
+        Object.entries(activeTagTypes).forEach(([typeName, typeId]) => {
             const tagsOfType = tagsByType.get(typeId);
             if (!tagsOfType || tagsOfType.length === 0) return;
 
