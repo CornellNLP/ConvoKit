@@ -12,7 +12,7 @@ except (ImportError, ModuleNotFoundError) as e:
         or "transformers" in str(e)
     ):
         raise ImportError(
-            "Pivotal framework requires ML dependencies. Run 'pip install convokit[llm]' to install them."
+            "Pivotal framework requires ML dependencies. Run 'pip install convokit[llm]' to install them (or 'pip install convokit[llm-mac]' if you are on macOS)."
         ) from e
     else:
         raise
