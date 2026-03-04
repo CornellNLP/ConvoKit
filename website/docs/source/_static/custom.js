@@ -1,18 +1,5 @@
 // docs/source/_static/custom.js
 
-// ─── Theme synchronisation ────────────────────────────────────────────────────
-// Sphinx themes (Furo, PyData, Read-the-Docs, etc.) signal dark/light mode by
-// setting an attribute on <html> – but the attribute name differs per theme:
-//   Furo              → data-theme="dark" | "light"
-//   PyData / RTD      → data-bs-theme="dark" | "light"
-//   sphinx-book-theme → class contains "dark"
-//
-// Because we cannot know in advance which theme is used, we watch for ANY
-// attribute change on <html> with a MutationObserver, derive the effective
-// theme, and stamp a single class ("convokit-dark") on <body>.  Our custom
-// CSS then targets body.convokit-dark instead of fragile media-query overrides.
-// ─────────────────────────────────────────────────────────────────────────────
-
 function getEffectiveTheme() {
     const html = document.documentElement;
 
@@ -67,7 +54,7 @@ const TAG_TYPES = {
     'Dynamics': 'dynamics'
 };
 
-// Tag type definitions for FEATURE pages
+// Tag type definitions for feature page
 const FEATURE_TAG_TYPES = {
     'Analysis Type': 'analysis-type',
     'Analysis Method': 'analysis-method',
@@ -75,7 +62,7 @@ const FEATURE_TAG_TYPES = {
     'Analysis Focus': 'analysis-focus'
 };
 
-// Canonical tag sets for feature pages — used for context-aware classification
+// tag sets for feature pages
 const FEATURE_TAG_SETS = {
     'analysis-type': new Set([
         'prediction', 'classification', 'structural', 'sorting', 'measurement',
@@ -112,12 +99,12 @@ function initializeSearch(searchInputId, cardSelector, context) {
     const clearButton = container.querySelector('.clear-filters');
 
     let activeFilters = new Set();
-    let allTags = new Map(); // Map of tag -> {type, count}
+    let allTags = new Map(); // Map of tag
 
     // Extract all tags from dataset cards
     extractAllTags();
 
-    // Initial render - show hierarchical view
+    // Initial render
     renderTagFilters('');
 
     // Search functionality
@@ -146,7 +133,7 @@ function initializeSearch(searchInputId, cardSelector, context) {
             cardTags.forEach(tag => {
                 if (!tag) return;
 
-                // Determine tag type — pass context so feature/dataset tags resolve correctly
+                // Determine tag type
                 const tagType = determineTagType(tag, context);
 
                 if (!allTags.has(tag)) {
@@ -160,7 +147,7 @@ function initializeSearch(searchInputId, cardSelector, context) {
     function determineTagType(tag, ctx) {
         const tagLower = tag.toLowerCase().trim();
 
-        // ── Feature page context ──────────────────────────────────────────────
+        // Feature page context
         if (ctx === 'feature') {
             for (const [typeId, tagSet] of Object.entries(FEATURE_TAG_SETS)) {
                 if (tagSet.has(tagLower)) return typeId;
@@ -169,7 +156,7 @@ function initializeSearch(searchInputId, cardSelector, context) {
             return 'analysis-focus';
         }
 
-        // ── Dataset page context ──────────────────────────────────────────────
+        // Dataset page context
         // Location tags
         if (tagLower.includes('in person') || tagLower.includes('online') ||
             tagLower.includes('fictional')){

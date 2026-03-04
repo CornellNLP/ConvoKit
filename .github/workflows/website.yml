@@ -8,23 +8,21 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
-
     - name: Install Dependencies
       run: |
         pip install sphinx sphinx-rtd-theme m2r2
-
-    - name: Sphinx build
-      working-directory: ./website
-      run: sphinx-build -b html docs/source docs/build
-
+    - name: Sphinx Build
+      uses: ammaraskar/sphinx-action@master
+      with:
+        docs-folder: "website/"
+        build-command: "sphinx-build -b html ./source ./build"
     - name: rsync homepage files
       uses: burnett01/rsync-deployments@master
       with:
         switches: -vzr
-        path: ./website/docs/build/
+        path: website/build/
         remote_path: ${{ secrets.DEPLOY_WEBSITE_PATH }}
         remote_host: ${{ secrets.DEPLOY_HOST }}
         remote_user: ${{ secrets.DEPLOY_USER }}

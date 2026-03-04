@@ -199,12 +199,12 @@
 
 .tag-filter[data-type="topics"],
 .tag-group-header[data-type="topics"] {
-    border-color: #187db4;
-    color: #187db4;
+    border-color: #218ec9;
+    color: #218ec9;
 }
 
 .tag-filter[data-type="topics"].active {
-    background: #187db4;
+    background: #218ec9;
     color: white;
 }
 
@@ -244,45 +244,45 @@
 /* Feature page tag type colors */
 .tag-filter[data-type="analysis-type"],
 .tag-group-header[data-type="analysis-type"] {
-    border-color: #c0392b;
-    color: #c0392b;
+    border-color: #e74c3c;
+    color: #e74c3c;
 }
 
 .tag-filter[data-type="analysis-type"].active {
-    background: #c0392b;
+    background: #e74c3c;
     color: white;
 }
 
 .tag-filter[data-type="analysis-method"],
 .tag-group-header[data-type="analysis-method"] {
-    border-color: #16a085;
-    color: #16a085;
+    border-color: #d4b21c;
+    color: #d4b21c;
 }
 
 .tag-filter[data-type="analysis-method"].active {
-    background: #16a085;
+    background: #d4b21c;
     color: white;
 }
 
 .tag-filter[data-type="analysis-level"],
 .tag-group-header[data-type="analysis-level"] {
-    border-color: #8e44ad;
-    color: #8e44ad;
+    border-color: #0fc27a;
+    color: #0fc27a;
 }
 
 .tag-filter[data-type="analysis-level"].active {
-    background: #8e44ad;
+    background: #0fc27a;
     color: white;
 }
 
 .tag-filter[data-type="analysis-focus"],
 .tag-group-header[data-type="analysis-focus"] {
-    border-color: #2471a3;
-    color: #2471a3;
+    border-color: #218ec9;
+    color: #218ec9;
 }
 
 .tag-filter[data-type="analysis-focus"].active {
-    background: #2471a3;
+    background: #218ec9;
     color: white;
 }
 
@@ -628,12 +628,12 @@
 
     .tag-filter[data-type="topics"],
     .tag-group-header[data-type="topics"] {
-        border-color: #187db4;
-        color: #187db4;
+        border-color: #218ec9;
+        color: #218ec9;
     }
 
     .tag-filter[data-type="topics"].active {
-        background: #187db4;
+        background: #218ec9;
         color: white;
     }
 
@@ -673,45 +673,45 @@
     /* Feature page tag type colors */
     .tag-filter[data-type="analysis-type"],
     .tag-group-header[data-type="analysis-type"] {
-        border-color: #c0392b;
-        color: #c0392b;
+        border-color: #e74c3c;
+        color: #e74c3c;
     }
 
     .tag-filter[data-type="analysis-type"].active {
-        background: #c0392b;
+        background: #e74c3c;
         color: white;
     }
 
     .tag-filter[data-type="analysis-method"],
     .tag-group-header[data-type="analysis-method"] {
-        border-color: #16a085;
-        color: #16a085;
+        border-color: #d4b21c;
+        color: #d4b21c;
     }
 
     .tag-filter[data-type="analysis-method"].active {
-        background: #16a085;
+        background: #d4b21c;
         color: white;
     }
 
     .tag-filter[data-type="analysis-level"],
     .tag-group-header[data-type="analysis-level"] {
-        border-color: #8e44ad;
-        color: #8e44ad;
+        border-color: #0fc27a;
+        color: #0fc27a;
     }
 
     .tag-filter[data-type="analysis-level"].active {
-        background: #8e44ad;
+        background: #0fc27a;
         color: white;
     }
 
     .tag-filter[data-type="analysis-focus"],
     .tag-group-header[data-type="analysis-focus"] {
-        border-color: #2471a3;
-        color: #2471a3;
+        border-color: #218ec9;
+        color: #218ec9;
     }
 
     .tag-filter[data-type="analysis-focus"].active {
-        background: #2471a3;
+        background: #218ec9;
         color: white;
     }
 }
@@ -877,8 +877,8 @@ body.convokit-dark .tag-group-header[data-type="conversation-length"] { border-c
 body.convokit-dark .tag-filter[data-type="conversation-length"].active { background: #1eafba; color: white; }
 
 body.convokit-dark .tag-filter[data-type="topics"],
-body.convokit-dark .tag-group-header[data-type="topics"] { border-color: #187db4; color: #187db4; }
-body.convokit-dark .tag-filter[data-type="topics"].active { background: #187db4; color: white; }
+body.convokit-dark .tag-group-header[data-type="topics"] { border-color: #218ec9; color: #218ec9; }
+body.convokit-dark .tag-filter[data-type="topics"].active { background: #218ec9; color: white; }
 
 body.convokit-dark .tag-filter[data-type="language"],
 body.convokit-dark .tag-group-header[data-type="language"] { border-color: #3b378e; color: #3b378e; }
@@ -893,20 +893,20 @@ body.convokit-dark .tag-group-header[data-type="dynamics"] { border-color: #a50e
 body.convokit-dark .tag-filter[data-type="dynamics"].active { background: #a50e61; color: white; }
 
 body.convokit-dark .tag-filter[data-type="analysis-type"],
-body.convokit-dark .tag-group-header[data-type="analysis-type"] { border-color: #c0392b; color: #c0392b; }
-body.convokit-dark .tag-filter[data-type="analysis-type"].active { background: #c0392b; color: white; }
+body.convokit-dark .tag-group-header[data-type="analysis-type"] { border-color: #e74c3c; color: #e74c3c; }
+body.convokit-dark .tag-filter[data-type="analysis-type"].active { background: #e74c3c; color: white; }
 
 body.convokit-dark .tag-filter[data-type="analysis-method"],
-body.convokit-dark .tag-group-header[data-type="analysis-method"] { border-color: #16a085; color: #16a085; }
-body.convokit-dark .tag-filter[data-type="analysis-method"].active { background: #16a085; color: white; }
+body.convokit-dark .tag-group-header[data-type="analysis-method"] { border-color: #d4b21c; color: #d4b21c; }
+body.convokit-dark .tag-filter[data-type="analysis-method"].active { background: #d4b21c; color: white; }
 
 body.convokit-dark .tag-filter[data-type="analysis-level"],
-body.convokit-dark .tag-group-header[data-type="analysis-level"] { border-color: #8e44ad; color: #8e44ad; }
-body.convokit-dark .tag-filter[data-type="analysis-level"].active { background: #8e44ad; color: white; }
+body.convokit-dark .tag-group-header[data-type="analysis-level"] { border-color: #0fc27a; color: #0fc27a; }
+body.convokit-dark .tag-filter[data-type="analysis-level"].active { background: #0fc27a; color: white; }
 
 body.convokit-dark .tag-filter[data-type="analysis-focus"],
-body.convokit-dark .tag-group-header[data-type="analysis-focus"] { border-color: #2471a3; color: #2471a3; }
-body.convokit-dark .tag-filter[data-type="analysis-focus"].active { background: #2471a3; color: white; }
+body.convokit-dark .tag-group-header[data-type="analysis-focus"] { border-color: #218ec9; color: #218ec9; }
+body.convokit-dark .tag-filter[data-type="analysis-focus"].active { background: #218ec9; color: white; }
 
 /* ─── body:not(.convokit-dark) – explicit light-mode overrides ───────────────
    When the JS class is absent (light mode), ensure our components always show
@@ -956,15 +956,15 @@ body:not(.convokit-dark) .tag-group-header[data-type="metadata"]            { co
 body:not(.convokit-dark) .tag-group-header[data-type="source"]              { color: #418e0a; }
 body:not(.convokit-dark) .tag-group-header[data-type="dataset-size"]        { color: #0fc27a; }
 body:not(.convokit-dark) .tag-group-header[data-type="conversation-length"] { color: #1eafba; }
-body:not(.convokit-dark) .tag-group-header[data-type="topics"]              { color: #187db4; }
+body:not(.convokit-dark) .tag-group-header[data-type="topics"]              { color: #218ec9; }
 body:not(.convokit-dark) .tag-group-header[data-type="language"]            { color: #3b378e; }
 body:not(.convokit-dark) .tag-group-header[data-type="format"]              { color: #7f3bb9; }
 body:not(.convokit-dark) .tag-group-header[data-type="dynamics"]            { color: #a50e61; }
 /* Feature page tag group header colors */
-body:not(.convokit-dark) .tag-group-header[data-type="analysis-type"]      { color: #c0392b; }
-body:not(.convokit-dark) .tag-group-header[data-type="analysis-method"]    { color: #16a085; }
-body:not(.convokit-dark) .tag-group-header[data-type="analysis-level"]     { color: #8e44ad; }
-body:not(.convokit-dark) .tag-group-header[data-type="analysis-focus"]     { color: #2471a3; }
+body:not(.convokit-dark) .tag-group-header[data-type="analysis-type"]      { color: #e74c3c; }
+body:not(.convokit-dark) .tag-group-header[data-type="analysis-method"]    { color: #d4b21c; }
+body:not(.convokit-dark) .tag-group-header[data-type="analysis-level"]     { color: #0fc27a; }
+body:not(.convokit-dark) .tag-group-header[data-type="analysis-focus"]     { color: #218ec9; }
 
 body:not(.convokit-dark) .tag-filter {
     background: white;
@@ -1075,4 +1075,131 @@ body:not(.convokit-dark) .no-results {
 .feature-card .btn:hover {
     background: #2980b9;
     text-decoration: none;
+}
+
+/* Shibuya theme */
+.header,
+header.header,
+.header-inner,
+.header__inner
+[class*="header__"] {
+    background: #f2ece4 !important;
+    border-bottom: 3px solid #aa0000 !important;
+    min-height: 80px !important;
+}
+
+/* Override Shibuya CSS custom properties */
+:root {
+    --header-height: 80px !important;
+}
+
+/* Make logo image taller to fill the bar */
+.header__logo img,
+.header__logo svg,
+.header img,
+header img,
+a.header__logo img,
+a[class*="logo"] img {
+    height: 60px !important;
+    width: auto !important;
+    max-height: 60px !important;
+    max-width: none !important;
+    object-fit: contain !important;
+}
+
+/* Also target the logo anchor/wrapper to not clip it */
+.header__logo,
+a.header__logo {
+    display: flex !important;
+    align-items: center !important;
+    height: 80px !important;
+    overflow: visible !important;
+}
+
+/* Ensure this background is constant in both dark and light mode */
+body.convokit-dark .header,
+body.convokit-dark header.header,
+body.convokit-dark .header-inner,
+body:not(.convokit-dark) .header,
+body:not(.convokit-dark) header.header,
+body:not(.convokit-dark) .header-inner {
+    background: #fbf7fe !important;
+}
+
+.sy-head{
+    height: 80px !important;
+    width: auto !important;
+    max-height: 80px !important;
+    max-width: none !important;
+    object-fit: contain !important;
+}
+
+.sy-head {
+    background: #fbf7fe !important;
+}
+
+.sy-head-blur {
+    background: #fbf7fe !important;
+    opacity: 1 !important;
+}
+
+.sy-head-inner {
+    height: 80px !important;
+    min-height: 80px !important;
+    align-items: center !important;
+}
+
+.sy-head-brand img.light-logo,
+.sy-head-brand img.dark-logo {
+    height: 60px !important;
+    width: auto !important;
+}
+
+.sy-head-brand strong {
+    display: none !important;
+}
+
+/* Right sidebar sticky offset — was xl:top-16 (64px), now matches header */
+.sy-rside-inner {
+    top: 80px !important;
+}
+
+/* Left sidebar sticky offset */
+.sy-lside-inner {
+    top: 80px !important;
+}
+
+.sy-head .js-theme,
+.sy-head .theme-switch {
+    color: #2c2c2c !important;
+}
+
+.sy-head .js-theme:hover,
+.sy-head .theme-switch:hover {
+    color: #6446d4 !important;
+    background: rgba(0, 0, 0, 0.08) !important;
+}
+
+.sy-head .searchbox input[type="text"] {
+    color: #2c2c2c !important;
+    background: rgba(0, 0, 0, 0.06) !important;
+    border-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+.sy-head .searchbox input[type="text"]::placeholder {
+    color: #555555 !important;
+    opacity: 1 !important;
+}
+
+.sy-head .searchbox input[type="text"]:focus {
+    background: #555555 !important;
+    border-color: #aa0000 !important;
+    outline: none !important;
+}
+
+/* The "/" */
+.sy-head .searchbox kbd {
+    color: #2c2c2c !important;
+    background: #e4e4e4 !important;
+    border-color: #2c2c2c !important;
 }

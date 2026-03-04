@@ -31,7 +31,7 @@ html_static_path = ["_static"]
 html_css_files = ["custom.css"]
 html_js_files = ["custom.js"]
 
-html_logo = None  # Add your logo path here if available
+html_logo = "../../convokit_logo.svg"  # Add your logo path here if available
 html_favicon = None  # Add favicon path here if available
 
 # Sidebar configuration

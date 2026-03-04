@@ -1,5 +1,5 @@
-ConvoKit: Analysis of Conversations
-====================================
+ConvoKit: Conversational Analysis Toolkit
+=========================================
 
 .. image:: https://img.shields.io/pypi/v/convokit.svg
    :target: https://pypi.org/pypi/convokit/
@@ -27,40 +27,8 @@ Quick Links
 * `GitHub Repository <https://github.com/CornellNLP/ConvoKit>`_
 * `Discord Community <https://discord.gg/WMFqMWgz6P>`_
 
-Installation
------------
-
-This toolkit requires Python >= 3.10.
-
-1. Download the toolkit: ``pip3 install convokit``
-2. Download Spacy's English model: ``python3 -m spacy download en_core_web_sm``
-3. Download NLTK's 'punkt' model: ``import nltk; nltk.download('punkt')`` (in Python interpreter)
-
-Alternatively, visit our `Github Page <https://github.com/CornellNLP/ConvoKit>`_ to install from source.
-
-**If you encounter difficulties with installation**, check out our `Troubleshooting Guide <https://convokit.cornell.edu/documentation/troubleshooting.html>`_ for a list of solutions to common issues.
-
-Basic Usage
-~~~~~~~~~~~
-
-.. code-block:: python
-
-   import convokit
-
-   # Load a dataset
-   corpus = convokit.Corpus(filename=convokit.download("conversations-gone-awry-corpus"))
-
-   # Extract politeness features
-   from convokit import PolitenessStrategies
-   ps = PolitenessStrategies()
-   corpus = ps.transform(corpus)
-
-   # Analyze results
-   for utterance in corpus.iter_utterances():
-       print(utterance.meta['politeness_strategies'])
-
 Documentation
------------
+-------------
 
 Documentation is hosted `here <https://convokit.cornell.edu/documentation/>`_.
 

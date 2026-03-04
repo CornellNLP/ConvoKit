@@ -26,18 +26,15 @@ Three related corpora of conversations that derail into antisocial behavior.
 
 **CGA-WIKI:** Wikipedia talk page conversations that derail into personal attacks as labeled by crowdworkers.
 
-* **Size:** 4,188 conversations, 30,021 comments
 * **Download name:** ``conversations-gone-awry-corpus``
 * **Tags:** Wikipedia, derailment, online, asynchronous, outcome labels, summaries, persuasion, online, medium size, debate, medium conversations, timestamps
 **CGA-CMV:** ChangeMyView discussion threads that derail into rule-violating behavior.
 
-* **Size:** 6,842 conversations, 42,964 comments
 * **Download name:** ``conversations-gone-awry-cmv-corpus``
 * **Tags:** Reddit, derailment, online, asynchronous, outcome labels, summaries, persuasion, online, medium size, debate, medium conversations, timestamps
 
 **CGA-CMV-Large:** Expanded version of CGA-CMV dataset.
 
-* **Size:** 19,578 conversations, 116,793 utterances
 * **Download name:** ``conversations-gone-awry-cmv-corpus-large``
 * **Tags:** Reddit, derailment, online, asynchronous, outcome labels, summaries, persuasion, online, medium size, debate, medium conversations, timestamps
 
@@ -56,7 +53,6 @@ Cornell Movie-Dialogs Corpus
 
 A large metadata-rich collection of fictional conversations extracted from raw movie scripts.
 
-* **Size:** 220,579 conversational exchanges between 10,292 pairs of movie characters in 617 movies
 * **Download name:** ``movie-corpus``
 * **Tags:** fictional, speaker info, synchronous, large size, medium conversations
 * `Documentation <https://convokit.cornell.edu/documentation/movie.html>`_
@@ -74,7 +70,6 @@ Parliament Question Time Corpus
 
 Parliamentary question periods from May 1979 to December 2016.
 
-* **Size:** 216,894 question-answer pairs
 * **Download name:** ``parliament-corpus``
 * **Tags:** politics, speaker info, institutional, asymmetric, synchronous, short conversations, large size
 * `Documentation <https://convokit.cornell.edu/documentation/parliament.html>`_
@@ -141,11 +136,10 @@ WikiConv Corpus
 
    <div class="dataset-card" data-tags="large size, Wikipedia, online, asynchronous, timestamps, collaboration">
 
-The full corpus of Wikipedia talk page conversations, based on the reconstruction described in `this paper <https://www.cs.cornell.edu/~cristian/index_files/wikiconv-conversation-corpus.pdf>`_. Note that due to the large size of the data, it is split up by year. We separately provide `block data retrieved directly from the Wikipedia block log <https://zissou.infosci.cornell.edu/convokit/datasets/wikiconv-corpus/blocks.json>`_, , for reproducing the `Trajectories of Blocked Community Members <https://www.cs.cornell.edu/~cristian/Recidivism_online_files/recidivism_online.pdf>`_ paper.
+Wikipedia talk page conversations from the distinct English, German, Russian, Chinese, and Greek versions of the site, based on the reconstruction described in `this paper <https://www.cs.cornell.edu/~cristian/index_files/wikiconv-conversation-corpus.pdf>`_. Note that due to the large size of the data, every language but Greek is split up by year. We separately provide `block data retrieved directly from the Wikipedia block log <https://zissou.infosci.cornell.edu/convokit/datasets/wikiconv-corpus/blocks.json>`_, , for reproducing the `Trajectories of Blocked Community Members <https://www.cs.cornell.edu/~cristian/Recidivism_online_files/recidivism_online.pdf>`_ paper.
 
-* **Download name:** ``wikiconv-<year>``
+* **Download name:** ``wikiconv-<language>-<year>`` for English, German, Russian, amd Chinese datasets, where the language key is the lowercase name of the language. ``wikiconv-<greek>`` for the Greek dataset.
 * **Tags:** large size, Wikipedia, online, asynchronous, timestamps, collaboration
-* **Block data:** `blocks.json <https://zissou.infosci.cornell.edu/convokit/datasets/wikiconv-corpus/blocks.json>`_
 * `Documentation <https://convokit.cornell.edu/documentation/wikiconv.html>`_
 
 .. raw:: html
@@ -161,7 +155,6 @@ Chromium Conversations Corpus
 
 A collection of almost 1.5 million conversations and 2.8 million comments posted by developers reviewing proposed code changes in the Chromium project.
 
-* **Size:** 1.5 million conversations, 2.8 million comments
 * **Download name:** ``chromium-corpus``
 * **Tags:** large size, online, asynchronous, utterance labels, speaker info, timestamps, collaboration, short conversations, work
 * `Documentation <https://convokit.cornell.edu/documentation/chromium.html>`_
@@ -179,7 +172,6 @@ Tennis Interviews
 
 Transcripts for tennis singles post-match press conferences for major tournaments between 2007 to 2015 (6,467 post-match press conferences).
 
-* **Size:** 6,467 post-match press conferences
 * **Download name:** ``tennis-corpus``
 * **Tags:** short conversations, interviews, sports, speaker info
 * `Documentation <https://convokit.cornell.edu/documentation/tennis.html>`_
@@ -197,7 +189,6 @@ Winning Arguments Corpus
 
 A metadata-rich subset of conversations made in the r/ChangeMyView subreddit between 1 Jan 2013 - 7 May 2015, with information on the delta (success) of a speaker's utterance in convincing the poster.
 
-* **Period:** Jan 1, 2013 - May 7, 2015
 * **Download name:** ``winning-args-corpus``
 * **Tags:** large size, Reddit, asynchronous, online, outcome labels, debate, persuasion, various topics
 * `Documentation <https://convokit.cornell.edu/documentation/winning.html>`_
@@ -353,14 +344,12 @@ Two collections of requests (from Wikipedia and Stack Exchange respectively) wit
 
 **Stanford Politeness (Wikipedia):** A collection of requests from Wikipedia Talk pages, annotated with politeness (4,353 utteranecs).
 
-* **Size:** 4,353 utterances
 * **Download name:** ``wikipedia-politeness-corpus``
 * **Tags:** medium size, asynchronous, Wikipedia, utterance labels, online, short conversations, politeness
 * `Documentation <https://convokit.cornell.edu/documentation/wiki_politeness.html>`_
 
 **Stanford Politeness (Stack Exchange):** A collection of requests from Stack Exchange, annotated with politeness (6,603 utteranecs).
 
-* **Size:** 6,603 utterances
 * **Download name:** ``stack-exchange-politeness-corpus``
 * **Tags:** medium size, asynchronous, Stack Exchange, utterance labels, online, short conversations, politeness
 * `Documentation <https://convokit.cornell.edu/documentation/stack_politeness.html>`_
@@ -412,7 +401,6 @@ Wikipedia Articles for Deletion Corpus
 
 A collection of Wikipedia's Articles for Deletion editor debates that occurred between January 1, 2005 and December 31, 2018. This corpus contains about 3,200,000 contributions by approximately 150,000 Wikipedia editors across almost 400,000 debates.
 
-* **Size:** ~3.2M contributions, ~150K editors, ~400K debates
 * **Download name:** ``wiki-articles-for-deletion-corpus``
 * **Tags:** Wikipedia, large size, online, asynchronous, speaker info, utterance labels, outcome labels, timestamps, debate
 * `Documentation <https://convokit.cornell.edu/documentation/wiki-articles-for-deletion-corpus.html>`_
@@ -481,86 +469,7 @@ Fora Corpus
 Fora corpus is a dataset of 262 annotated transcripts of multi-person facilitated dialogues regarding issues like education, elections, and public health, primarily through the sharing of personal experience. The corpus is available by request from the authors (https://github.com/schropes/fora-corpus) and ConvoKit contains code for converting the transcripts into ConvoKit format, as detailed below.
 
 * **Tags:** small size, speaker info, utterance labels, timestamps, group, in person, various topics
-* `Documentation <https://convokit.cornell.edu/documentation/casino-corpus.html>`_
-
-.. raw:: html
-
-   </div>
-
-Unintended Offense Corpus
--------------
-
-.. raw:: html
-
-   <div class="dataset-card" data-tags="">
-A collection of unintentionally offensive Tweets and replies in which a Tweet in the exchange was offensive to someone, followed by an indication that the poster meant no offense.
-
-* **Tags:** TODO
-* `Documentation <https://convokit.cornell.edu/documentation/casino-corpus.html>`_
-
-.. raw:: html
-
-   </div>
-
-Ubuntu Chat Logs
--------------
-
-.. raw:: html
-
-   <div class="dataset-card" data-tags="">
-
-A collection of conversations featuring pairs of speakers where one speaker is assisting the other through Ubuntu chat logs to help them solve their problem.
-
-* **Tags:** TODO
-* `Documentation <https://convokit.cornell.edu/documentation/casino-corpus.html>`_
-
-.. raw:: html
-
-   </div>
-
-Contextual Abuse Corpus
--------------
-
-.. raw:: html
-
-   <div class="dataset-card" data-tags="">
-
-This corpus contains around 26,500 annotated Reddit entries labeled into one or more of six primary categories of abuse. Secondary categories, labels annotated in the context of the conversation thread, and rationales are also included as part of the dataset.
-
-* **Tags:** TODO
-* `Documentation <https://convokit.cornell.edu/documentation/casino-corpus.html>`_
-
-.. raw:: html
-
-   </div>
-
-News Interview Corpus
--------------
-
-.. raw:: html
-
-   <div class="dataset-card" data-tags="">
-
-A collection of 500 two-person informational interviews from National Public Radio (NPR) and Cable News Network (CNN), focusing on journalistic interviews between interviewers and sources from 2000 to 2020.
-
-* **Tags:** TODO
-* `Documentation <https://convokit.cornell.edu/documentation/casino-corpus.html>`_
-
-.. raw:: html
-
-   </div>
-
-Emotional Support Conversation Corpus
--------------
-
-.. raw:: html
-
-   <div class="dataset-card" data-tags="">
-
-This dataset contains approximately 1,300 conversations collected in a help-seeker and supporter mode with crowdworkers.
-
-* **Tags:** TODO
-* `Documentation <https://convokit.cornell.edu/documentation/casino-corpus.html>`_
+* `Documentation <https://convokit.cornell.edu/documentation/fora.html>`_
 
 .. raw:: html
 
