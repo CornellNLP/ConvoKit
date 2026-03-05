@@ -91,6 +91,17 @@ setup(
             "tensorflow>=2.18.0",
             "tf-keras>=2.17.0,<3.0.0",
         ],
+        "llm-mac": [
+            "torch>=2.0.0",
+            "accelerate",
+            "peft",
+            "bitsandbytes",
+            "transformers",
+            "unsloth[apple-silicon]",  # https://github.com/yhsung/unsloth/blob/c2a368b26f5febd9dd4cd39cabc73da67c1f1eb1/APPLE_SILICON.md
+            "mlx>=0.20.0",
+            "trl>=0.12.2",
+            "tensorflow>=2.13.0",
+        ],
     },
     classifiers=[
         "Programming Language :: Python",
