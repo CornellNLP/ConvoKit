@@ -10,7 +10,7 @@ sys.path.insert(0, os.path.abspath("../.."))
 project = "ConvoKit"
 copyright = "2025, Cornell NLP"
 author = "Cornell NLP"
-release = "4.0.0"
+release = "4.1.0"
 
 # -- General configuration ---------------------------------------------------
 extensions = [
