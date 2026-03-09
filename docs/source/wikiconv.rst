@@ -6,7 +6,7 @@ Yiqing Hua, Cristian Danescu-Niculescu-Mizil, Dario Taraborelli, Nithum Thain, J
 
 Summary
 -------
-The WikiConv corpus currently supports five languages: English, German, Russian, Chinese, and Greek. Due to their large size, all language datasets except Greek are split by year into individual corpuses. For example, the English dataset is split into 18 corpora, each containing the conversations that took place in a given year from 2001 to 2018. The Greek dataset is kept as one corpus due to its smaller size.
+The WikiConv corpus currently includes conversations from five languages: English, German, Russian, Chinese, and Greek. Due to their large size, all language datasets except Greek are split by year into individual corpuses. For example, the English dataset is split into 18 corpora, each containing the conversations that took place in a given year from 2001 to 2018. The Greek dataset is kept as one corpus due to its smaller size.
 
 The conversations of the dataset mirror the most up-to-date version of the conversation at the time of data collection. This most up-to-date version of the conversation reflects the "final" state of each utterance (the utterance after all edits at time of data collection have been performed on the utterance) in the conversation.
 

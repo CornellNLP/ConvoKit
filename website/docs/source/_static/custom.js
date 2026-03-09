@@ -220,7 +220,7 @@ function initializeSearch(searchInputId, cardSelector, context) {
             tagLower.includes('derailment') || tagLower.includes('recovery') ||
             tagLower.includes('negotiation') || tagLower.includes('q&a') ||
             tagLower.includes('politness') || tagLower.includes('deception') ||
-            tagLower.includes('problem solving')) {
+            tagLower.includes('problem solving') || tagLower.includes('support')) {
             return 'dynamics';
         }
 

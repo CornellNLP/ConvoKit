@@ -134,7 +134,7 @@ WikiConv Corpus
 
 .. raw:: html
 
-   <div class="dataset-card" data-tags="large size, Wikipedia, online, asynchronous, timestamps, collaboration">
+   <div class="dataset-card" data-tags="multiple languages, large size, Wikipedia, online, asynchronous, timestamps, collaboration">
 
 Wikipedia talk page conversations from the distinct English, German, Russian, Chinese, and Greek versions of the site, based on the reconstruction described in `this paper <https://www.cs.cornell.edu/~cristian/index_files/wikiconv-conversation-corpus.pdf>`_. Note that due to the large size of the data, every language but Greek is split up by year. We separately provide `block data retrieved directly from the Wikipedia block log <https://zissou.infosci.cornell.edu/convokit/datasets/wikiconv-corpus/blocks.json>`_, , for reproducing the `Trajectories of Blocked Community Members <https://www.cs.cornell.edu/~cristian/Recidivism_online_files/recidivism_online.pdf>`_ paper.
 
@@ -470,6 +470,85 @@ Fora corpus is a dataset of 262 annotated transcripts of multi-person facilitate
 
 * **Tags:** small size, speaker info, utterance labels, timestamps, group, in person, various topics
 * `Documentation <https://convokit.cornell.edu/documentation/fora.html>`_
+
+.. raw:: html
+
+   </div>
+
+Unintended Offense Corpus
+-------------
+
+.. raw:: html
+
+   <div class="dataset-card" data-tags="online, asynchronous, outcome, labels, utterance labels, timestamps, Twitter/X, medium size, short conversations, various topics, politeness">
+A collection of unintentionally offensive Tweets and replies in which a Tweet in the exchange was offensive to someone, followed by an indication that the poster meant no offense.
+
+* **Tags:** online, asynchronous, outcome, labels, utterance labels, timestamps, Twitter/X, medium size, short conversations, various topics, politeness
+* `Documentation <https://convokit.cornell.edu/documentation/unintended_offense.html>`_
+
+.. raw:: html
+
+   </div>
+
+Ubuntu Chat Logs
+-------------
+
+.. raw:: html
+
+   <div class="dataset-card" data-tags="online, dyadic, asymmetric, synchronous, outcome, labels, utterance labels, speaker info, timestamps, small size, medium conversations, customer support, problem solving, derailment">
+
+A collection of conversations featuring pairs of speakers where one speaker is assisting the other through Ubuntu chat logs to help them solve their problem.
+
+* **Tags:** online, dyadic, asymmetric, synchronous, outcome, labels, utterance labels, speaker info, timestamps, small size, medium conversations, customer support, problem solving, derailment
+* `Documentation <https://convokit.cornell.edu/documentation/chatlogs.html>`_
+
+.. raw:: html
+
+   </div>
+
+Contextual Abuse Corpus
+-------------
+
+.. raw:: html
+
+   <div class="dataset-card" data-tags="online, asynchronous, utterance, labels, timestamps, Reddit, medium size, short conversations, various topics">
+
+A dataset of annotated Reddit entries labeled into one or more of six primary categories of abuse. Secondary categories, labels annotated in the context of the conversation thread, and rationales are also included as part of the dataset.
+
+* **Tags:** online, asynchronous, utterance, labels, timestamps, Reddit, medium size, short conversations, various topics
+* `Documentation <https://convokit.cornell.edu/documentation/cad.html>`_
+
+.. raw:: html
+
+   </div>
+
+NewsInterview Corpus
+-------------
+
+.. raw:: html
+
+   <div class="dataset-card" data-tags="dyadic, asymmetric, synchronous, speaker info, summaries, timestamps, media, medium size, medium conversations, various topics, interviews, Q&A">
+
+A collection of two-person informational interviews from National Public Radio (NPR) and Cable News Network (CNN), focusing on journalistic interviews between interviewers and sources from 2000 to 2020.
+
+* **Tags:** dyadic, asymmetric, synchronous, speaker info, summaries, timestamps, media, medium size, medium conversations, various topics, interviews, Q&A
+* `Documentation <https://convokit.cornell.edu/documentation/interview.html>`_
+
+.. raw:: html
+
+   </div>
+
+Emotional Support Conversation Corpus
+-------------
+
+.. raw:: html
+
+   <div class="dataset-card" data-tags="online, dyadic, asymmetric, synchronous, outcome, labels, utterance labels, speaker info, medium size, medium conversations, various topics, support">
+
+This dataset contains approximately 1,300 conversations collected between emotional support seekers and supporters.
+
+* **Tags:** online, dyadic, asymmetric, synchronous, outcome, labels, utterance labels, speaker info, medium size, medium conversations, various topics, support
+* `Documentation <https://convokit.cornell.edu/documentation/support.html>`_
 
 .. raw:: html
 
