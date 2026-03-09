@@ -138,7 +138,7 @@ WikiConv Corpus
 
 Wikipedia talk page conversations from the distinct English, German, Russian, Chinese, and Greek versions of the site, based on the reconstruction described in `this paper <https://www.cs.cornell.edu/~cristian/index_files/wikiconv-conversation-corpus.pdf>`_. Note that due to the large size of the data, every language but Greek is split up by year. We separately provide `block data retrieved directly from the Wikipedia block log <https://zissou.infosci.cornell.edu/convokit/datasets/wikiconv-corpus/blocks.json>`_, , for reproducing the `Trajectories of Blocked Community Members <https://www.cs.cornell.edu/~cristian/Recidivism_online_files/recidivism_online.pdf>`_ paper.
 
-* **Download name:** ``wikiconv-<language>-<year>`` for English, German, Russian, amd Chinese datasets, where the language key is the lowercase name of the language. ``wikiconv-<greek>`` for the Greek dataset.
+* **Download name:** ``wikiconv-<language>-<year>`` for English, German, Russian, amd Chinese datasets, where the language key is the lowercase name of the language. ``wikiconv-greek`` for the Greek dataset.
 * **Tags:** large size, Wikipedia, online, asynchronous, timestamps, collaboration
 * `Documentation <https://convokit.cornell.edu/documentation/wikiconv.html>`_
 
