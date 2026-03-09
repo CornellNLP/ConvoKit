@@ -12,6 +12,7 @@ hashtag_symbol_re = re.compile(r"#")
 punct_re = re.compile(r"[^\w\s]")
 whitespace_re = re.compile(r"\s+")
 
+
 # normalize using regex above
 def normalize_text(s: str) -> str:
     if not s:

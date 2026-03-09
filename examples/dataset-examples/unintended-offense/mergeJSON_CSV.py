@@ -229,6 +229,7 @@ csv = pd.read_csv(CSV_IN, encoding="utf-8-sig")
 assert {"tweet", "offensiveness", "confidence"}.issubset(csv.columns), csv.columns
 csv = csv.reset_index(drop=True).rename_axis("rid").reset_index()
 
+
 # Segment helpers
 def seg_after_first(s: str) -> str:
     return sep_re.split(s, 1)[-1].strip()
@@ -308,6 +309,7 @@ def run_tier(seg_df, maps, base_bias=0):
 
 # Tier A1: all buckets
 cand = run_tier(segments, json_all_maps, base_bias=0)
+
 
 # Tier A2: target-only maps for remaining (slightly looser)
 def remaining_rids(c):
@@ -414,6 +416,7 @@ if rem:
     if fuzzy_rows:
         fuzzy_df = pd.DataFrame(fuzzy_rows, columns=["rid", "ci", "bucket", "ti", "tier_score"])
         cand = pd.concat([cand, fuzzy_df], ignore_index=True) if not cand.empty else fuzzy_df
+
 
 # ====== choose exactly one conversation per CSV row ======
 def choose_one(df):
