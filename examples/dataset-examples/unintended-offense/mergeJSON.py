@@ -82,9 +82,9 @@ for convo in A:  # for each convo in the json file with types, but no attributes
         no_convo_match += 1  # increment the no match metric
         for typetweet in type_tweets:  # for each type of Tweet (context, target, etc)...
             for tweet in convo.get(typetweet, []) or []:  # for each tweet, get the type of tweet
-                tweet[
-                    "_merge_note"
-                ] = "no_conversation_match_in_B"  # add a note to inform that there was no match
+                tweet["_merge_note"] = (
+                    "no_conversation_match_in_B"  # add a note to inform that there was no match
+                )
         continue
 
     index = b_by_convo[convo_id]  # look up prev mapping and assign to index
@@ -102,9 +102,9 @@ for convo in A:  # for each convo in the json file with types, but no attributes
             src = index.get(key)  # find source Tweet
             if src:  # if match...
                 copy_fields(tweet, src, fields_to_copy, into_key="_meta")  # copy meta data in
-                tweet[
-                    "_merge_note"
-                ] = "matched_on_text_author"  # merge note should indicate that it was matched on author
+                tweet["_merge_note"] = (
+                    "matched_on_text_author"  # merge note should indicate that it was matched on author
+                )
                 matched += 1  # increment matched
             else:
                 tweet["_merge_note"] = "no_tweet_match_in_B"  # otherwise indicate not a match
