@@ -8,8 +8,6 @@ The original dataset can be found here:
 Bertie Vidgen, Dong Nguyen, Helen Margetts, Patricia Rossini, and Rebekah Tromble.
 Proceedings of the 2021 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies (NAACL-HLT), 2021.
 
-Example usage of the corpus:
-
 Dataset details
 ---------------
 

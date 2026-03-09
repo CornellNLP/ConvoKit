@@ -76,4 +76,4 @@ This dataset is shared under the `Creative Commons Attribution-NonCommercial 4.0
 Dataset Access
 ^^^^^^^^^^^^^^
 
-The original dataset is available `here <https://github.com/thu-coai/Emotional-Support-Conversation>`_
+The original dataset is available `here <https://github.com/thu-coai/Emotional-Support-Conversation>`_.

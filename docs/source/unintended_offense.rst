@@ -67,7 +67,7 @@ Statistics about the dataset
 Additional notes
 ----------------
 
-The original dataset is available `here <https://github.com/IDEA-NTHU-Taiwan/unintended-offense-tweets>`_. Corresponding author: [Yi-Shin Chen](mailto:yishin@gmail.com)
+The original dataset is available `here <https://github.com/IDEA-NTHU-Taiwan/unintended-offense-tweets>`_. Corresponding author: Yi-Shin Chen (yishin@gmail.com).
 
 Data License
 ^^^^^^^^^^^^

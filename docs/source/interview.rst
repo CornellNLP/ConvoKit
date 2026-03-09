@@ -3,7 +3,7 @@ NewsInterview Corpus
 
 A collection of 500 two-person informational interviews from National Public Radio (NPR) and Cable News Network (CNN), containing 16,396 utterances from 860 speakers. The dataset focuses on journalistic interviews between interviewers and sources, from 2000 to 2020.
 
-Distributed together with:
+A full description of the dataset can be found here:
 `NewsInterview: a Dataset and a Playground to Evaluate LLMs' Grounding Gap via Informational Interviews <https://aclanthology.org/2025.acl-long.1580/>`_.
 Alexander Spangher, Michael Lu, Sriya Kalyan, Hyundong Justin Cho, Tenghao Huang, Weiyan Shi, Jonathan May.
 Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (ACL), 2025.
