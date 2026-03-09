@@ -7,4 +7,3 @@ Example usage: `speaker conversation attributes <https://github.com/CornellNLP/C
 
 .. automodule:: convokit.speakerConvoDiversity.speakerConvoDiversity
     :members:
-

@@ -13,5 +13,3 @@ Transformers come under three categories: preprocessing, feature extraction, and
    Feature extraction <featureExtraction.rst>
    Analysis <analysis.rst>
    Transformer (base class) <transformer.rst>
-
-

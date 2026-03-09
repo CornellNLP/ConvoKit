@@ -2,7 +2,7 @@ Wikipedia Articles for Deletion Corpus
 ======================================
 A collection of Wikipedia's Articles for Deletion editor debates that occurred between January 1, 2005 and December 31, 2018. This corpus contains about 3,200,000 contributions by approximately 150,000 Wikipedia editors across almost 400,000 debates.
 
-This is a ConvoKit-formatted version of the Wikipedia Articles for Deletion `dataset <https://github.com/emayfield/AFD_Decision_Corpus>`_, originally distributed with: 
+This is a ConvoKit-formatted version of the Wikipedia Articles for Deletion `dataset <https://github.com/emayfield/AFD_Decision_Corpus>`_, originally distributed with:
 
 Mayfield, Elijah, and Alan W. Black. `"Analyzing Wikipedia Deletion Debates with a Group Decision-Making Forecast Model." <https://dl.acm.org/doi/10.1145/3359308>`_ Proceedings of the ACM on Human-Computer Interaction 3.CSCW (2019): 1-26.
 
@@ -36,7 +36,7 @@ For each utterance, we provide:
 	* nominations - "6XXXXXXXX"
 	* votes - "4XXXXXXXX"
 	* non-voting comment - "5XXXXXXXX"
-	
+
 * speaker - author of the contribution
 * conversation_id - a nine digit string ("1XXXXXXXX") as given by the index of the discussion in the original dataset
 * reply_to - index of the parent contribution. The original dataset does not provide values for the "parent" of the contribution. Hence, we introduce the following artificial conversation structure:
@@ -44,7 +44,7 @@ For each utterance, we provide:
 	* Every first utterance (nomination, vote, or a non-voting comment) we encounter in the discussion does not have a parent utterance (i.e. reply-to is None)
 	* Voting comments and nominations (if they are not already the first contribution in the discussion) are replies to the first utterance in the discussion
 	* Non-voting comments are replies to either (i) the previous vote or (ii) the first utterance in the discussion if no vote has been cast yet.
-	
+
 * timestamp - time of the contribution, given in Unix timestamp
 * text: text of the contribution
 

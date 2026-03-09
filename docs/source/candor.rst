@@ -83,7 +83,7 @@ For each conversation, we got 1 survey from each conversation participant, and a
 
 convo.meta = {"survey field name" : {speaker_id_x : answer by speaker id speaker_id_x, speaker_id_y : answer by speaker id speaker_id_y} ... }
 
-    * i_like_you: How much did you like your conversation partner? 
+    * i_like_you: How much did you like your conversation partner?
         * convo.meta['i_like_you'] = {speaker_id_x : answer by speaker id speaker_id_x, speaker_id_y : answer by speaker id speaker_id_y}
     * you_like_me: How much do think your conversation partner liked you?
     * i_am_funny: How funny were you in the conversation you just had?
@@ -93,7 +93,7 @@ convo.meta = {"survey field name" : {speaker_id_x : answer by speaker id speaker
     * my_isolation_pre_covid: Prior to the Covid-19 outbreak, how socially isolated did you feel?
     * my_isolation_post_covid: SINCE the Covid-19 outbreak, how socially isolated have you felt?
     * in_common: How much did you and your partner have in common with one another?
-    * about 200 other survey fileds detailed in the `BetterUp CANDOR Corpus Data Dictionary <https://docs.google.com/spreadsheets/d/1ADoaajRsw63WpM3zS2xyGC1YS5WM_IuhFZ94W84DDls/edit#gid=997152539/>`_ 
+    * about 200 other survey fileds detailed in the `BetterUp CANDOR Corpus Data Dictionary <https://docs.google.com/spreadsheets/d/1ADoaajRsw63WpM3zS2xyGC1YS5WM_IuhFZ94W84DDls/edit#gid=997152539/>`_
 
 
 Statistics about the dataset

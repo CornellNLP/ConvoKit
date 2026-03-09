@@ -1,7 +1,7 @@
 Summary of Conversation Dynamics (SCD)
 ========================================
 
-SCD (Summary of Conversation Dynamics) is a ConvoKit Transformer that generates summaries of conversational dynamics from conversation transcripts, as introduced in the paper `"How did we get here? Summarizing conversation dynamics" <https://arxiv.org/pdf/2404.19007>`_. 
+SCD (Summary of Conversation Dynamics) is a ConvoKit Transformer that generates summaries of conversational dynamics from conversation transcripts, as introduced in the paper `"How did we get here? Summarizing conversation dynamics" <https://arxiv.org/pdf/2404.19007>`_.
 
 SCD extracts structured representations of conversation dynamics in two forms:
 
@@ -19,4 +19,3 @@ Module Reference
 
 .. automodule:: convokit.convo_similarity.scd
     :members:
-

@@ -8,10 +8,10 @@ A full description of the dataset can be found here:
 Please cite this paper when using it in your research:
 
 | @inproceedings{chawla2021casino,
-| 	title={CaSiNo: A Corpus of Campsite Negotiation Dialogues for Automatic Negotiation Systems}, 
-| 	author={Chawla, Kushal and Ramirez, Jaysa and Clever, Rene and Lucas, Gale and May, Jonathan and Gratch, Jonathan}, 
+| 	title={CaSiNo: A Corpus of Campsite Negotiation Dialogues for Automatic Negotiation Systems},
+| 	author={Chawla, Kushal and Ramirez, Jaysa and Clever, Rene and Lucas, Gale and May, Jonathan and Gratch, Jonathan},
 | 	booktitle={Proceedings of the 2021 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies},
-| 	pages={3167–3185}, 
+| 	pages={3167–3185},
 | 	year={2021}}
 
 Dataset details

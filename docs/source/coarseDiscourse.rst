@@ -28,7 +28,7 @@ Speakers in this Corpus are Reddit users, with their name being their Reddit use
 Utterance-level information
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Each utterance represents either a top-level Reddit post or a comment on a post. For each utterance, we provide: 
+Each utterance represents either a top-level Reddit post or a comment on a post. For each utterance, we provide:
 
 * id: unique_id of the utterance. This is the Reddit ID of the post or comment; posts start with t3 and comments with t1
 * speaker: author of the post/comment
@@ -37,20 +37,20 @@ Each utterance represents either a top-level Reddit post or a comment on a post.
 * text:  textual content of the utterance, none if there is no body in the text
 
 
-Additional information including the annotations for discourse actions that are specific to this dataset and the information specific to reddit are contained in the meta data: 
+Additional information including the annotations for discourse actions that are specific to this dataset and the information specific to reddit are contained in the meta data:
 
 * comment_depth: depth of the comment, 0 if the utterance is the top-level post itself.
 * majority type: discourse action type by one of the following: question, answer, announcement, agreement,  appreciation, disagreement, elaboration, humor
 * annotation_types (list of annotation types by three annotators)
 * majority_link : link in relation to previous post, none if no relation with previous comment
 * annotation_links (list of annotation links by three annotators)
-* ups : number of votes (upvotes - downvotes) for the comment/post 
-    
+* ups : number of votes (upvotes - downvotes) for the comment/post
+
 
 Conversational-level information
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Each conversation has the following metadata: 
+Each conversation has the following metadata:
 
 * subreddit: the name of the subreddit the conversation came from
 * url: URL of the original post
@@ -59,7 +59,7 @@ Each conversation has the following metadata:
 Usage
 -----
 
-To download directly with ConvoKit: 
+To download directly with ConvoKit:
 
 >>> from convokit import Corpus, download
 >>> corpus = Corpus(filename=download("reddit-coarse-discourse-corpus"))
@@ -81,6 +81,3 @@ Contact
 Converted by Ru Zhao, Katy Blumer, Andrew Semmes
 
 Please email any questions to: {rjz46, keb297 , als452} @cornell.edu
-
-
-

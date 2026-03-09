@@ -10,7 +10,7 @@ Contains:
 * Wrapper pipelines `ExpectedContextModelPipeline <https://convokit.cornell.edu/documentation/expected_context_model.html#convokit.expected_context_framework.expected_context_model_pipeline.ExpectedContextModelPipeline>`_ and `DualContextPipeline <https://convokit.cornell.edu/documentation/expected_context_model.html#convokit.expected_context_framework.expected_context_model_pipeline.DualContextPipeline>`_
 
 
-Example usage: 
+Example usage:
 
 * `deriving question types and other characterizations in British parliamentary question periods <https://github.com/CornellNLP/ConvoKit/blob/master/convokit/expected_context_framework/demos/parliament_demo.ipynb>`_
 * exploration of Switchboard dialog acts corpus `using ExpectedContextModelTransformer <https://github.com/CornellNLP/ConvoKit/blob/master/convokit/expected_context_framework/demos/switchboard_exploration_demo.ipynb>`_, and `using DualContextWrapper <https://github.com/CornellNLP/ConvoKit/blob/master/convokit/expected_context_framework/demos/switchboard_exploration_dual_demo.ipynb>`_

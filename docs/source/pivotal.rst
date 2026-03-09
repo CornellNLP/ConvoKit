@@ -2,18 +2,18 @@ Pivotal Moment Measure
 ====================================
 Please note: this transformer requires installing convokit with the optional LLM packages via `pip install convokit[llm]`
 
-The `PivotalMomentMeasure` transformer identifies pivotal moments in conversations 
-as described in this `paper <http://www.cs.cornell.edu/~cristian/Pivotal_Moments.html>`_. 
+The `PivotalMomentMeasure` transformer identifies pivotal moments in conversations
+as described in this `paper <http://www.cs.cornell.edu/~cristian/Pivotal_Moments.html>`_.
 
-We consider a moment in a conversation *pivotal* if the next response is expected 
-to have a large impact on the conversation’s eventual outcome. Our method relies on 
-two main components: an `utteranceSimulatorModel` for generating possible responses 
+We consider a moment in a conversation *pivotal* if the next response is expected
+to have a large impact on the conversation’s eventual outcome. Our method relies on
+two main components: an `utteranceSimulatorModel` for generating possible responses
 and a `forecasterModel` for forecasting the eventual outcome of the conversation.
 
-`PivotalMomentMeasure` uses a temporally-ordered stream of conversational data in 
-the form of “context tuples” to train and make predictions on. Context tuples 
-are generated in chronological order for each utterance in a conversation. 
-Each context tuple is defined as a NamedTuple with the following fields: 
+`PivotalMomentMeasure` uses a temporally-ordered stream of conversational data in
+the form of “context tuples” to train and make predictions on. Context tuples
+are generated in chronological order for each utterance in a conversation.
+Each context tuple is defined as a NamedTuple with the following fields:
 
 * ``context``: a chronological list of Utterances up to and including the most recent Utterance at the time this context was generated
 * ``current_utterance``: the most recent utterance at the time this context tuple was generated
@@ -21,7 +21,7 @@ Each context tuple is defined as a NamedTuple with the following fields:
 * ``conversation_id``: the Conversation that this context-reply pair came from
 
 We also provide a general `utteranceSimulator` interface to `utteranceSimulatorModel`
-models that abstracts away the implementation details into a standard fit-transform 
+models that abstracts away the implementation details into a standard fit-transform
 interface.
 
 Example usage: `pivotal moments demo in conversations gone awry <https://github.com/CornellNLP/ConvoKit/tree/master/convokit/pivotal_framework/pivotal_demo.ipynb>`_

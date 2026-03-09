@@ -62,7 +62,7 @@ Each conversation has the associated metadata:
 Usage
 -----
 
-To download directly with ConvoKit: 
+To download directly with ConvoKit:
 
 >>> from convokit import Corpus, download
 >>> corpus = Corpus(filename=download("chromium-corpus"))

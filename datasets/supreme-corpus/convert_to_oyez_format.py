@@ -83,7 +83,8 @@ with open("supreme/corpus.json", "w") as f:
     json.dump({"name": "supreme"}, f)
 
 with open("supreme/index.json", "w") as f:
-    f.write("""
+    f.write(
+        """
 {"utterances-index": {"case_id": "<class 'str'>",
 "speaker_type": "<class 'str'>",
 "side": "<class 'NoneType'>"},
@@ -93,4 +94,5 @@ with open("supreme/index.json", "w") as f:
 "advocates": "<class 'dict'>"},
 "overall-index": {"name": "<class 'str'>",
 "year": "<class 'int'>"}, "version": 1}
-""")
+"""
+    )

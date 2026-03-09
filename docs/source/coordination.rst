@@ -7,4 +7,3 @@ Example usage: `exploring the balance of power in the U.S. Supreme Court <https:
 
 .. automodule:: convokit.coordination.coordination
     :members:
-

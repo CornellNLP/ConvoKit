@@ -128,7 +128,7 @@ class ConDynSBaselines:
         :return: Tuple of (similarity_score, reasoning)
         """
         naive_gpt_compare_scd_prompt = """Compare the following two summary of conversation dynamics (SCD) of two online conversations, rate the similarity of the two conversations on a scale from 1 to 100, based on their persuasion trajectory reflected in the SCDs.
-        
+
 ### **Key Aspects of Persuasion Trajectory**
 - **Persuasion Strategies**: Logical reasoning, emotional appeals, rhetorical questions, citing authority, anecdotes, hypothetical scenarios, refuting counterarguments, shifting burden of proof, repetition, framing, social proof.
 - **Interaction Dynamics**: Engagement patterns (e.g., single argument vs. back-and-forth), timing effects, persistence vs. resistance.
@@ -171,7 +171,7 @@ Conversation 2 SCD:
         :return: Tuple of (similarity_score, reasoning)
         """
         naive_gpt_compare_transcript_prompt = """Compare the following two online conversations and rate their similarity on a scale from 1 to 100, based on their trajectory.
-        
+
 ### **Definition of Trajectory**
 The trajectory of a conversation refers to its **dynamics**, including:
 - **Changes in tone** (e.g., neutral to argumentative, formal to casual, sarcastic or sincere).

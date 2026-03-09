@@ -19,7 +19,7 @@ The speakers in the dataset are members of the Parliament (MP). For each MP, the
 * member_start: start date of the MP as the member of the Parliament
 * member_end: end date of the MP as the member of the Parliament (set to year 3020 if the MP was still in Parliament as of Dec 2016)
 * parties: a list of parties that the MP has belonged to in the past
-* first_govt: first government (by Prime Minister) in which the MP was in office 
+* first_govt: first government (by Prime Minister) in which the MP was in office
 * first_govt_coarse: first government in which the MP was in office. here, consecutive governments of the same party (e.g., thatcher+major) are grouped together.
 
 Note that some of the metadata information may be missing, especially for MPs active before the Blair government.
@@ -49,7 +49,7 @@ Additional metadata include:
 * tenure: the number of years that the MP has been in office at the time of the utterance
 * govt: current government (by Prime Minister) at the time of the utterance
 * govt_coarse: current government (by Prime Minister) at the time of the utterance. here, consecutive governments of the same party (e.g., thatcher+major) are grouped together.
-* pair_has_features: whether the pair to which the utterance belongs has a question that contains at least one `q_arc` term and an answer that contains at least one `arcs` term. 
+* pair_has_features: whether the pair to which the utterance belongs has a question that contains at least one `q_arc` term and an answer that contains at least one `arcs` term.
 * dept_name: the name of the department to which the answering minister for the question or answer belongs. inferred from the raw HTML (see dept_name_raw for an un-processed version of the same attribute).
 * dept_name_coarse: department name, listed as `other` for departments other than the 10 containing the most question-answer pairs.
 
@@ -71,7 +71,7 @@ The latter two fields are used in the original publication to represent utteranc
 Usage
 -----
 
-To download directly with ConvoKit: 
+To download directly with ConvoKit:
 
 >>> from convokit import Corpus, download
 >>> corpus = Corpus(filename=download("parliament-corpus"))

@@ -1,7 +1,7 @@
 Intelligence Squared Debates Corpus
 ====================================
 
-This dataset contains transcripts of debates held as part of Intelligence Squared Debates. There are 108 debates in all, that were held between September 2006 and September 2015. 
+This dataset contains transcripts of debates held as part of Intelligence Squared Debates. There are 108 debates in all, that were held between September 2006 and September 2015.
 
 The original dataset was compiled by and featured in the paper Zhang, Justine, et al. Conversational Flow in Oxford-Style Debates. Proceedings of the 2016 Conference of NAACL, 2016 (`link <http://tisjune.github.io/research/iq2>`_).
 
@@ -28,7 +28,7 @@ Each utterance is a continuous speaking turn of a single speaker. The original d
 We provide:
 
 * nontext: this is a dictionary of nontextual data in the original transcripts, where keys are descriptions of the type of data (e.g. "laughter" indicating audience laughter), and values are lists of tuples of the form [index of paragraph, index of annotation in words in paragraph]. Ex: {"laughter": [[0, 3]]} indicates that this transcript had audience laughter in paragraph 0 before the fourth word. Given that the text for the utterance is not separated into paragraphs, we have included paragraphbreaks to allow this data to be used in this format.
-* paragraphbreaks: a list of indices in the utterance text at which there was originally a paragraph break. Ex: [15, 99] would indicate that there are three paragraphs; the first one is text[0:14], the second is text[15:98], and the last is text[99:]. 
+* paragraphbreaks: a list of indices in the utterance text at which there was originally a paragraph break. Ex: [15, 99] would indicate that there are three paragraphs; the first one is text[0:14], the second is text[15:98], and the last is text[99:].
 * segment: which segment of the debate the utterance was spoken during, where 0=intro, 1=discussion, and 2=conclusion section
 * speakertype: the type of speaker (which side, moderator, panelist, etc.) who is saying the utterance
 

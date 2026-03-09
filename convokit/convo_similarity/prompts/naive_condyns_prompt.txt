@@ -31,6 +31,6 @@ First sequence of events: {sop1}
 
 Second sequence of events: '{sop2}'
 
-Now, give your answer. Remember to follow the specified output format strictly. 
+Now, give your answer. Remember to follow the specified output format strictly.
 
 Output:

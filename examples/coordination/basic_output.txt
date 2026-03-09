@@ -23,4 +23,3 @@ justice souter 0.04045
 justice scalia 0.03438
 justice thomas 0.03393
 justice breyer 0.02758
-

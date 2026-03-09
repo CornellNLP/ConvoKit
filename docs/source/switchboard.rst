@@ -1,4 +1,4 @@
-Switchboard Dialog Act Corpus 
+Switchboard Dialog Act Corpus
 ===============================
 
 A collection of 1,155 five-minute telephone conversations between two participants, annotated with speech act tags.
@@ -6,9 +6,9 @@ In these conversations, callers question receivers on provided topics, such as c
 440 speakers participate in these 1,155 conversations, producing 221,616 utterances (we combine consecutive utterances by the same person into one utterance, so our corpus has 122,646 utterances).
 
 This is a Convokit-formatted version of the Switchboard Dialog Act Corpus (SwDA), originally distributed together with the following paper: Andreas Stolcke, Klaus Ries, Noah Coccaro, Elizabeth Shriberg, Rebecca Bates, Daniel Jurafsky, Paul Taylor, Rachel Martin, Carol Van Ess-Dykema, and Marie Meteer. `Dialogue act modeling for automatic tagging and recognition of conversational speech <https://www.aclweb.org/anthology/J00-3003.pdf>`_. Computational Linguistics, Volume 26, Number 3, September 2000.
-The original dataset and additional information can be found `here <http://compprag.christopherpotts.net/swda.html>`_. 
+The original dataset and additional information can be found `here <http://compprag.christopherpotts.net/swda.html>`_.
 
-Processed dataset 
+Processed dataset
 ------------------
 
 We also release a processed version of the corpus that removes disfluencies and backchannels. This version is intended to be used for quick back-of-the-envelope analyses, where we want to sidestep challenges arising from using transcribed speech data. In sidestepping these challenges, we emphasize that the version omits a lot of important information, and should only be used for experimentation.
@@ -34,7 +34,7 @@ Additional metadata include:
 Utterance-level information
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Each utterance corresponds to a turn by one speaker. 
+Each utterance corresponds to a turn by one speaker.
 
 * id: the unique ID of the utterance. It is formatted as "_conversation_id_"-"_position_of_utterance_". For example, ID 4325-0 is the first utterance in the conversation with ID 4325.
 * speaker: the Speaker giving the utterance
@@ -45,7 +45,7 @@ Each utterance corresponds to a turn by one speaker.
 
 Additional metadata includes:
 
-* tag: a list of [text segment, tag] pairs, where tag refers to the `DAMSL speech act tag <https://web.stanford.edu/~jurafsky/ws97/manual.august1.html>`_. 
+* tag: a list of [text segment, tag] pairs, where tag refers to the `DAMSL speech act tag <https://web.stanford.edu/~jurafsky/ws97/manual.august1.html>`_.
 
 In the processed dataset, metadata includes:
 
@@ -73,7 +73,7 @@ Additional metadata include:
 Usage
 -----
 
-To download directly with ConvoKit: 
+To download directly with ConvoKit:
 
 >>> from convokit import Corpus, download
 >>> corpus = Corpus(filename=download("switchboard-corpus"))

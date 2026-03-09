@@ -1,7 +1,7 @@
 Tennis Interviews
 =================
 
-Transcripts for tennis singles post-match press conferences for major tournaments between 2007 to 2015  (6,467 post-match press conferences). 
+Transcripts for tennis singles post-match press conferences for major tournaments between 2007 to 2015  (6,467 post-match press conferences).
 
 Distributed together with:
 `Tie-breaker: Using language models to quantify gender bias in sports journalism <http://www.cs.cornell.edu/~liye/tennis.html>`_.
@@ -33,7 +33,7 @@ Each question or answer is viewed as an utterance. For each utterance, we provid
 * timestamp: time of the utterance
 * text: textual content of the utterance
 
-Metadata for each utterance include: 
+Metadata for each utterance include:
 
 * is_answer: whether the utterance is an answer from a player
 * is_question: whether the utterance is a question raised by a reporter
@@ -44,7 +44,7 @@ Metadata for each utterance include:
 Conversational-level information
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Each round of question-answer pair is considered as a conversation. Metadata associated with conversations include additional information about the match for which the post-match interview is held: 
+Each round of question-answer pair is considered as a conversation. Metadata associated with conversations include additional information about the match for which the post-match interview is held:
 
 * match_id: id of the match in the original dataset
 * opponent: opponent in the match (available only if the opponent has at least one interview recorded in our dataset)
@@ -77,8 +77,8 @@ Additional note
 Related links
 ^^^^^^^^^^^^^
 
-1. Transcripts gathered from `ASAP sports' website <http://www.asapsports.com/>`_. 
-2. Corresponding match information, such as game outcome and player ranking, are obtained from `Tennis-Data <http://www.tennis-data.co.uk/>`_. Since transcripts data and match results are matched by date and player last name, and we did not manually check for every match, it is possible to have a few matching errors. 
+1. Transcripts gathered from `ASAP sports' website <http://www.asapsports.com/>`_.
+2. Corresponding match information, such as game outcome and player ranking, are obtained from `Tennis-Data <http://www.tennis-data.co.uk/>`_. Since transcripts data and match results are matched by date and player last name, and we did not manually check for every match, it is possible to have a few matching errors.
 
 Contact
 ^^^^^^^

@@ -27,16 +27,16 @@ Each individual post or comment is viewed as an utterance. For each utterance, w
 * timestamp: time of the utterance
 * text: textual content of the utterance
 
-Metadata for each utterance may include: 
+Metadata for each utterance may include:
 
-* score: score (i.e., the number of upvotes minus the number of downvotes) of the content 
+* score: score (i.e., the number of upvotes minus the number of downvotes) of the content
 * top_level_comment: the id of the top level comment (None if the utterance is a post)
-* retrieved_on: unix timestamp of the time of when the data is retrieved 
+* retrieved_on: unix timestamp of the time of when the data is retrieved
 * gilded: gilded status of the content
 * gildings: gilding information of the content
 * stickied: stickied status of the content
 * permalink: permanent link of the content
-* author_flair_text: flair of the author 
+* author_flair_text: flair of the author
 
 
 Conversational-level information
@@ -51,13 +51,13 @@ Each post with its corresponding comments are considered a conversation. For eac
 * gilded: gilded status of the post
 * gildings: gilding information of the post
 * stickied: stickied status of the post
-* author_flair_text: flair of the author 
+* author_flair_text: flair of the author
 
 
 Corpus-level information
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-* subreddit: the list of subreddits included in this corpus 
+* subreddit: the list of subreddits included in this corpus
 * num_posts: total number of posts included in this corpus
 * num_comments: total number of comments in this corpus
 * num_speaker: number of unique speakers in this corpus
@@ -66,7 +66,7 @@ Corpus-level information
 Usage
 -----
 
-A subreddit corpus name is always the name of the subreddit with the prefix "subreddit-". For example, the subreddit `Cornell <https://www.reddit.com/r/Cornell>`_. can be downloaded as follows: 
+A subreddit corpus name is always the name of the subreddit with the prefix "subreddit-". For example, the subreddit `Cornell <https://www.reddit.com/r/Cornell>`_. can be downloaded as follows:
 
 >>> from convokit import Corpus, download
 >>> corpus = Corpus(filename=download("subreddit-Cornell"))
@@ -134,4 +134,3 @@ Additional notes
 2. This is a beta version release. Not all subreddits that exist are included, and the completeness of subreddit history is not guaranteed. Note that this also implies that some thread structures may be broken: for some utterances, the reply-to ID may not match any utterance that exists in the current version of the data. We hope to provide a more complete version of the dataset in the next release.
 
 3. In some cases, the speaker activity information (i.e., number of posts/comments) may be inflated by duplicated entries in intermediate processing steps. We plan to release further updates to fix this issue.
-

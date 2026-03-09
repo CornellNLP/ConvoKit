@@ -4,11 +4,11 @@ Supreme Court Oral Arguments Corpus
 
 A collection of cases from the U.S. Supreme Court, along with transcripts of oral arguments. Contains approximately 1,800,000 utterances over 8,300 oral arguments transcripts from 8,000 cases.
 
-The data comes from two sources: transcripts were scraped from the `Oyez <https://www.oyez.org/>`_ website, while voting information comes from the `Supreme Court Database <http://scdb.wustl.edu/index.php>`_ (SCDB). 
+The data comes from two sources: transcripts were scraped from the `Oyez <https://www.oyez.org/>`_ website, while voting information comes from the `Supreme Court Database <http://scdb.wustl.edu/index.php>`_ (SCDB).
 
-Along with the entire corpus, we release another version split up into different years spanning 1955 to 2023, each named "supreme-(year)". Additional metadata are also included for each case `here <https://zissou.infosci.cornell.edu/convokit/datasets/supreme-corpus/cases.jsonl>`_. 
+Along with the entire corpus, we release another version split up into different years spanning 1955 to 2023, each named "supreme-(year)". Additional metadata are also included for each case `here <https://zissou.infosci.cornell.edu/convokit/datasets/supreme-corpus/cases.jsonl>`_.
 
-The following examples use this corpus: 
+The following examples use this corpus:
 
 * `computing the orientation of utterances <https://github.com/CornellNLP/ConvoKit/tree/master/examples/orientation>`_
 * `computing linguistic coordination <https://github.com/CornellNLP/ConvoKit/blob/master/examples/coordination/examples.ipynb>`_
@@ -43,15 +43,15 @@ Dataset details
 Speaker-level information
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Speakers correspond to justices and lawyers (also referred to as advocates). 
+Speakers correspond to justices and lawyers (also referred to as advocates).
 
 For each Speaker, we provide:
 
 * id: the ID of the Speaker. If provided in Oyez, we use this ID, such that further information about advocates or justices may be found at `oyez.org/advocates/<id>` or `oyez.org/justices/<id>`. Otherwise this is inferred (see below)
 * name: the name of the Speaker, as listed in transcripts.
-* type: whether the speaker is a justice J, advocate A or unknown U.  
+* type: whether the speaker is a justice J, advocate A or unknown U.
 
-Additional details: 
+Additional details:
 
 * When possible, we tried to ensure Speaker information corresponds to information provided in Oyez. Oyez usually provides explicit lists of the speakers involved in each oral argument, especially for more recent cases; earlier ones are missing these explicit lists. Otherwise we tried to follow the Oyez format for converting between names listed in transcripts and IDs (i.e., replacing spaces with underscores and lowercasing).
 
@@ -59,20 +59,20 @@ Additional details:
 Conversation-level information
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Conversations correspond to different sessions of oral arguments and re-arguments. Importantly, note that a case can have multiple conversations. 
+Conversations correspond to different sessions of oral arguments and re-arguments. Importantly, note that a case can have multiple conversations.
 
 For each Conversation, we provide:
 
 * id: we use the ID of the corresponding transcript, as provided by Oyez.
 * case_id: the ID of the case (see below).
 * advocates: a dictionary where each entry lists the following information for each lawyer:
-	* role: the role that the advocate plays (e.g., "Argued for the petitioner"), as listed by Oyez; "inferred" if no role is listed. 
+	* role: the role that the advocate plays (e.g., "Argued for the petitioner"), as listed by Oyez; "inferred" if no role is listed.
 	* side: the side that the advocate is on: 0 for respondent, 1 for petitioner, 2 for amicus curiae (NOTE that we currently do not differentiate between which side the amicus was supporting), 3 for unknown, None for unknown or inaudible speakers (see below, Utterance-level information). If no role is listed in Oyez, this is inferred via some heuristics (documentation forthcoming).
-* votes_side: a dictionary where each entry lists how each justice voted in the case in which the session occurred: 1 for the petitioner and 0 for the respondent. -1 if vote information was not provided or was otherwise unclear. 
+* votes_side: a dictionary where each entry lists how each justice voted in the case in which the session occurred: 1 for the petitioner and 0 for the respondent. -1 if vote information was not provided or was otherwise unclear.
 * win_side: 1 if the case (in which the session occurred) was decided favorably for the petitioner, 0 if it wasn't; 2 if the decision was unclear, and -1 if this information was unavailable.
 
 See below description on the case metadata file for further details on votes_side and win_side.
-	
+
 
 Utterance-level information
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -103,7 +103,7 @@ The dataset also comes with the following processed fields, which can be loaded 
 Case information
 ^^^^^^^^^^^^^^^^^^^^^
 
-`This file <https://zissou.infosci.cornell.edu/convokit/datasets/supreme-corpus/cases.jsonl>`_ is a list of json objects containing some information about each case, pulled from Oyez and SCDB. 
+`This file <https://zissou.infosci.cornell.edu/convokit/datasets/supreme-corpus/cases.jsonl>`_ is a list of json objects containing some information about each case, pulled from Oyez and SCDB.
 
 * id: generally formatted as <year of case>_<docket no>
 * year
@@ -118,12 +118,12 @@ Case information
 * decided_date: the date the case was decided, according to Oyez
 * win_side: whether the petitioning party won; also included in the corpus. See the `corresponding listing <http://scdb.wustl.edu/documentation.php?var=partyWinning>`_ in SCDB for details. -1 if no information available.
 * win_side_detail: finer-grained label of case outcome. See the `corresponding listing <http://scdb.wustl.edu/documentation.php?var=caseDisposition>`_ in SCDB for details. -1 if no information available.
-* advocates: the advocates participating in the case. 
+* advocates: the advocates participating in the case.
 * adv_sides_inferred: While most Oyez transcripts explicitly list advocates and their roles, some don't, so we fill this information in via a set of heuristics. This field is True if at least one advocate had information that was filled in in this way.
-* votes: a dictionary of justice to whether they voted with the majority or dissented. See the `corresponding listing <http://scdb.wustl.edu/documentation.php?var=majority>`_ in SCDB for details. -1 if no information available. 
-* votes_detail: a dictionary of justice to their vote in the case. See the `corresponding listing <http://scdb.wustl.edu/documentation.php?var=vote>`_ in SCDB for details. -1 if no information available. 
+* votes: a dictionary of justice to whether they voted with the majority or dissented. See the `corresponding listing <http://scdb.wustl.edu/documentation.php?var=majority>`_ in SCDB for details. -1 if no information available.
+* votes_detail: a dictionary of justice to their vote in the case. See the `corresponding listing <http://scdb.wustl.edu/documentation.php?var=vote>`_ in SCDB for details. -1 if no information available.
 * votes_side: a dictionary of justice to whether they voted for the petitioning party, derived from the win_side and votes_detail information. -1 if no information available; in particular, note that if the vote was equally divided, we cannot infer which side the justice voted for. Also included in the corpus.
-* transcripts: a list of transcript names, URLs and IDs (corresponding to the IDs of conversations in the corpus). 
+* transcripts: a list of transcript names, URLs and IDs (corresponding to the IDs of conversations in the corpus).
 
 Citation and other versions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -132,7 +132,7 @@ This corpus extends a `smaller dataset <https://confluence.cornell.edu/display/l
 
 This work extends the original Supreme Court Corpus curated by the ConvoKit team to include data up to the year 2023. We preserve the structure and metadata of the original release while integrating updated transcripts from 2019 where appropriate. We thank Jeeyon Kang for the help with the 2023 extension of the corpus.
 
-**Note:** The original version of the corpus (prior to the 2023 extension) is still available for reproducibility purposes at `link <https://zissou.infosci.cornell.edu/convokit/datasets/supreme-corpus-deprecated/>`_. 
+**Note:** The original version of the corpus (prior to the 2023 extension) is still available for reproducibility purposes at `link <https://zissou.infosci.cornell.edu/convokit/datasets/supreme-corpus-deprecated/>`_.
 
 
 Contact

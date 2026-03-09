@@ -112,7 +112,7 @@ Annotated conversations also contain the following metadata:
 Usage
 -----
 
-To download directly with ConvoKit: 
+To download directly with ConvoKit:
 
 >>> from convokit import Corpus, download
 >>> corpus = Corpus(filename=download("persuasionforgood-corpus"))
@@ -137,5 +137,3 @@ Contact
 ^^^^^^^
 
 Corpus converted into ConvoKit format by Justine Zhang, with additional work by Frank Li, Grace Deng, Di Ni (fl338@cornell.edu, gd3435@cornell.edu, dn273@cornell.edu).
-
-

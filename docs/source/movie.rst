@@ -1,7 +1,7 @@
 Cornell Movie-Dialogs Corpus
 ============================
 
-A large metadata-rich collection of fictional conversations extracted from raw movie scripts. (220,579 conversational exchanges between 10,292 pairs of movie characters in 617 movies). 
+A large metadata-rich collection of fictional conversations extracted from raw movie scripts. (220,579 conversational exchanges between 10,292 pairs of movie characters in 617 movies).
 
 
 Distributed together with:
@@ -48,7 +48,7 @@ Conversations are indexed by the id of the first utterance that make the convers
 * release_year: year of movie release
 * rating: IMDB rating of the movie
 * votes: number of IMDB votes
-* genre: a list of genres this movie belongs to 
+* genre: a list of genres this movie belongs to
 
 
 Corpus-level information
@@ -79,7 +79,7 @@ Number of Conversations: 83097
 Additional note
 ---------------
 
-The original dataset can be downloaded `here <https://www.cs.cornell.edu/~cristian/Chameleons_in_imagined_conversations.html>`_. Refer to the original README for more explanations on dataset construction. 
+The original dataset can be downloaded `here <https://www.cs.cornell.edu/~cristian/Chameleons_in_imagined_conversations.html>`_. Refer to the original README for more explanations on dataset construction.
 
 Contact
 ^^^^^^^

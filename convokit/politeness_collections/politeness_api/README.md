@@ -1,22 +1,22 @@
 Stanford Politeness API
 =======================
-#### Version 1.02 (developing) 
+#### Version 1.02 (developing)
 
  This Python implementation uses spacy as parsing tool and no longer requires the user to parse the document.(based on Version 1.01 implemented by Yiqing Hua)
 
 #### Version 2.00 (released March 2017)
- 
- Python3 version is available here: https://github.com/sudhof/politeness/tree/python3 (refactored from Version 1.01 through the kindness of Benjamin Meyers). 
- 
+
+ Python3 version is available here: https://github.com/sudhof/politeness/tree/python3 (refactored from Version 1.01 through the kindness of Benjamin Meyers).
+
  Note: This python3 version was not yet tested by us, nor compared against the results from our paper (listed below).  The code used in the paper is still here in the master branch of this repository (keep on reading).
- 
- 
+
+
 #### Version 1.01 (released October 2014)
 
 Python implementation of a politeness classifier for requests, based on the work described in:
 
-	A computational approach to politeness with application to social factors.  	
-	Cristian Danescu-Niculescu-Mizil, Moritz Sudhof, Dan Jurafsky, Jure Leskovec, Christopher Potts.  
+	A computational approach to politeness with application to social factors.
+	Cristian Danescu-Niculescu-Mizil, Moritz Sudhof, Dan Jurafsky, Jure Leskovec, Christopher Potts.
 	Proceedings of ACL, 2013.
 
 
@@ -49,7 +49,7 @@ NOTE: If you use this API in your work please send an email to cristian@cs.corne
 **Caveat:** This work focuses on requests, not all kinds of utterances. The model's predictions on non-request utterances will be less accurate. As a bonus, our code also includes a very simple heuristic to check whether a document looks like a request (see politeness.request_utils).
 
 
-**Requirements:** 
+**Requirements:**
 
 python package requirements are listed in requirements.txt. We recommend setting up a new python environment using virtualenv and installing the dependencies by running
 

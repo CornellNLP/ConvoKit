@@ -88,15 +88,15 @@ The GenAIConfigManager handles API key storage and retrieval for different LLM p
 .. code-block:: python
 
     from convokit.genai.genai_config import GenAIConfigManager
-    
+
     config = GenAIConfigManager()
-    
+
     # Set OpenAI API key
     config.set_api_key("gpt", "your-openai-api-key")
-    
+
     # Set Google Cloud configuration for Gemini
     config.set_google_cloud_config("your-project-id", "your-location")
-    
+
     # Configuration is automatically saved and can be reused
 
 LLMPromptTransformer

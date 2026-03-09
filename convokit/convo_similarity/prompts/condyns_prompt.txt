@@ -31,6 +31,6 @@ List of events: {events}
 
 Conversation: '{transcript}'
 
-Now, give your answer. Remember to follow the specified output format strictly, starting from 0 for the dictionary key. 
+Now, give your answer. Remember to follow the specified output format strictly, starting from 0 for the dictionary key.
 
 Output:
