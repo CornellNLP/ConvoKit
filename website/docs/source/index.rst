@@ -13,7 +13,7 @@ ConvoKit: Conversational Analysis Toolkit
    :target: https://github.com/CornellNLP/ConvoKit/blob/master/LICENSE.md
    :alt: License
 
-This toolkit contains tools to extract conversational features and analyze social phenomena in conversations, using a `single unified interface <https://convokit.cornell.edu/documentation/architecture.html>`_ inspired by (and compatible with) scikit-learn. Several large conversational datasets are included together with scripts exemplifying the use of the toolkit on these datasets. The latest version is `4.1.0 <https://github.com/CornellNLP/ConvoKit/releases/tag/v4.1.0>`_ (released Mar. 9, 2026); follow the project on GitHub to keep track of updates.
+This toolkit contains tools to extract conversational features and analyze social phenomena in conversations, using a `single unified interface <https://convokit.cornell.edu/documentation/architecture.html>`_ inspired by (and compatible with) scikit-learn. Several large conversational datasets are included together with scripts exemplifying the use of the toolkit on these datasets. The latest version is `4.1.0 <https://github.com/CornellNLP/ConvoKit/releases/tag/v4.1.0>`_ (released Mar. 10, 2026); follow the project on GitHub to keep track of updates.
 
 Quick Links
 -----------
