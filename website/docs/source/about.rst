@@ -36,8 +36,8 @@ Documentation is hosted `here <https://convokit.cornell.edu/documentation/>`_.
 
 If you are new to ConvoKit, great places to get started are:
 
-* The `Core Concepts tutorial <https://convokit.cornell.edu/documentation/architecture.html>`_ for an overview of the ConvoKit "philosophy" and object model
-* The `High-level tutorial <https://convokit.cornell.edu/documentation/tutorial.html>`_ for a walkthrough of how to import ConvoKit into your project, load a Corpus, and use ConvoKit functions
+* The `Core Concepts tutorial <https://convokit.cornell.edu/documentation/architecture.html>`_ for an overview of ConvoKit's object model
+* The `High-level tutorial <https://convokit.cornell.edu/documentation/tutorial.html>`_ for a walkthrough of importing ConvoKit, loading a Corpus, and using its functions
 
 For an overview, watch our SIGDIAL talk introducing the toolkit:
 
@@ -55,17 +55,6 @@ For an overview, watch our SIGDIAL talk introducing the toolkit:
    </div>
 
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-   :hidden:
-
-   About <about>
-   installation
-   datasets
-   features
-   contributors
-
 Community & Support
 -------------------
 
@@ -79,7 +68,7 @@ Join our `Discord community <https://discord.gg/WMFqMWgz6P>`_ to:
 Citation
 --------
 
-If you use the code or datasets distributed with ConvoKit please acknowledge the work tied to the respective component (indicated in the documentation) in addition to:
+If you use ConvoKit code or datasets, please acknowledge the respective components in addition to:
 
    Jonathan P. Chang, Caleb Chiam, Liye Fu, Andrew Wang, Justine Zhang, Cristian Danescu-Niculescu-Mizil. 2020.
    "ConvoKit: A Toolkit for the Analysis of Conversations". *Proceedings of SIGDIAL*.
