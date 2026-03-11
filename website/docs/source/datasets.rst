@@ -28,6 +28,7 @@ Three related corpora of conversations that derail into antisocial behavior.
 
 * **Download name:** ``conversations-gone-awry-corpus``
 * **Tags:** Wikipedia, derailment, online, asynchronous, outcome labels, summaries, persuasion, online, medium size, debate, medium conversations, timestamps
+
 **CGA-CMV:** ChangeMyView discussion threads that derail into rule-violating behavior.
 
 * **Download name:** ``conversations-gone-awry-cmv-corpus``
@@ -334,7 +335,7 @@ A collection of 1,155 five-minute telephone conversations between two participan
    </div>
 
 Stanford Politeness Corpus
-------------------------
+--------------------------
 
 .. raw:: html
 
@@ -466,7 +467,7 @@ Fora Corpus
 
    <div class="dataset-card" data-tags="small size, speaker info, utterance labels, timestamps, group, in person, various topics">
 
-Fora corpus is a dataset of 262 annotated transcripts of multi-person facilitated dialogues regarding issues like education, elections, and public health, primarily through the sharing of personal experience. The corpus is available by request from the authors (https://github.com/schropes/fora-corpus) and ConvoKit contains code for converting the transcripts into ConvoKit format, as detailed below.
+Fora corpus is a dataset of 262 annotated transcripts of multi-person facilitated dialogues regarding issues like education, elections, and public health, primarily through the sharing of personal experience. The corpus is available by request from the authors (https://github.com/schropes/fora-corpus) and ConvoKit contains code for converting the transcripts into ConvoKit format, as detailed in the documentation.
 
 * **Tags:** small size, speaker info, utterance labels, timestamps, group, in person, various topics
 * `Documentation <https://convokit.cornell.edu/documentation/fora.html>`_
@@ -476,12 +477,13 @@ Fora corpus is a dataset of 262 annotated transcripts of multi-person facilitate
    </div>
 
 Unintended Offense Corpus
--------------
+-------------------------
 
 .. raw:: html
 
    <div class="dataset-card" data-tags="online, asynchronous, outcome, labels, utterance labels, timestamps, Twitter/X, medium size, short conversations, various topics, politeness">
-A collection of unintentionally offensive Tweets and replies in which a Tweet in the exchange was offensive to someone, followed by an indication that the poster meant no offense.
+
+A collection of unintentionally offensive Tweets and replies in which a Tweet in the exchange was offensive to someone, followed by an indication that the poster meant no offense. ConvoKit contains code for converting the data into ConvoKit format, as detailed in the documentation.
 
 * **Tags:** online, asynchronous, outcome, labels, utterance labels, timestamps, Twitter/X, medium size, short conversations, various topics, politeness
 * `Documentation <https://convokit.cornell.edu/documentation/unintended_offense.html>`_
@@ -491,7 +493,7 @@ A collection of unintentionally offensive Tweets and replies in which a Tweet in
    </div>
 
 Ubuntu Chat Logs
--------------
+----------------
 
 .. raw:: html
 
@@ -499,6 +501,7 @@ Ubuntu Chat Logs
 
 A collection of conversations featuring pairs of speakers where one speaker is assisting the other through Ubuntu chat logs to help them solve their problem.
 
+* **Download name:** ``ubuntu-chat-logs``
 * **Tags:** online, dyadic, asymmetric, synchronous, outcome, labels, utterance labels, speaker info, timestamps, small size, medium conversations, customer support, problem solving, derailment
 * `Documentation <https://convokit.cornell.edu/documentation/chatlogs.html>`_
 
@@ -507,7 +510,7 @@ A collection of conversations featuring pairs of speakers where one speaker is a
    </div>
 
 Contextual Abuse Corpus
--------------
+-----------------------
 
 .. raw:: html
 
@@ -515,6 +518,7 @@ Contextual Abuse Corpus
 
 A dataset of annotated Reddit entries labeled into one or more of six primary categories of abuse. Secondary categories, labels annotated in the context of the conversation thread, and rationales are also included as part of the dataset.
 
+* **Download name:** ``contextual-abuse``
 * **Tags:** online, asynchronous, utterance, labels, timestamps, Reddit, medium size, short conversations, various topics
 * `Documentation <https://convokit.cornell.edu/documentation/cad.html>`_
 
@@ -523,7 +527,7 @@ A dataset of annotated Reddit entries labeled into one or more of six primary ca
    </div>
 
 NewsInterview Corpus
--------------
+--------------------
 
 .. raw:: html
 
@@ -531,6 +535,7 @@ NewsInterview Corpus
 
 A collection of two-person informational interviews from National Public Radio (NPR) and Cable News Network (CNN), focusing on journalistic interviews between interviewers and sources from 2000 to 2020.
 
+* **Download name:** ``news-interview``
 * **Tags:** dyadic, asymmetric, synchronous, speaker info, summaries, timestamps, media, medium size, medium conversations, various topics, interviews, Q&A
 * `Documentation <https://convokit.cornell.edu/documentation/interview.html>`_
 
@@ -539,7 +544,7 @@ A collection of two-person informational interviews from National Public Radio (
    </div>
 
 Emotional Support Conversation Corpus
--------------
+-------------------------------------
 
 .. raw:: html
 
@@ -547,6 +552,7 @@ Emotional Support Conversation Corpus
 
 This dataset contains approximately 1,300 conversations collected between emotional support seekers and supporters.
 
+* **Download name:** ``emotional-support``
 * **Tags:** online, dyadic, asymmetric, synchronous, outcome, labels, utterance labels, speaker info, medium size, medium conversations, various topics, support
 * `Documentation <https://convokit.cornell.edu/documentation/support.html>`_
 
