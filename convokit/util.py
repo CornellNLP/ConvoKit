@@ -369,7 +369,7 @@ def _get_wikiconv_year_info(language: str, year: str = None) -> str:
 
     # base directory of wikicon corpuses
     wikiconv_base = "http://zissou.infosci.cornell.edu/convokit/datasets/wikiconv-corpus/"
-    data_dir = wikiconv_base + "corpus-zipped/"
+    data_dir = wikiconv_base + "corpus_zipped/"
     final_dir = (
         data_dir + language + "/wikiconv-" + year + "/full.corpus.zip"
         if year is not None
