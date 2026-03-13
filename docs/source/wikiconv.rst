@@ -88,22 +88,22 @@ Combining different years
 A common use case for the WikiConv corpora might be to combine corpora from different years for further analysis. This is straightforward with the Corpus's merge functionality, which we demonstrate below.
 
 >>> from convokit import Corpus, download
->>> wikiconv_2003 = Corpus(filename=download("wikiconv-2003"))
->>> wikiconv_2003.print_summary_stats()
-Number of Speakers: 9168
-Number of Utterances: 140265
-Number of Conversations: 91787
->>> wikiconv_2004 = Corpus(filename=download("wikiconv-2004"))
->>> wikiconv_2004.print_summary_stats()
-Number of Speakers: 34235
-Number of Utterances: 613608
-Number of Conversations: 303494
->>> merged_corpus = wikiconv_2003.merge(wikiconv_2004)
+>>> wikiconv_russian_2004 = Corpus(filename=download("wikiconv-russian-2004"))
+>>> wikiconv_russian_2004.print_summary_stats()
+Number of Speakers: 338
+Number of Utterances: 3723
+Number of Conversations: 1844
+>>> wikiconv_russian_2005 = Corpus(filename=download("wikiconv-russian-2005"))
+>>> wikiconv_russian_2005.print_summary_stats()
+Number of Speakers: 1657
+Number of Utterances: 23719
+Number of Conversations: 10495
+>>> merged_corpus = Corpus.merge(wikiconv_russian_2004, wikiconv_russian_2005)
 WARNING: Multiple values found for Speaker([('name', 'TUF-KAT')]) for meta key: user_id. Taking the latest one found
 >>> merged_corpus.print_summary_stats()
-Number of Speakers: 41509
-Number of Utterances: 753873
-Number of Conversations: 392883
+Number of Speakers: 1902
+Number of Utterances: 27442
+Number of Conversations: 12226
 
 Notice that the number of Utterances in the merged corpus is simply the sum of those in the constituent corpora. This is to be expected since the Utterances from these two corpora are from different years and are therefore distinct and non-overlapping.
 

@@ -63,7 +63,7 @@ For an overview, watch our SIGDIAL talk introducing the toolkit:
    About <about>
    installation
    datasets
-   features
+   Tools <features>
    contributors
 
 Community & Support
