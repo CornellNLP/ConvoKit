@@ -20,7 +20,7 @@ jobs:
     - name: rsync homepage files
       uses: burnett01/rsync-deployments@master
       with:
-        switches: -vzr
+        switches: -vzr --chown=":sauna"
         path: website/docs/build/
         remote_path: ${{ secrets.DEPLOY_WEBSITE_PATH }}
         remote_host: ${{ secrets.DEPLOY_HOST }}

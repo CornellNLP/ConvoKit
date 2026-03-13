@@ -21,7 +21,7 @@ jobs:
     - name: rsync docs
       uses: burnett01/rsync-deployments@master
       with:
-        switches: -vzr
+        switches: -vzr --chown=":sauna"
         path: docs/build/
         remote_path: ${{ secrets.DEPLOY_DOCS_PATH }}
         remote_host: ${{ secrets.DEPLOY_HOST }}

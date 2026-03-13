@@ -13,7 +13,7 @@ jobs:
     - name: rsync download config
       uses: burnett01/rsync-deployments@master
       with:
-        switches: -vzr
+        switches: -vzr --chown=":sauna"
         path: download_config.json
         remote_path: ${{ secrets.BASE_DIRECTORY_PATH }}
         remote_host: ${{ secrets.DEPLOY_HOST }}
