@@ -96,9 +96,7 @@ class LLMPromptTransformer(Transformer):
             print(f"Error processing {self.object_level} {obj.id}: {e}")
             obj.add_meta(self.metadata_name, None)
 
-    def _transform_object(
-        self, obj: Union[Corpus, Conversation, Speaker, Utterance]
-    ) -> None:
+    def _transform_object(self, obj: Union[Corpus, Conversation, Speaker, Utterance]) -> None:
         """
         Apply selector logic and process a single object.
 
@@ -139,9 +137,7 @@ class LLMPromptTransformer(Transformer):
         :return: The transformed corpus with LLM responses added as metadata
         """
         if self.object_level == "utterance":
-            self._transform_objects(
-                corpus.iter_utterances(), "Applying LLM prompt to utterances"
-            )
+            self._transform_objects(corpus.iter_utterances(), "Applying LLM prompt to utterances")
 
         elif self.object_level == "conversation":
             self._transform_objects(
@@ -149,9 +145,7 @@ class LLMPromptTransformer(Transformer):
             )
 
         elif self.object_level == "speaker":
-            self._transform_objects(
-                corpus.iter_speakers(), "Applying LLM prompt to speakers"
-            )
+            self._transform_objects(corpus.iter_speakers(), "Applying LLM prompt to speakers")
 
         elif self.object_level == "corpus":
             if self.selector(corpus):
