@@ -11,11 +11,11 @@ class GPTClient(LLMClient):
     Handles authentication, request formatting, and error retry logic. API key is managed
     through the GenAI config system.
 
-    :param model: Name of the GPT model to use (default: "gpt-4o-mini")
+    :param model: Name of the GPT model to use
     :param config_manager: GenAIConfigManager instance (optional, will create one if not provided)
     """
 
-    def __init__(self, model: str = "gpt-4o-mini", config_manager: GenAIConfigManager = None):
+    def __init__(self, model: str, config_manager: GenAIConfigManager = None):
         if config_manager is None:
             config_manager = GenAIConfigManager()
 
