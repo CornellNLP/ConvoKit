@@ -161,19 +161,11 @@ class DeferralDecisionPolicy(DecisionPolicy):
         return current_score, simulations, simulation_scores
 
     def decide(self, context, score_fn: Callable) -> Tuple[float, int, Optional[Dict[str, Any]]]:
-        max_defer_index = 4
         decision_score, simulations, simulation_scores = self._decision_score(context, score_fn)
         num_simulations_above_threshold = sum(1 for score in simulation_scores if score > self.threshold)
         num_simulations = len(simulations)
-        # context.context contains chronological_utts[: i+1] (includes current_utterance),
-        # so the current utterance's position in the conversation is len(context.context) - 1.
-        utt_index = max(0, len(getattr(context, "context", []) or []) - 1)
-        # past the deferral window we always commit when fp > threshold, mirroring the
-        # `i < 4` early-only deferral in performance_utils.no_tricks.
-        past_defer_window = max_defer_index is not None and utt_index >= max_defer_index
-        defer_eligible = not past_defer_window
+
         num_calm = num_simulations - num_simulations_above_threshold
-        # defer = defer_eligible and (num_calm > self.tau)
         defer = (num_calm > self.tau)
         return (
             decision_score,
