@@ -40,7 +40,7 @@ Supported Providers
 Currently supported LLM providers:
 
 * **OpenAI GPT**: Access to OpenAI GPT models through the OpenAI API. See `OpenAI API setup <https://platform.openai.com/docs/quickstart>`_.
-* **Google Gemini**: Access to Google Gemini models via Vertex AI. See `Vertex AI setup guide <https://cloud.google.com/vertex-ai/docs/start/cloud-environment>`_.
+* **Google Gemini**: Access to Google Gemini models via the Gemini Developer API by default, or via Vertex AI. See `Gemini API key setup <https://ai.google.dev/gemini-api/docs/api-key>`_ and `Vertex AI setup guide <https://cloud.google.com/vertex-ai/docs/start/cloud-environment>`_.
 * **Local Models**: Template implementation for local LLM models (requires custom implementation)
 
 GPT Client
@@ -79,7 +79,7 @@ Configuration
 The GenAIConfigManager handles API key storage and retrieval for different LLM providers. It supports:
 
 * **File-based storage**: Configuration is stored in `~/.convokit/config.yml`
-* **Environment variables**: API keys can be set via environment variables (e.g., `GPT_API_KEY`)
+* **Environment variables**: API keys can be set via environment variables (e.g., `GPT_API_KEY` or `GEMINI_API_KEY`)
 * **Secure storage**: API keys are stored locally and not exposed in code
 * **Provider-specific settings**: Support for different configuration requirements per provider (e.g., Google Cloud project settings for Gemini)
 
@@ -94,7 +94,10 @@ The GenAIConfigManager handles API key storage and retrieval for different LLM p
     # Set OpenAI API key
     config.set_api_key("gpt", "your-openai-api-key")
     
-    # Set Google Cloud configuration for Gemini
+    # Set Gemini API key
+    config.set_api_key("gemini", "your-gemini-api-key")
+
+    # Or set Google Cloud configuration for Gemini on Vertex AI
     config.set_google_cloud_config("your-project-id", "your-location")
     
     # Configuration is automatically saved and can be reused
