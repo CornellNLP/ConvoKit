@@ -124,19 +124,27 @@ class Forecaster(Transformer):
         self.forecaster_model.fit(contexts, val_contexts)
 
         return self
-    
+
     def fit_decision_policy(self, corpus, context_selector, val_context_selector):
-        contexts = self._create_context_iterator(corpus, context_selector, include_future_context=True)
+        contexts = self._create_context_iterator(
+            corpus, context_selector, include_future_context=True
+        )
         val_contexts = None
         if val_context_selector is not None:
-            val_contexts = self._create_context_iterator(corpus, val_context_selector, include_future_context=True)
+            val_contexts = self._create_context_iterator(
+                corpus, val_context_selector, include_future_context=True
+            )
         return self.forecaster_model.fit_decision_policy(contexts, val_contexts)
-    
+
     def fit_belief_estimator(self, corpus, context_selector, val_context_selector):
-        contexts = self._create_context_iterator(corpus, context_selector, include_future_context=True)
+        contexts = self._create_context_iterator(
+            corpus, context_selector, include_future_context=True
+        )
         val_contexts = None
         if val_context_selector is not None:
-            val_contexts = self._create_context_iterator(corpus, val_context_selector, include_future_context=True)
+            val_contexts = self._create_context_iterator(
+                corpus, val_context_selector, include_future_context=True
+            )
         return self.forecaster_model.fit_belief_estimator(contexts, val_contexts)
 
     def transform(
@@ -157,7 +165,10 @@ class Forecaster(Transformer):
         """
         contexts = self._create_context_iterator(corpus, context_selector)
         forecast_df = self.forecaster_model.transform(
-            contexts, self.forecast_attribute_name, self.forecast_prob_attribute_name, **kwargs,
+            contexts,
+            self.forecast_attribute_name,
+            self.forecast_prob_attribute_name,
+            **kwargs,
         )
 
         # generalize addition of metadata columns

@@ -90,9 +90,7 @@ class DeferralDecisionPolicy(DecisionPolicy):
             return None
         return cached_list[: self.num_simulations]
 
-    def _get_cached_simulation_scores(
-        self, context, num_expected: int
-    ) -> Optional[List[float]]:
+    def _get_cached_simulation_scores(self, context, num_expected: int) -> Optional[List[float]]:
         # returns cached per-simulation scores aligned with reused simulations, else None.
         if not self.reuse_cached_simulations or num_expected == 0:
             return None
@@ -162,11 +160,13 @@ class DeferralDecisionPolicy(DecisionPolicy):
 
     def decide(self, context, score_fn: Callable) -> Tuple[float, int, Optional[Dict[str, Any]]]:
         decision_score, simulations, simulation_scores = self._decision_score(context, score_fn)
-        num_simulations_above_threshold = sum(1 for score in simulation_scores if score > self.threshold)
+        num_simulations_above_threshold = sum(
+            1 for score in simulation_scores if score > self.threshold
+        )
         num_simulations = len(simulations)
 
         num_calm = num_simulations - num_simulations_above_threshold
-        defer = (num_calm > self.tau)
+        defer = num_calm > self.tau
         return (
             decision_score,
             1 if decision_score > self.threshold and not defer else 0,
@@ -178,7 +178,9 @@ class DeferralDecisionPolicy(DecisionPolicy):
 
     def fit(self, contexts, val_contexts=None, score_fn: Callable = None):
         if val_contexts is None or score_fn is None or self.labeler is None:
-            print("either no validation contexts/score function/labeler were provided, returning current threshold")
+            print(
+                "either no validation contexts/score function/labeler were provided, returning current threshold"
+            )
             return {"best_threshold": self.threshold}
 
         val_contexts = list(val_contexts)

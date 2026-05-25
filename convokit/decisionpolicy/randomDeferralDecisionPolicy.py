@@ -2,6 +2,7 @@ import numpy as np
 from typing import Callable, List, Optional, Dict, Any, Tuple
 from .decisionPolicy import DecisionPolicy
 
+
 class RandomDeferralDecisionPolicy(DecisionPolicy):
     """
     Decision policy that defers intervention by looking ahead at simulated next utterances.
@@ -47,18 +48,20 @@ class RandomDeferralDecisionPolicy(DecisionPolicy):
         decision_score = self._score(context, score_fn)
 
         p = float(np.random.rand())
-   
 
         # return an empty metadata dict (not None) so downstream code that iterates
         # utt_metadata.items() in TransformerDecoderModel.transform doesn't crash.
-        return (decision_score,
-        1 if decision_score > self.threshold and p > self.deferral_probability else 0,
-        {}
+        return (
+            decision_score,
+            1 if decision_score > self.threshold and p > self.deferral_probability else 0,
+            {},
         )
 
     def fit(self, contexts, val_contexts=None, score_fn: Callable = None):
         if val_contexts is None or score_fn is None or self.labeler is None:
-            print("either no validation contexts/score function/labeler were provided, returning current threshold")
+            print(
+                "either no validation contexts/score function/labeler were provided, returning current threshold"
+            )
             return {"best_threshold": self.threshold}
 
         val_contexts = list(val_contexts)

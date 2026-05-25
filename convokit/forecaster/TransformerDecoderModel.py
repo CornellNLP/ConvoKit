@@ -14,6 +14,7 @@ import pandas as pd
 from .forecasterModel import ForecasterModel
 from .TransformerForecasterConfig import TransformerForecasterConfig
 
+
 def _get_template_map(model_name_or_path):
     """
     Map a model name or path to its corresponding prompt template family.
@@ -371,7 +372,9 @@ class TransformerDecoderModel(ForecasterModel):
         self.fit_decision_policy(contexts, val_contexts_decision_policy, score_fn=self.score)
         return
 
-    def transform(self, contexts, forecast_attribute_name, forecast_prob_attribute_name, verbose=False):
+    def transform(
+        self, contexts, forecast_attribute_name, forecast_prob_attribute_name, verbose=False
+    ):
         """
         Generate forecasts using the fine-tuned TransformerDecoder model on the provided contexts, and save the predictions to the output directory specified in the configuration.
 
@@ -423,6 +426,7 @@ class TransformerDecoderModel(ForecasterModel):
             fpr = fp / (fp + tn) if (fp + tn) > 0 else 0.0
             f1 = (2 * p * r / (p + r)) if (p + r) > 0 else 0.0
             return {"n": n, "acc": acc, "p": p, "r": r, "fpr": fpr, "f1": f1}
+
         # for safety/flexibility we can accept either only score and pred or also the metadata
         progress = tqdm(contexts)
         for idx, context in enumerate(progress, start=1):
@@ -530,7 +534,9 @@ class TransformerDecoderModel(ForecasterModel):
                 f"f1={final_metrics['f1']:.4f}"
             )
         for key, series in metadatas.items():
-            assert len(series) == len(preds), "Metadata series length must match number of predictions"
-            cols[key] = series # each series same length as preds
+            assert len(series) == len(
+                preds
+            ), "Metadata series length must match number of predictions"
+            cols[key] = series  # each series same length as preds
         forecasts_df = pd.DataFrame(cols, index=utt_ids)
         return forecasts_df

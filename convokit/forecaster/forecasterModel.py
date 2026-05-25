@@ -52,9 +52,7 @@ class ForecasterModel(ABC):
         self._decision_policy = value
         if self._decision_policy is not None:
             self._decision_policy.labeler = self._labeler
-            self._decision_policy.forecast_prob_attribute_name = (
-                self._forecast_prob_attribute_name
-            )
+            self._decision_policy.forecast_prob_attribute_name = self._forecast_prob_attribute_name
 
     @abstractmethod
     def fit(self, contexts, val_contexts=None):

@@ -26,7 +26,9 @@ class ThresholdDecisionPolicy(DecisionPolicy):
 
     def fit(self, contexts, val_contexts=None, score_fn: Callable = None):
         if val_contexts is None or score_fn is None or self.labeler is None:
-            print("either no validation contexts/score function/labeler were provided, returning current threshold")
+            print(
+                "either no validation contexts/score function/labeler were provided, returning current threshold"
+            )
             return {"best_threshold": self.threshold}
 
         val_contexts = list(val_contexts)
