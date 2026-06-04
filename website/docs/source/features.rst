@@ -224,12 +224,12 @@ LLM Prompt Transformer
 
 .. raw:: html
 
-   <div class="feature-card" data-tags="feature extraction, utterance, conversation, speaker, corpus, pragmatics">
+   <div class="feature-card" data-tags="LLM, feature extraction, utterance, conversation, speaker, corpus, pragmatics">
 
 Applies custom LLM prompts to corpus objects at any level — utterances, conversations, speakers, or the entire corpus — and stores responses as metadata. Supports multiple LLM providers including OpenAI GPT, Google Gemini, and local models.
 
 * **Transformer:** `LLMPromptTransformer <https://convokit.cornell.edu/documentation/llmprompttransformer.html>`_
-* **Tags:** feature extraction, utterance, conversation, speaker, corpus, pragmatics
+* **Tags:** LLM, feature extraction, utterance, conversation, speaker, corpus, pragmatics
 
 **Example:** `GenAI module <https://github.com/CornellNLP/ConvoKit/blob/master/convokit/genai/example/example.ipynb>`_
 
