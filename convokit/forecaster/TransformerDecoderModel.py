@@ -390,15 +390,16 @@ class TransformerDecoderModel(ForecasterModel):
         preds = []
         scores = []
         metadatas = defaultdict(list)
-        # TODO(metrics): temporary running metric logging during transform; remove before merge.
+        # verbose-only diagnostics: running conversation-level metrics and an
+        # incremental predictions.csv dump. skipped entirely in the default path.
         report_every_n = 250
         prediction_file = os.path.join(self.config.output_dir, "predictions.csv")
-        if os.path.exists(prediction_file):
-            os.remove(prediction_file)
         next_flush_start = 0
         csv_header_written = False
         convo_forecasts = {}
         convo_labels = {}
+        if verbose and os.path.exists(prediction_file):
+            os.remove(prediction_file)
 
         def _compute_conversation_metrics():
             common_convo_ids = [cid for cid in convo_forecasts if cid in convo_labels]
@@ -459,6 +460,9 @@ class TransformerDecoderModel(ForecasterModel):
                     metadatas[key] = [None] * current_idx
                     metadatas[key].append(value)
 
+            if not verbose:
+                continue
+
             convo_id = getattr(context, "conversation_id", None)
             try:
                 convo = context.current_utterance.get_conversation()
@@ -491,22 +495,21 @@ class TransformerDecoderModel(ForecasterModel):
                 next_flush_start = idx
 
                 running_metrics = _compute_conversation_metrics()
-                if verbose:
-                    if running_metrics is not None:
-                        tqdm.write(
-                            f"[info] transform metrics running: "
-                            f"processed_contexts={idx}, conversations={running_metrics['n']}, "
-                            f"acc={running_metrics['acc']:.4f}, p={running_metrics['p']:.4f}, "
-                            f"r={running_metrics['r']:.4f}, fpr={running_metrics['fpr']:.4f}, "
-                            f"f1={running_metrics['f1']:.4f}"
-                        )
-                    else:
-                        tqdm.write(
-                            f"[info] transform metrics running: "
-                            f"processed_contexts={idx}, conversations=0"
-                        )
+                if running_metrics is not None:
+                    tqdm.write(
+                        f"[info] transform metrics running: "
+                        f"processed_contexts={idx}, conversations={running_metrics['n']}, "
+                        f"acc={running_metrics['acc']:.4f}, p={running_metrics['p']:.4f}, "
+                        f"r={running_metrics['r']:.4f}, fpr={running_metrics['fpr']:.4f}, "
+                        f"f1={running_metrics['f1']:.4f}"
+                    )
+                else:
+                    tqdm.write(
+                        f"[info] transform metrics running: "
+                        f"processed_contexts={idx}, conversations=0"
+                    )
         total_processed = len(preds)
-        if total_processed > next_flush_start:
+        if verbose and total_processed > next_flush_start:
             batch_cols = {
                 forecast_attribute_name: preds[next_flush_start:total_processed],
                 forecast_prob_attribute_name: scores[next_flush_start:total_processed],
@@ -524,15 +527,16 @@ class TransformerDecoderModel(ForecasterModel):
             forecast_attribute_name: preds,
             forecast_prob_attribute_name: scores,
         }
-        final_metrics = _compute_conversation_metrics()
-        if final_metrics is not None:
-            tqdm.write(
-                f"[info] final transform metrics: "
-                f"processed_contexts={len(preds)}, conversations={final_metrics['n']}, "
-                f"acc={final_metrics['acc']:.4f}, p={final_metrics['p']:.4f}, "
-                f"r={final_metrics['r']:.4f}, fpr={final_metrics['fpr']:.4f}, "
-                f"f1={final_metrics['f1']:.4f}"
-            )
+        if verbose:
+            final_metrics = _compute_conversation_metrics()
+            if final_metrics is not None:
+                tqdm.write(
+                    f"[info] final transform metrics: "
+                    f"processed_contexts={len(preds)}, conversations={final_metrics['n']}, "
+                    f"acc={final_metrics['acc']:.4f}, p={final_metrics['p']:.4f}, "
+                    f"r={final_metrics['r']:.4f}, fpr={final_metrics['fpr']:.4f}, "
+                    f"f1={final_metrics['f1']:.4f}"
+                )
         for key, series in metadatas.items():
             assert len(series) == len(
                 preds
