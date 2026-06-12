@@ -18,6 +18,8 @@ A ForecasterModel owns a single decision policy, defaulting to ``ThresholdDecisi
 its ``decision_policy`` property. The policy receives the model's ``score`` function as ``score_fn`` and shares
 the model's labeler and ``forecast_prob`` cache key so it can reuse already-computed forecast probabilities.
 
+This mechanism is introduced in ["Wait! There’s a Way Out"](https://arxiv.org/abs/2605.29243).
+
 Base Class
 ----------
 
