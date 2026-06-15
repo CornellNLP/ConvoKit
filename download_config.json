@@ -41,7 +41,9 @@
         "ubuntu-chat-logs": 0,
         "contextual-abuse": 0,
         "news-interview": 0,
-        "emotional-support": 0
+        "emotional-support": 0,
+        "decisionpolicy-demo": 0,
+        "human-benchmark": 0
     },
     "DatasetURLs": {
         "chromium-corpus": "http://zissou.infosci.cornell.edu/convokit/datasets/chromium-corpus/chromium-corpus.zip",
@@ -115,7 +117,9 @@
         "ubuntu-chat-logs": "https://zissou.infosci.cornell.edu/convokit/datasets/ubuntu-chat-logs/ubuntu-chat-logs.zip",
         "contextual-abuse": "https://zissou.infosci.cornell.edu/convokit/datasets/contextual-abuse/contextual-abuse.zip",
         "news-interview": "https://zissou.infosci.cornell.edu/convokit/datasets/news-interview/news-interview.zip",
-        "emotional-support": "https://zissou.infosci.cornell.edu/convokit/datasets/emotional-support/emotional-support.zip"
+        "emotional-support": "https://zissou.infosci.cornell.edu/convokit/datasets/emotional-support/emotional-support.zip",
+        "decisionpolicy-demo": "https://zissou.infosci.cornell.edu/convokit/datasets/decisionpolicy-demo/decisionpolicy-demo.zip",
+        "human-benchmark": "https://zissou.infosci.cornell.edu/convokit/datasets/human-benchmark/human-benchmark.zip"
     },
     "ModelURLS": {
         "craft-wiki-pretrained": [

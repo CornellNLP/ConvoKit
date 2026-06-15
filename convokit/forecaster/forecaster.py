@@ -6,7 +6,9 @@ import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plt
 
-# Define a namedtuple template to represent conversational context tuples
+# define a namedtuple template to represent conversational context tuples.
+# this alias is kept for backwards compatibility; decision policies should
+# accept the same structure.
 ContextTuple = namedtuple(
     "ContextTuple", ["context", "current_utterance", "future_context", "conversation_id"]
 )
@@ -48,6 +50,9 @@ class Forecaster(Transformer):
 
         # also give the underlying ForecasterModel access to the labeler function
         self.forecaster_model.labeler = self.labeler
+        # keep the decision policy's forecast_prob cache key aligned with the
+        # meta field that Forecaster.transform() writes to.
+        self.forecaster_model.forecast_prob_attribute_name = self.forecast_prob_attribute_name
 
     def _create_context_iterator(
         self,
@@ -120,10 +125,33 @@ class Forecaster(Transformer):
 
         return self
 
+    def fit_decision_policy(self, corpus, context_selector, val_context_selector):
+        contexts = self._create_context_iterator(
+            corpus, context_selector, include_future_context=True
+        )
+        val_contexts = None
+        if val_context_selector is not None:
+            val_contexts = self._create_context_iterator(
+                corpus, val_context_selector, include_future_context=True
+            )
+        return self.forecaster_model.fit_decision_policy(contexts, val_contexts)
+
+    def fit_belief_estimator(self, corpus, context_selector, val_context_selector):
+        contexts = self._create_context_iterator(
+            corpus, context_selector, include_future_context=True
+        )
+        val_contexts = None
+        if val_context_selector is not None:
+            val_contexts = self._create_context_iterator(
+                corpus, val_context_selector, include_future_context=True
+            )
+        return self.forecaster_model.fit_belief_estimator(contexts, val_contexts)
+
     def transform(
         self,
         corpus: Corpus,
         context_selector: Callable[[ContextTuple], bool] = lambda context: True,
+        **kwargs,
     ) -> Corpus:
         """
         Wrapper method for applying the underlying conversational forecasting model to make forecasts over the Conversations in a given Corpus.
@@ -137,22 +165,22 @@ class Forecaster(Transformer):
         """
         contexts = self._create_context_iterator(corpus, context_selector)
         forecast_df = self.forecaster_model.transform(
-            contexts, self.forecast_attribute_name, self.forecast_prob_attribute_name
+            contexts,
+            self.forecast_attribute_name,
+            self.forecast_prob_attribute_name,
+            **kwargs,
         )
 
+        # generalize addition of metadata columns
+        meta_columns = list(forecast_df.columns)
         for utt in corpus.iter_utterances():
             if utt.id in forecast_df.index:
-                utt.add_meta(
-                    self.forecast_attribute_name,
-                    forecast_df.loc[utt.id][self.forecast_attribute_name],
-                )
-                utt.add_meta(
-                    self.forecast_prob_attribute_name,
-                    forecast_df.loc[utt.id][self.forecast_prob_attribute_name],
-                )
+                row = forecast_df.loc[utt.id]
+                for col in meta_columns:
+                    utt.add_meta(col, row[col])
             else:
-                utt.add_meta(self.forecast_attribute_name, None)
-                utt.add_meta(self.forecast_prob_attribute_name, None)
+                for col in meta_columns:
+                    utt.add_meta(col, None)
 
         return corpus
 

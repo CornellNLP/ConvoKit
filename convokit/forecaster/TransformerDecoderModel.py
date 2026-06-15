@@ -1,3 +1,4 @@
+from itertools import tee, islice
 import unsloth
 from unsloth import FastLanguageModel, is_bfloat16_supported
 from unsloth.chat_templates import get_chat_template
@@ -5,16 +6,13 @@ import torch
 import torch.nn.functional as F
 from trl import SFTTrainer, SFTConfig
 from datasets import Dataset
+from collections import defaultdict
 
-import json
 import os
 from tqdm import tqdm
 import pandas as pd
-import numpy as np
-from sklearn.metrics import roc_curve
 from .forecasterModel import ForecasterModel
 from .TransformerForecasterConfig import TransformerForecasterConfig
-import shutil
 
 
 def _get_template_map(model_name_or_path):
@@ -72,7 +70,9 @@ class TransformerDecoderModel(ForecasterModel):
         config=DEFAULT_CONFIG,
         system_msg=None,
         question_msg=None,
+        decision_policy=None,
     ):
+        super().__init__(decision_policy=decision_policy)
         self.max_seq_length = 4_096 * 2
         self.model, tokenizer = FastLanguageModel.from_pretrained(
             model_name=model_name_or_path,
@@ -100,13 +100,39 @@ class TransformerDecoderModel(ForecasterModel):
                 "Will the above conversation derail into a personal attack now or at any point in the future? "
                 "Strictly start your answer with Yes or No, otherwise the answer is invalid."
             )
-        self.best_threshold = 0.5
 
         if not os.path.exists(config.output_dir):
             os.makedirs(config.output_dir)
         self.config = config
 
         return
+
+    @property
+    def best_threshold(self):
+        if hasattr(self.decision_policy, "threshold"):
+            return self.decision_policy.threshold
+        return None
+
+    @best_threshold.setter
+    def best_threshold(self, value):
+        if hasattr(self.decision_policy, "threshold"):
+            self.decision_policy.threshold = float(value)
+
+    def get_checkpoints(self):
+        checkpoints = [cp for cp in os.listdir(self.config.output_dir) if "checkpoint-" in cp]
+        if len(checkpoints) == 0:
+            return ["zero-shot"]
+        return checkpoints
+
+    def load_checkpoint(self, checkpoint_name):
+        if checkpoint_name == "zero-shot":
+            return
+        full_model_path = os.path.join(self.config.output_dir, checkpoint_name)
+        self.model, _ = FastLanguageModel.from_pretrained(
+            model_name=full_model_path,
+            max_seq_length=self.max_seq_length,
+            load_in_4bit=True,
+        )
 
     def _context_mode(self, context):
         """
@@ -218,14 +244,13 @@ class TransformerDecoderModel(ForecasterModel):
         print(f"There are {len(dataset)} samples")
         return Dataset.from_list(dataset)
 
-    def fit(self, train_contexts, val_contexts):
+    def fit_belief_estimator(self, train_contexts, val_contexts=None):
         """
         Fine-tune the TransformerDecoder model using LoRA and save the best model based on validation performance.
 
         This method applies Low-Rank Adaptation (LoRA) to the decoder model, converts the
         training contexts into text-based input for LLM fine-tuning, and trains the model
-        using HuggingFace's `SFTTrainer`. After training, it tunes a decision threshold on
-        a held-out validation set to optimize binary forecast classification.
+        using HuggingFace's `SFTTrainer`.
 
         :param contexts: an iterator over context tuples, provided by the Forecaster framework
         :param val_contexts: an iterator over context tuples to be used only for validation.
@@ -260,9 +285,9 @@ class TransformerDecoderModel(ForecasterModel):
             model=self.model,
             tokenizer=self.tokenizer,
             train_dataset=train_dataset,
+            max_seq_length=self.max_seq_length,
             args=SFTConfig(
                 dataset_text_field="text",
-                max_seq_length=self.max_seq_length,
                 per_device_train_batch_size=self.config.per_device_batch_size,
                 gradient_accumulation_steps=self.config.gradient_accumulation_steps,
                 warmup_steps=10,
@@ -282,136 +307,9 @@ class TransformerDecoderModel(ForecasterModel):
             ),
         )
         trainer.train()
-        _ = self._tune_threshold(self, val_contexts)
         return
 
-    def _tune_threshold(self, val_contexts):
-        """
-        Tune the decision threshold and select the best model checkpoint based on validation accuracy.
-
-        This method evaluates all model checkpoints in the configured output directory using a
-        held-out validation set.
-
-        The selected model, threshold, and associated metadata are stored in:
-        - `self.model`: the best-performing fine-tuned model
-        - `self.best_threshold`: the optimal decision threshold
-        - `dev_config.json`: file containing best checkpoint metadata
-        - `val_predictions.csv`: CSV file with forecast outputs on the validation set
-
-        Additionally, all non-optimal model checkpoints are removed to save disk space, and the
-        tokenizer is saved to the directory of the best checkpoint.
-
-        :param val_dataset: A HuggingFace-compatible dataset containing features for validation.
-        :param val_contexts: An iterable of context tuples corresponding to the validation set.
-                            Used to map utterance IDs to conversation IDs and extract ground-truth labels.
-
-        :return: A dictionary containing the best checkpoint path, best threshold, and best validation accuracy.
-        """
-        checkpoints = [cp for cp in os.listdir(self.config.output_dir) if "checkpoint-" in cp]
-        if checkpoints == []:
-            checkpoints.append("zero-shot")
-        best_val_accuracy = 0
-        val_convo_ids = set()
-        utt2convo = {}
-        val_labels_dict = {}
-        val_contexts = list(val_contexts)
-        for context in val_contexts:
-            convo_id = context.conversation_id
-            utt_id = context.current_utterance.id
-            label = self.labeler(context.current_utterance.get_conversation())
-            utt2convo[utt_id] = convo_id
-            val_labels_dict[convo_id] = label
-            val_convo_ids.add(convo_id)
-        val_convo_ids = list(val_convo_ids)
-        for cp in checkpoints:
-            if cp != "zero-shot":
-                full_model_path = os.path.join(self.config.output_dir, cp)
-                self.model, _ = FastLanguageModel.from_pretrained(
-                    model_name=full_model_path,
-                    max_seq_length=self.max_seq_length,
-                    load_in_4bit=True,
-                )
-            FastLanguageModel.for_inference(self.model)
-            utt2score = {}
-            for context in tqdm(val_contexts):
-                utt_score, _ = self._predict(context)
-                utt_id = context.current_utterance.id
-                utt2score[utt_id] = utt_score
-            # for each CONVERSATION, whether or not it triggers will be effectively determined by what the highest score it ever got was
-            highest_convo_scores = {convo_id: -1 for convo_id in val_convo_ids}
-
-            for utt_id in utt2convo:
-                convo_id = utt2convo[utt_id]
-                utt_score = utt2score[utt_id]
-                if utt_score > highest_convo_scores[convo_id]:
-                    highest_convo_scores[convo_id] = utt_score
-
-            val_labels = np.asarray([int(val_labels_dict[c]) for c in val_convo_ids])
-            val_scores = np.asarray([highest_convo_scores[c] for c in val_convo_ids])
-            # use scikit learn to find candidate threshold cutoffs
-            _, _, thresholds = roc_curve(val_labels, val_scores)
-
-            def acc_with_threshold(y_true, y_score, thresh):
-                y_pred = (y_score > thresh).astype(int)
-                return (y_pred == y_true).mean()
-
-            accs = [acc_with_threshold(val_labels, val_scores, t) for t in thresholds]
-            best_acc_idx = np.argmax(accs)
-
-            print("Accuracy:", cp, accs[best_acc_idx])
-            if accs[best_acc_idx] > best_val_accuracy:
-                best_checkpoint = cp
-                best_val_accuracy = accs[best_acc_idx]
-                self.best_threshold = thresholds[best_acc_idx]
-
-        # Save the best config
-        best_config = {}
-        best_config["best_checkpoint"] = best_checkpoint
-        best_config["best_threshold"] = self.best_threshold
-        best_config["best_val_accuracy"] = best_val_accuracy
-        config_file = os.path.join(self.config.output_dir, "dev_config.json")
-        with open(config_file, "w") as outfile:
-            json_object = json.dumps(best_config, indent=4)
-            outfile.write(json_object)
-        # Load best model
-        best_model_path = os.path.join(self.config.output_dir, best_checkpoint)
-        self.model, _ = FastLanguageModel.from_pretrained(
-            model_name=best_model_path,
-            max_seq_length=self.max_seq_length,
-            load_in_4bit=True,
-        )
-
-        # Clean other checkpoints to save disk space.
-        for root, _, _ in os.walk(self.config.output_dir):
-            if ("checkpoint" in root) and (best_checkpoint not in root):
-                print("Deleting:", root)
-                shutil.rmtree(root)
-        # Save the tokenizer.
-        self.tokenizer.save_pretrained(
-            os.path.join(self.config.output_dir, best_config["best_checkpoint"])
-        )
-        return best_config
-
-    def _predict(self, context, threshold=None):
-        """
-        Run inference on a single context using the fine-tuned TransformerDecoder model.
-
-        This method prepares the input from the given context, generates a single-token
-        prediction (either "Yes" or "No"), and computes the softmax probability for "Yes".
-        The output is a confidence score and a binary prediction based on the given or
-        default threshold.
-
-        :param context: A context tuple containing the current utterance and conversation history.
-        :param threshold: (Optional) A float threshold for converting the predicted probability into a binary label.
-            If not provided, `self.best_threshold` is used.
-
-        :return: A tuple (`utt_score`, `utt_pred`), where:
-            - `utt_score` is the softmax probability assigned to "Yes"
-            - `utt_pred` is the binary prediction (1 if `utt_score > threshold`, else 0)
-        """
-        # Enabling inference with different checkpoints to _tune_best_val_accuracy
-        if not threshold:
-            threshold = self.best_threshold
+    def score(self, context) -> float:
         FastLanguageModel.for_inference(self.model)
         context_utts = self._context_mode(context)
         inputs = self._tokenize(context_utts).to(self.config.device)
@@ -432,16 +330,58 @@ class TransformerDecoderModel(ForecasterModel):
         utt_score = F.softmax(torch.tensor([yes_logit, no_logit], dtype=torch.float32), dim=0)[
             0
         ].item()
-        utt_pred = int(utt_score > threshold)
+        return utt_score
+
+    def _predict(self, context, threshold=None):
+        """
+        Run inference on a single context using the fine-tuned TransformerDecoder model.
+
+        This method prepares the input from the given context, generates a single-token
+        prediction (either "Yes" or "No"), and computes the softmax probability for "Yes".
+        The output is a confidence score and a binary prediction based on the given or
+        default threshold.
+
+        :param context: A context tuple containing the current utterance and conversation history.
+        :param threshold: (Optional) A float threshold for converting the predicted probability into a binary label.
+            If not provided, `self.best_threshold` is used.
+
+        :return: A tuple (`utt_score`, `utt_pred`), where:
+            - `utt_score` is the softmax probability assigned to "Yes"
+            - `utt_pred` is the binary prediction (1 if `utt_score > threshold`, else 0)
+        """
+        utt_score = self.score(context)
+        # keep threshold override for backward compatibility.
+        if threshold is not None:
+            utt_pred = int(utt_score > threshold)
+        else:
+            result = self.decision_policy.decide(context, self.score)
+            if len(result) == 2:
+                utt_score, utt_pred = result
+            elif len(result) == 3:
+                utt_score, utt_pred, _ = result
+            else:
+                raise ValueError(
+                    "decision_policy.decide() must return (utt_score, utt_pred) "
+                    "or (utt_score, utt_pred, metadata_dict)"
+                )
         return utt_score, utt_pred
 
-    def transform(self, contexts, forecast_attribute_name, forecast_prob_attribute_name):
+    def fit(self, contexts, val_contexts=None):
+        val_contexts_belief_estimator, val_contexts_decision_policy = tee(val_contexts, 2)
+        self.fit_belief_estimator(contexts, val_contexts_belief_estimator)
+        self.fit_decision_policy(contexts, val_contexts_decision_policy, score_fn=self.score)
+        return
+
+    def transform(
+        self, contexts, forecast_attribute_name, forecast_prob_attribute_name, verbose=False
+    ):
         """
         Generate forecasts using the fine-tuned TransformerDecoder model on the provided contexts, and save the predictions to the output directory specified in the configuration.
 
         :param contexts: context tuples from the Forecaster framework
         :param forecast_attribute_name: Forecaster will use this to look up the table column containing your model's discretized predictions (see output specification below)
         :param forecast_prob_attribute_name: Forecaster will use this to look up the table column containing your model's raw forecast probabilities (see output specification below)
+        :param verbose: if True, print verbose transform logging during the transformation
 
         :return: a Pandas DataFrame, with one row for each context, indexed by the ID of that context's current utterance. Contains two columns, one with raw probabilities named according to forecast_prob_attribute_name, and one with discretized (binary) forecasts named according to forecast_attribute_name
         """
@@ -449,15 +389,158 @@ class TransformerDecoderModel(ForecasterModel):
         utt_ids = []
         preds = []
         scores = []
-        for context in tqdm(contexts):
-            utt_score, utt_pred = self._predict(context)
+        metadatas = defaultdict(list)
+        # verbose-only diagnostics: running conversation-level metrics and an
+        # incremental predictions.csv dump. skipped entirely in the default path.
+        report_every_n = 250
+        prediction_file = os.path.join(self.config.output_dir, "predictions.csv")
+        next_flush_start = 0
+        csv_header_written = False
+        convo_forecasts = {}
+        convo_labels = {}
+        if verbose and os.path.exists(prediction_file):
+            os.remove(prediction_file)
 
+        def _compute_conversation_metrics():
+            common_convo_ids = [cid for cid in convo_forecasts if cid in convo_labels]
+            if len(common_convo_ids) == 0:
+                return None
+            tp = 0
+            fp = 0
+            tn = 0
+            fn = 0
+            for convo_id in common_convo_ids:
+                pred = int(convo_forecasts[convo_id] > 0)
+                label = int(convo_labels[convo_id])
+                if label == 1 and pred == 1:
+                    tp += 1
+                elif label == 0 and pred == 1:
+                    fp += 1
+                elif label == 0 and pred == 0:
+                    tn += 1
+                elif label == 1 and pred == 0:
+                    fn += 1
+            n = len(common_convo_ids)
+            acc = (tp + tn) / n if n > 0 else 0.0
+            p = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+            r = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+            fpr = fp / (fp + tn) if (fp + tn) > 0 else 0.0
+            f1 = (2 * p * r / (p + r)) if (p + r) > 0 else 0.0
+            return {"n": n, "acc": acc, "p": p, "r": r, "fpr": fpr, "f1": f1}
+
+        # for safety/flexibility we can accept either only score and pred or also the metadata
+        progress = tqdm(contexts)
+        for idx, context in enumerate(progress, start=1):
+            result = self.decision_policy.decide(context, self.score)
+
+            if len(result) == 2:
+                utt_score, utt_pred = result
+                utt_metadata = {}
+                # no metadata
+            elif len(result) == 3:
+                utt_score, utt_pred, utt_metadata = result
+                # coerce None metadata to {} so policies that return (score, pred, None)
+                # don't crash downstream utt_metadata.items() / .get() calls.
+                if utt_metadata is None:
+                    utt_metadata = {}
+            else:
+                raise ValueError(
+                    "decision_policy.decide() must return (utt_score, utt_pred) "
+                    "or (utt_score, utt_pred, metadata_dict)"
+                )
             utt_ids.append(context.current_utterance.id)
             preds.append(utt_pred)
             scores.append(utt_score)
-        forecasts_df = pd.DataFrame(
-            {forecast_attribute_name: preds, forecast_prob_attribute_name: scores}, index=utt_ids
-        )
-        prediction_file = os.path.join(self.config.output_dir, "test_predictions.csv")
-        forecasts_df.to_csv(prediction_file)
+            current_idx = len(preds) - 1
+            existing_metadata_keys = list(metadatas.keys())
+            for key in existing_metadata_keys:
+                metadatas[key].append(utt_metadata.get(key, None))
+            for key, value in utt_metadata.items():
+                if key not in metadatas:
+                    metadatas[key] = [None] * current_idx
+                    metadatas[key].append(value)
+
+            if not verbose:
+                continue
+
+            convo_id = getattr(context, "conversation_id", None)
+            try:
+                convo = context.current_utterance.get_conversation()
+                if convo_id is None and convo is not None:
+                    convo_id = convo.id
+                if convo_id is not None:
+                    if convo_id in convo_forecasts:
+                        convo_forecasts[convo_id] = max(convo_forecasts[convo_id], int(utt_pred))
+                    else:
+                        convo_forecasts[convo_id] = int(utt_pred)
+                    if convo_id not in convo_labels:
+                        convo_labels[convo_id] = int(self.labeler(convo))
+            except Exception:
+                pass
+
+            if idx % report_every_n == 0:
+                batch_cols = {
+                    forecast_attribute_name: preds[next_flush_start:idx],
+                    forecast_prob_attribute_name: scores[next_flush_start:idx],
+                }
+                for key, series in metadatas.items():
+                    batch_cols[key] = series[next_flush_start:idx]
+                batch_df = pd.DataFrame(batch_cols, index=utt_ids[next_flush_start:idx])
+                batch_df.to_csv(
+                    prediction_file,
+                    mode="a" if csv_header_written else "w",
+                    header=not csv_header_written,
+                )
+                csv_header_written = True
+                next_flush_start = idx
+
+                running_metrics = _compute_conversation_metrics()
+                if running_metrics is not None:
+                    tqdm.write(
+                        f"[info] transform metrics running: "
+                        f"processed_contexts={idx}, conversations={running_metrics['n']}, "
+                        f"acc={running_metrics['acc']:.4f}, p={running_metrics['p']:.4f}, "
+                        f"r={running_metrics['r']:.4f}, fpr={running_metrics['fpr']:.4f}, "
+                        f"f1={running_metrics['f1']:.4f}"
+                    )
+                else:
+                    tqdm.write(
+                        f"[info] transform metrics running: "
+                        f"processed_contexts={idx}, conversations=0"
+                    )
+        total_processed = len(preds)
+        if verbose and total_processed > next_flush_start:
+            batch_cols = {
+                forecast_attribute_name: preds[next_flush_start:total_processed],
+                forecast_prob_attribute_name: scores[next_flush_start:total_processed],
+            }
+            for key, series in metadatas.items():
+                batch_cols[key] = series[next_flush_start:total_processed]
+            batch_df = pd.DataFrame(batch_cols, index=utt_ids[next_flush_start:total_processed])
+            batch_df.to_csv(
+                prediction_file,
+                mode="a" if csv_header_written else "w",
+                header=not csv_header_written,
+            )
+            csv_header_written = True
+        cols = {
+            forecast_attribute_name: preds,
+            forecast_prob_attribute_name: scores,
+        }
+        if verbose:
+            final_metrics = _compute_conversation_metrics()
+            if final_metrics is not None:
+                tqdm.write(
+                    f"[info] final transform metrics: "
+                    f"processed_contexts={len(preds)}, conversations={final_metrics['n']}, "
+                    f"acc={final_metrics['acc']:.4f}, p={final_metrics['p']:.4f}, "
+                    f"r={final_metrics['r']:.4f}, fpr={final_metrics['fpr']:.4f}, "
+                    f"f1={final_metrics['f1']:.4f}"
+                )
+        for key, series in metadatas.items():
+            assert len(series) == len(
+                preds
+            ), "Metadata series length must match number of predictions"
+            cols[key] = series  # each series same length as preds
+        forecasts_df = pd.DataFrame(cols, index=utt_ids)
         return forecasts_df

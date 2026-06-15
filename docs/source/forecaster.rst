@@ -41,6 +41,7 @@ These are subclasses of ForecasterModel, each implementing forecasting models us
 .. toctree::
    :maxdepth: 1
 
+   Decision Policy <decisionpolicy.rst>
    CRAFT Model <craftmodel.rst>
    Transformer Encoder-based Model <transformerencodermodel.rst>
    Transformer Decoder-based Model <transformerdecodermodel.rst>

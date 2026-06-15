@@ -10,13 +10,12 @@ from convokit.forecaster.CRAFT.data import loadPrecomputedVoc, processContext, b
 from convokit import download, warn
 from convokit.convokitConfig import ConvoKitConfig
 from .CRAFT.model import EncoderRNN, ContextEncoderRNN, SingleTargetClf
-from .CRAFT.runners import Predictor, trainIters, evaluateDataset
+from .CRAFT.runners import Predictor, trainIters, evaluateBatch
 from .forecasterModel import ForecasterModel
-import numpy as np
-import torch.nn.functional as F
 from torch import optim, nn
 from typing import Dict, Union
 import os
+from convokit.decisionpolicy import ThresholdDecisionPolicy
 
 # parameters baked into the model design (because the provided models were saved with these parameters);
 # these cannot be changed by the user
@@ -89,8 +88,9 @@ class CRAFTModel(ForecasterModel):
         decision_threshold: Union[float, str] = "auto",
         torch_device: str = "cpu",
         config: dict = DEFAULT_CONFIG,
+        decision_policy=None,
     ):
-        super().__init__()
+        super().__init__(decision_policy=decision_policy)
 
         # load the initial weights and store this as the current model
         if initial_weights in MODEL_FILENAME_MAP:
@@ -131,18 +131,36 @@ class CRAFTModel(ForecasterModel):
                 raise TypeError("CRAFTModel: decision_threshold must be either a float or 'auto'")
             self._decision_threshold = DECISION_THRESHOLDS.get(initial_weights, 0.5)
 
+        if isinstance(self.decision_policy, ThresholdDecisionPolicy):
+            self.decision_policy.threshold = float(self._decision_threshold)
+
         self._device = torch.device(torch_device)
         self._config = config
+        self._inference_components = None
 
-    def _context_to_craft_data(self, contexts):
+    @property
+    def best_threshold(self):
+        if hasattr(self.decision_policy, "threshold"):
+            return self.decision_policy.threshold
+        return None
+
+    @best_threshold.setter
+    def best_threshold(self, value):
+        if hasattr(self.decision_policy, "threshold"):
+            self.decision_policy.threshold = float(value)
+
+    def _context_to_craft_data(self, contexts, include_labels=True):
         """
         Convert context utterances to a list of token-lists using the model's vocabulary object,
         maintaining the original temporal ordering
         """
         pairs = []
         for context in contexts:
-            convo = context.current_utterance.get_conversation()
-            label = self.labeler(convo)
+            if include_labels:
+                convo = context.current_utterance.get_conversation()
+                label = self.labeler(convo)
+            else:
+                label = 0
             processed_context = processContext(self._voc, context, label)
             utt = processed_context[-1]["tokens"][: (MAX_LENGTH - 1)]
             context_utts = [u["tokens"][: (MAX_LENGTH - 1)] for u in processed_context]
@@ -188,7 +206,17 @@ class CRAFTModel(ForecasterModel):
 
         return embedding, encoder, context_encoder, attack_clf
 
-    def fit(self, contexts, val_contexts=None):
+    def _get_inference_components(self):
+        if self._inference_components is None:
+            embedding, encoder, context_encoder, attack_clf = self._init_craft()
+            encoder.eval()
+            context_encoder.eval()
+            attack_clf.eval()
+            predictor = Predictor(encoder, context_encoder, attack_clf)
+            self._inference_components = (encoder, context_encoder, predictor)
+        return self._inference_components
+
+    def fit_belief_estimator(self, contexts, val_contexts=None):
         """
         Fine-tune the CRAFT model, and save the best model according to validation performance.
 
@@ -196,12 +224,12 @@ class CRAFTModel(ForecasterModel):
         :param val_contexts: an iterator over context tuples to be used only for validation. IMPORTANT: this is marked Optional only for compatibility with the generic Forecaster API; CRAFT actually REQUIRES a validation set so leaving this parameter at None will raise an error!
         """
         # convert the input contexts into CRAFT's data format
-        train_pairs = self._context_to_craft_data(contexts)
+        train_pairs = self._context_to_craft_data(contexts, include_labels=True)
         print("Processed", len(train_pairs), "context tuples for model training")
         # val_contexts is made Optional to conform to the Forecaster spec, but in reality CRAFT requires a validation set
         if val_contexts is None:
             raise ValueError("CRAFTModel requires a validation set!")
-        val_pairs = self._context_to_craft_data(val_contexts)
+        val_pairs = self._context_to_craft_data(val_contexts, include_labels=True)
         print("Processed", len(val_pairs), "context tuples for model validation")
 
         # initialize the CRAFT model with whatever weights we currently have saved
@@ -252,6 +280,50 @@ class CRAFTModel(ForecasterModel):
 
         # save the resulting checkpoints so we can load them later during transform
         self._model = best_model
+        self._inference_components = None
+
+    def fit_decision_policy(self, contexts, val_contexts=None):
+        return super().fit_decision_policy(contexts, val_contexts)
+
+    def fit(self, contexts, val_contexts=None):
+        return super().fit(contexts, val_contexts)
+
+    def score(self, context) -> float:
+        encoder, context_encoder, predictor = self._get_inference_components()
+        score_pairs = self._context_to_craft_data([context], include_labels=False)
+        batch, batch_dialogs, _, true_batch_size = next(
+            batchIterator(self._voc, score_pairs, batch_size=1, shuffle=False)
+        )
+        (
+            input_variable,
+            dialog_lengths,
+            utt_lengths,
+            batch_indices,
+            dialog_indices,
+            labels,
+            convo_ids,
+            target_variable,
+            mask,
+            max_target_len,
+        ) = batch
+        dialog_lengths_list = [len(x) for x in batch_dialogs]
+        _, scores = evaluateBatch(
+            encoder,
+            context_encoder,
+            predictor,
+            self._voc,
+            input_variable,
+            dialog_lengths,
+            dialog_lengths_list,
+            utt_lengths,
+            batch_indices,
+            dialog_indices,
+            true_batch_size,
+            self._device,
+            MAX_LENGTH,
+            threshold=self.best_threshold if self.best_threshold is not None else 0.5,
+        )
+        return float(scores[0].item())
 
     def transform(self, contexts, forecast_attribute_name, forecast_prob_attribute_name):
         """
@@ -264,34 +336,83 @@ class CRAFTModel(ForecasterModel):
         :return: a Pandas DataFrame, with one row for each context, indexed by the ID of that context's current utterance. Contains two columns, one with raw probabilities named according to forecast_prob_attribute_name, and one with discretized (binary) forecasts named according to forecast_attribute_name
         """
         # convert the input contexts into CRAFT's data format
-        test_pairs = self._context_to_craft_data(contexts)
+        contexts = list(contexts)
+        context_by_utt_id = {context.current_utterance.id: context for context in contexts}
+        test_pairs = self._context_to_craft_data(contexts, include_labels=False)
         print("Processed", len(test_pairs), "context tuples for model evaluation")
 
         # initialize the CRAFT model with whatever weights we currently have saved
-        embedding, encoder, context_encoder, attack_clf = self._init_craft()
+        encoder, context_encoder, predictor = self._get_inference_components()
 
-        # Set dropout layers to eval mode
-        encoder.eval()
-        context_encoder.eval()
-        attack_clf.eval()
-
-        # Initialize the pipeline
-        predictor = Predictor(encoder, context_encoder, attack_clf)
-
-        # Run the pipeline!
-        forecasts_df = evaluateDataset(
-            test_pairs,
-            encoder,
-            context_encoder,
-            predictor,
-            self._voc,
-            self._config["batch_size"],
-            self._device,
-            MAX_LENGTH,
-            batchIterator,
-            self._decision_threshold,
-            forecast_attribute_name,
-            forecast_prob_attribute_name,
+        base_columns = {"id", forecast_attribute_name, forecast_prob_attribute_name}
+        output_df = {"id": [], forecast_attribute_name: [], forecast_prob_attribute_name: []}
+        batch_iterator = batchIterator(
+            self._voc, test_pairs, self._config["batch_size"], shuffle=False
         )
+        n_iters = len(test_pairs) // self._config["batch_size"] + int(
+            len(test_pairs) % self._config["batch_size"] > 0
+        )
+        for iteration in range(1, n_iters + 1):
+            batch, batch_dialogs, _, true_batch_size = next(batch_iterator)
+            (
+                input_variable,
+                dialog_lengths,
+                utt_lengths,
+                batch_indices,
+                dialog_indices,
+                labels,
+                convo_ids,
+                target_variable,
+                mask,
+                max_target_len,
+            ) = batch
+            dialog_lengths_list = [len(x) for x in batch_dialogs]
+            _, scores = evaluateBatch(
+                encoder,
+                context_encoder,
+                predictor,
+                self._voc,
+                input_variable,
+                dialog_lengths,
+                dialog_lengths_list,
+                utt_lengths,
+                batch_indices,
+                dialog_indices,
+                true_batch_size,
+                self._device,
+                MAX_LENGTH,
+                threshold=self.best_threshold if self.best_threshold is not None else 0.5,
+            )
+            for i in range(true_batch_size):
+                score = float(scores[i].item())
+                utt_id = convo_ids[i]
+                context = context_by_utt_id[utt_id]
+
+                def score_fn(scored_context):
+                    scored_utt_id = scored_context.current_utterance.id
+                    if scored_utt_id == utt_id:
+                        return score
+                    return self.score(scored_context)
+
+                utt_score, pred, utt_metadata = self._parse_decision_result(
+                    self.decision_policy.decide(context, score_fn)
+                )
+                current_idx = len(output_df["id"])
+                output_df["id"].append(utt_id)
+                output_df[forecast_attribute_name].append(int(pred))
+                output_df[forecast_prob_attribute_name].append(utt_score)
+                existing_metadata_keys = [key for key in output_df if key not in base_columns]
+                for key in existing_metadata_keys:
+                    output_df[key].append(utt_metadata.get(key, None))
+                for key, value in utt_metadata.items():
+                    if key not in output_df:
+                        output_df[key] = [None] * current_idx
+                        output_df[key].append(value)
+            print(
+                "Iteration: {}; Percent complete: {:.1f}%".format(
+                    iteration, iteration / n_iters * 100
+                )
+            )
+        forecasts_df = pd.DataFrame(output_df).set_index("id")
 
         return forecasts_df

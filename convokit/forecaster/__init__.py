@@ -1,6 +1,7 @@
 from .forecaster import *
 from .forecasterModel import *
 from .cumulativeBoW import *
+from convokit.decisionpolicy import *
 import sys
 
 # Import CRAFT models if torch is available

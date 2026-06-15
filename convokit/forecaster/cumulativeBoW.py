@@ -25,11 +25,15 @@ class CumulativeBoW(ForecasterModel):
         use_tokens=False,
         forecast_attribute_name: str = "prediction",
         forecast_prob_attribute_name: str = "score",
+        decision_policy=None,
     ):
         super().__init__(
+            decision_policy=decision_policy,
             forecast_attribute_name=forecast_attribute_name,
             forecast_prob_attribute_name=forecast_prob_attribute_name,
         )
+        self.forecast_attribute_name = forecast_attribute_name
+        self.forecast_prob_attribute_name = forecast_prob_attribute_name
         if vectorizer is None:
             print("Initializing default unigram CountVectorizer...")
             if use_tokens:
@@ -65,6 +69,10 @@ class CumulativeBoW(ForecasterModel):
             )
         else:
             self.clf_model = clf_model
+
+    @staticmethod
+    def _context_to_text(context):
+        return " ".join([u.text for u in context.context])
 
     @staticmethod
     def _combine_contexts(id_to_context_others):
@@ -114,3 +122,30 @@ class CumulativeBoW(ForecasterModel):
             data=list(zip(ids, preds, pred_probs)),
             columns=["id", self.forecast_attribute_name, self.forecast_prob_attribute_name],
         ).set_index("id")
+
+    def fit_belief_estimator(self, contexts, val_contexts=None):
+        contexts = list(contexts)
+        X_raw = [self._context_to_text(context) for context in contexts]
+        y = [self.labeler(context.current_utterance.get_conversation()) for context in contexts]
+        X = self.vectorizer.fit_transform(X_raw)
+        self.clf_model.fit(X, y)
+
+    def score(self, context) -> float:
+        X = self.vectorizer.transform([self._context_to_text(context)])
+        return float(self.clf_model.predict_proba(X)[0, 1])
+
+    def fit(self, contexts, val_contexts=None):
+        return super().fit(contexts, val_contexts)
+
+    def transform(self, contexts, forecast_attribute_name, forecast_prob_attribute_name):
+        utt_ids = []
+        preds = []
+        scores = []
+        for context in contexts:
+            utt_score, utt_pred = self._predict(context)
+            utt_ids.append(context.current_utterance.id)
+            preds.append(utt_pred)
+            scores.append(utt_score)
+        return pd.DataFrame(
+            {forecast_attribute_name: preds, forecast_prob_attribute_name: scores}, index=utt_ids
+        )

@@ -21,6 +21,7 @@ _LAZY_MODULES = {
     "classifier": ".classifier",
     "ranker": ".ranker",
     "forecaster": ".forecaster",
+    "decisionpolicy": ".decisionpolicy",
     "fighting_words": ".fighting_words",
     "paired_prediction": ".paired_prediction",
     "bag_of_words": ".bag_of_words",
