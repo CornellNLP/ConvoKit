@@ -82,6 +82,25 @@ def construct_nonexistent_reply_to_corpus():
     return corpus
 
 
+def construct_no_timestamp_tree_corpus():
+    # a valid reply-to tree where the root has multiple children and no
+    # utterance has a timestamp set (timestamp is Optional and defaults to None)
+    corpus = Corpus(
+        utterances=[
+            Utterance(
+                id="0", reply_to=None, conversation_id="0", speaker=Speaker(id="alice")
+            ),
+            Utterance(
+                id="1", reply_to="0", conversation_id="0", speaker=Speaker(id="alice")
+            ),
+            Utterance(
+                id="2", reply_to="0", conversation_id="0", speaker=Speaker(id="alice")
+            ),
+        ]
+    )
+    return corpus
+
+
 def construct_tree_corpus():
     corpus = Corpus(
         utterances=[

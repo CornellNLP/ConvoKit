@@ -16,7 +16,11 @@ class UtteranceNode:
         self.children = []
 
     def set_children(self, children: List["UtteranceNode"]):
-        self.children = sorted(children, key=lambda w: w.utt.timestamp)  # earliest to latest utt
+        # earliest to latest utt; utterances with no timestamp (None) are sorted
+        # last and never compared against each other or against numeric timestamps
+        self.children = sorted(
+            children, key=lambda w: (w.utt.timestamp is None, w.utt.timestamp or 0)
+        )
 
     def pre_order(self):
         """
