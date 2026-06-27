@@ -47,6 +47,8 @@ Random Deferral Decision Policy
 Simulation Average Decision Policy
 ----------------------------------
 
+This policy is based upon the forecasting approach described in `Simulation-based Decision Making for Dialogue Intervention <https://aclanthology.org/2025.inlg-main.40/>`_ in the static forecasting task, and is adapted for the non-static forecasting task in `Wait! There's a Way Out <https://arxiv.org/abs/2605.29243>`_ 
+
 .. automodule:: convokit.decisionpolicy.simulationAverageDecisionPolicy
     :members:
 
