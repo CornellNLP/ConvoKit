@@ -64,6 +64,8 @@ These are subclasses of ForecasterModel, each implementing forecasting models us
 
 The following table is the current leaderboard comparing the performance of different forecaster models following a uniform evaluation framework described in `Tran et al., 2025 <https://arxiv.org/abs/2507.19470>`_. If you want to include the performance of another model in this leaderboard, make a pull request with the respective ForecasterModel class and with the version of this `demo <https://github.com/CornellNLP/ConvoKit/blob/master/examples/forecaster/Run%20Transformer%20Fine-tuned%20Models.ipynb>`_ that generates the respective new leaderboard line.
 
+The DeferralDecisionPolicy is based upon the forecasting approach described in `Wait! There's a Way Out <https://arxiv.org/abs/2605.29243>`_. The SimulationAverageDecisionPolicy is based upon the forecasting approach described in `Simulation-based Decision Making for Dialogue Intervention <https://aclanthology.org/2025.inlg-main.40/>`_ in the static forecasting task, and is adapted for the non-static forecasting task in `Wait! There's a Way Out <https://arxiv.org/abs/2605.29243>`_.
+
 Unless otherwise specified, the performance is reported using the ThresholdDecisionPolicy.
 
 +---------------------------------------------+-------+------+-------+-------+------+----------+-------------------------+
@@ -71,9 +73,9 @@ Unless otherwise specified, the performance is reported using the ThresholdDecis
 +=============================================+=======+======+=======+=======+======+==========+=========================+
 | Gemma2 9B (ThresholdDecisionPolicy)         | 71.0  | 69.1 | 76.1  | 72.3  | 34.2 | 3.9      | +1.8 (8.4 - 6.6)        |
 +---------------------------------------------+-------+------+-------+-------+------+----------+-------------------------+
-| Gemma2 9B (DeferralDecisionPolicy)          | 70.9  | 72.0 | 68.4  | 70.1  | 26.7 | 2.77     | -0.1 (7.0 - 7.1)        |
+| Gemma2 9B (DeferralDecisionPolicy)          | 70.9  | 72.0 | 68.4  | 70.1  | 26.7 | 3.8      | -0.1 (7.0 - 7.1)        |
 +---------------------------------------------+-------+------+-------+-------+------+----------+-------------------------+
-| Gemma2 9B (SimulationAverageDecisionPolicy) | 70.2  | 68.1 | 76.6  | 72.0  | 36.1 | 3.03     | -1.2 (9.3 - 10.5)       |
+| Gemma2 9B (SimulationAverageDecisionPolicy) | 70.2  | 68.1 | 76.6  | 72.0  | 36.1 | 4.0      | -1.2 (9.3 - 10.5)       |
 +---------------------------------------------+-------+------+-------+-------+------+----------+-------------------------+
 | Mistral 7B                                  | 70.7  | 68.8 | 76.0  | 72.1  | 34.6 | 4.0      | +2.9 (8.1 - 5.2)        |
 +---------------------------------------------+-------+------+-------+-------+------+----------+-------------------------+
