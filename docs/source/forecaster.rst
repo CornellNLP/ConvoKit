@@ -27,12 +27,27 @@ Illustrative example, a conversation containing utterances ``[a, b, c, d]`` (in 
 #. ``(context=[a,b,c], current_utterance=c, future_context=[d])``
 #. ``(context=[a,b,c,d], current_utterance=d, future_context=[])``
 
+Belief estimation and decision policies
+---------------------------------------
+
+ConvoKit splits conversational forecasting into two steps:
+
+* **Belief estimation** — the forecaster model assigns a continuous score to each conversational context (typically a probability that a target event will occur). This is implemented by ``ForecasterModel.score()``.
+* **Decision policy** — a separate component converts that score into a binary **intervention decision** (intervene now, or wait). This is implemented by ``DecisionPolicy.decide()``.
+
+Separating belief from action lets you change *when* to intervene—for example simple thresholding, look-ahead deferral, or simulation-based voting—without retraining or modifying the underlying forecaster. Each ``ForecasterModel`` owns one decision policy (default: ``ThresholdDecisionPolicy``), exposed via the ``decision_policy`` property.
+
+At inference time, the model scores the current context, then the policy decides whether to act. During training, ``fit()`` can train both components; you can also call ``fit_belief_estimator()`` and ``fit_decision_policy()`` separately.
+
+For policy types, API details, and implementation notes, see :doc:`decisionpolicy`.
 
 .. automodule:: convokit.forecaster.forecaster
     :members:
 
 .. automodule:: convokit.forecaster.forecasterModel
     :members:
+
+This two-stage design is introduced in `Wait! There's a Way Out <https://arxiv.org/abs/2605.29243>`_.
 
 Forecaster Model
 ================
@@ -49,72 +64,80 @@ These are subclasses of ForecasterModel, each implementing forecasting models us
 
 The following table is the current leaderboard comparing the performance of different forecaster models following a uniform evaluation framework described in `Tran et al., 2025 <https://arxiv.org/abs/2507.19470>`_. If you want to include the performance of another model in this leaderboard, make a pull request with the respective ForecasterModel class and with the version of this `demo <https://github.com/CornellNLP/ConvoKit/blob/master/examples/forecaster/Run%20Transformer%20Fine-tuned%20Models.ipynb>`_ that generates the respective new leaderboard line.
 
-+----------------+-------+------+-------+-------+------+----------+-------------------------+
-| Model          | Acc ↑ | P ↑  | R ↑   | F1 ↑  | FPR ↓| Mean H ↑ | Recovery ↑              |
-+================+=======+======+=======+=======+======+==========+=========================+
-| Gemma2 9B      | 71.0  | 69.1 | 76.1  | 72.3  | 34.2 | 3.9      | +1.8 (8.4 - 6.6)        |
-+----------------+-------+------+-------+-------+------+----------+-------------------------+
-| Mistral 7B     | 70.7  | 68.8 | 76.0  | 72.1  | 34.6 | 4.0      | +2.9 (8.1 - 5.2)        |
-+----------------+-------+------+-------+-------+------+----------+-------------------------+
-| Phi4 14B       | 70.5  | 67.7 | 78.4  | 72.6  | 37.5 | 4.0      | +2.0 (7.7 - 5.7)        |
-+----------------+-------+------+-------+-------+------+----------+-------------------------+
-| LlaMa3.1 8B    | 70.0  | 68.8 | 73.2  | 70.9  | 33.2 | 4.0      | +1.7 (7.3 - 5.6)        |
-+----------------+-------+------+-------+-------+------+----------+-------------------------+
-| DeBERTaV3-large| 68.9  | 67.3 | 73.7  | 70.3  | 36.0 | 4.2      | +1.1 (7.6 - 6.5)        |
-+----------------+-------+------+-------+-------+------+----------+-------------------------+
-| RoBERTa-large  | 68.6  | 67.1 | 73.4  | 70.0  | 36.1 | 4.2      | +1.6 (7.5 - 5.9)        |
-+----------------+-------+------+-------+-------+------+----------+-------------------------+
-| RoBERTa-base   | 68.1  | 67.3 | 70.6  | 68.8  | 34.4 | 4.2      | +0.7 (7.4 - 6.7)        |
-+----------------+-------+------+-------+-------+------+----------+-------------------------+
-| DeBERTaV3-base | 67.9  | 66.7 | 71.4  | 69.0  | 35.7 | 4.2      | +1.5 (7.2 - 5.7)        |
-+----------------+-------+------+-------+-------+------+----------+-------------------------+
-| SpanBERT-large | 67.0  | 65.8 | 70.5  | 68.1  | 36.6 | 4.2      | +1.3 (8.3 - 7.0)        |
-+----------------+-------+------+-------+-------+------+----------+-------------------------+
-| SpanBERT-base  | 66.4  | 64.7 | 72.0  | 68.2  | 39.3 | 4.4      | +1.7 (9.6 - 8.0)        |
-+----------------+-------+------+-------+-------+------+----------+-------------------------+
-| BERT-large     | 65.7  | 66.0 | 65.4  | 65.5  | 34.1 | 4.2      | +0.4 (7.8 - 7.3)        |
-+----------------+-------+------+-------+-------+------+----------+-------------------------+
-| BERT-base      | 65.3  | 64.1 | 70.1  | 66.9  | 39.5 | 4.4      | +1.9 (9.7 - 7.8)        |
-+----------------+-------+------+-------+-------+------+----------+-------------------------+
-| CRAFT          | 62.8  | 59.4 | 81.1  | 68.5  | 55.5 | 4.7      | +4.9 (12.0 - 7.1)       |
-+----------------+-------+------+-------+-------+------+----------+-------------------------+
+The DeferralDecisionPolicy is based upon the forecasting approach described in `Wait! There's a Way Out <https://arxiv.org/abs/2605.29243>`_. The SimulationAverageDecisionPolicy is based upon the forecasting approach described in `Simulation-based Decision Making for Dialogue Intervention <https://aclanthology.org/2025.inlg-main.40/>`_ in the static forecasting task, and is adapted for the non-static forecasting task in `Wait! There's a Way Out <https://arxiv.org/abs/2605.29243>`_.
+
+Unless otherwise specified, the performance is reported using the ThresholdDecisionPolicy.
+
++---------------------+-----------------------------------+-------+------+-------+-------+------+----------+-------------------------+
+| Model               | Decision Policy                   | Acc ↑ | P ↑  | R ↑   | F1 ↑  | FPR ↓| Mean H ↑ | Recovery ↑              |
++=====================+===================================+=======+======+=======+=======+======+==========+=========================+
+| Gemma2 9B           | ThresholdDecisionPolicy           | 71.0  | 69.1 | 76.1  | 72.3  | 34.2 | 3.9      | +1.8 (8.4 - 6.6)        |
++---------------------+-----------------------------------+-------+------+-------+-------+------+----------+-------------------------+
+| Gemma2 9B           | DeferralDecisionPolicy            | 70.9  | 72.0 | 68.4  | 70.1  | 26.7 | 3.8      | -0.1 (7.0 - 7.1)        |
++---------------------+-----------------------------------+-------+------+-------+-------+------+----------+-------------------------+
+| Gemma2 9B           | SimulationAverageDecisionPolicy   | 70.2  | 68.1 | 76.6  | 72.0  | 36.1 | 4.0      | -1.2 (9.3 - 10.5)       |
++---------------------+-----------------------------------+-------+------+-------+-------+------+----------+-------------------------+
+| Mistral 7B          | ThresholdDecisionPolicy           | 70.7  | 68.8 | 76.0  | 72.1  | 34.6 | 4.0      | +2.9 (8.1 - 5.2)        |
++---------------------+-----------------------------------+-------+------+-------+-------+------+----------+-------------------------+
+| Phi4 14B            | ThresholdDecisionPolicy           | 70.5  | 67.7 | 78.4  | 72.6  | 37.5 | 4.0      | +2.0 (7.7 - 5.7)        |
++---------------------+-----------------------------------+-------+------+-------+-------+------+----------+-------------------------+
+| LlaMa3.1 8B         | ThresholdDecisionPolicy           | 70.0  | 68.8 | 73.2  | 70.9  | 33.2 | 4.0      | +1.7 (7.3 - 5.6)        |
++---------------------+-----------------------------------+-------+------+-------+-------+------+----------+-------------------------+
+| DeBERTaV3-large     | ThresholdDecisionPolicy           | 68.9  | 67.3 | 73.7  | 70.3  | 36.0 | 4.2      | +1.1 (7.6 - 6.5)        |
++---------------------+-----------------------------------+-------+------+-------+-------+------+----------+-------------------------+
+| RoBERTa-large       | ThresholdDecisionPolicy           | 68.6  | 67.1 | 73.4  | 70.0  | 36.1 | 4.2      | +1.6 (7.5 - 5.9)        |
++---------------------+-----------------------------------+-------+------+-------+-------+------+----------+-------------------------+
+| RoBERTa-base        | ThresholdDecisionPolicy           | 68.1  | 67.3 | 70.6  | 68.8  | 34.4 | 4.2      | +0.7 (7.4 - 6.7)        |
++---------------------+-----------------------------------+-------+------+-------+-------+------+----------+-------------------------+
+| DeBERTaV3-base      | ThresholdDecisionPolicy           | 67.9  | 66.7 | 71.4  | 69.0  | 35.7 | 4.2      | +1.5 (7.2 - 5.7)        |
++---------------------+-----------------------------------+-------+------+-------+-------+------+----------+-------------------------+
+| SpanBERT-large      | ThresholdDecisionPolicy           | 67.0  | 65.8 | 70.5  | 68.1  | 36.6 | 4.2      | +1.3 (8.3 - 7.0)        |
++---------------------+-----------------------------------+-------+------+-------+-------+------+----------+-------------------------+
+| SpanBERT-base       | ThresholdDecisionPolicy           | 66.4  | 64.7 | 72.0  | 68.2  | 39.3 | 4.4      | +1.7 (9.6 - 8.0)        |
++---------------------+-----------------------------------+-------+------+-------+-------+------+----------+-------------------------+
+| BERT-large          | ThresholdDecisionPolicy           | 65.7  | 66.0 | 65.4  | 65.5  | 34.1 | 4.2      | +0.4 (7.8 - 7.3)        |
++---------------------+-----------------------------------+-------+------+-------+-------+------+----------+-------------------------+
+| BERT-base           | ThresholdDecisionPolicy           | 65.3  | 64.1 | 70.1  | 66.9  | 39.5 | 4.4      | +1.9 (9.7 - 7.8)        |
++---------------------+-----------------------------------+-------+------+-------+-------+------+----------+-------------------------+
+| CRAFT               | ThresholdDecisionPolicy           | 62.8  | 59.4 | 81.1  | 68.5  | 55.5 | 4.7      | +4.9 (12.0 - 7.1)       |
++---------------------+-----------------------------------+-------+------+-------+-------+------+----------+-------------------------+
 
 **Table 1: Forecasting derailment on CGA-CMV-large conversations.**
 The performance is measured in accuracy (Acc), precision (P), recall (R), F1, false positive rate (FPR), mean horizon (Mean H), and Forecast Recovery (Recovery) along with the correct and incorrect recovery rates. Results are reported as averages over five runs with
 different random seeds.
 
-+----------------+-------+------+-------+-------+------+----------+-------------------------+
-| Model          | Acc ↑ | P ↑  | R ↑   | F1 ↑  | FPR ↓| Mean H ↑ | Recovery ↑              |
-+================+=======+======+=======+=======+======+==========+=========================+
-| Gemma2 9B      | 69.2  | 67.5 | 75.3  | 70.9  | 36.9 | 3.6      | +0.9 (4.1 - 3.2)        |
-+----------------+-------+------+-------+-------+------+----------+-------------------------+
-| Phi4 14B       | 68.8  | 69.5 | 67.1  | 68.2  | 29.6 | 3.3      | +0.8 (3.7 - 2.9)        |
-+----------------+-------+------+-------+-------+------+----------+-------------------------+
-| LlaMa3.1 8B    | 68.5  | 66.3 | 75.6  | 70.5  | 38.7 | 3.6      | +1.8 (5.5 - 3.7)        |
-+----------------+-------+------+-------+-------+------+----------+-------------------------+
-| RoBERTa-large  | 68.2  | 67.8 | 69.7  | 68.6  | 33.3 | 3.6      | +0.3 (3.9 - 3.5)        |
-+----------------+-------+------+-------+-------+------+----------+-------------------------+
-| SpanBERT-large | 67.9  | 66.5 | 72.6  | 69.3  | 36.7 | 3.6      | +0.1 (4.9 - 4.8)        |
-+----------------+-------+------+-------+-------+------+----------+-------------------------+
-| Mistral 7B     | 67.8  | 65.9 | 74.4  | 69.8  | 38.8 | 3.8      | +1.1 (5.1 - 4.0)        |
-+----------------+-------+------+-------+-------+------+----------+-------------------------+
-| DeBERTaV3-large| 67.8  | 66.9 | 70.9  | 68.7  | 35.3 | 3.7      | +0.8 (3.8 - 3.0)        |
-+----------------+-------+------+-------+-------+------+----------+-------------------------+
-| RoBERTa-base   | 67.6  | 65.7 | 73.9  | 69.5  | 38.6 | 3.6      | +0.5 (3.4 - 2.8)        |
-+----------------+-------+------+-------+-------+------+----------+-------------------------+
-| DeBERTaV3-base | 67.5  | 67.0 | 69.2  | 68.0  | 34.3 | 3.6      | +0.5 (2.7 - 2.3)        |
-+----------------+-------+------+-------+-------+------+----------+-------------------------+
-| SpanBERT-base  | 66.7  | 66.1 | 68.7  | 67.3  | 35.2 | 3.3      | -0.7 (4.5 - 5.2)        |
-+----------------+-------+------+-------+-------+------+----------+-------------------------+
-| BERT-base      | 66.5  | 66.5 | 66.3  | 66.4  | 33.4 | 3.6      | -1.6 (5.6 - 7.2)        |
-+----------------+-------+------+-------+-------+------+----------+-------------------------+
-| BERT-large     | 65.7  | 65.6 | 67.0  | 66.0  | 35.6 | 3.6      | +0.0 (5.6 - 5.6)        |
-+----------------+-------+------+-------+-------+------+----------+-------------------------+
-| CRAFT          | 64.8  | 63.4 | 70.1  | 66.5  | 40.5 | 3.5      | +0.4 (3.7 - 2.9)        |
-+----------------+-------+------+-------+-------+------+----------+-------------------------+
++---------------------+-----------------------------------+-------+------+-------+-------+------+----------+-------------------------+
+| Model               | Decision Policy                   | Acc ↑ | P ↑  | R ↑   | F1 ↑  | FPR ↓| Mean H ↑ | Recovery ↑              |
++=====================+===================================+=======+======+=======+=======+======+==========+=========================+
+| Gemma2 9B           | ThresholdDecisionPolicy           | 69.2  | 67.5 | 75.3  | 70.9  | 36.9 | 3.6      | +0.9 (4.1 - 3.2)        |
++---------------------+-----------------------------------+-------+------+-------+-------+------+----------+-------------------------+
+| Phi4 14B            | ThresholdDecisionPolicy           | 68.8  | 69.5 | 67.1  | 68.2  | 29.6 | 3.3      | +0.8 (3.7 - 2.9)        |
++---------------------+-----------------------------------+-------+------+-------+-------+------+----------+-------------------------+
+| LlaMa3.1 8B         | ThresholdDecisionPolicy           | 68.5  | 66.3 | 75.6  | 70.5  | 38.7 | 3.6      | +1.8 (5.5 - 3.7)        |
++---------------------+-----------------------------------+-------+------+-------+-------+------+----------+-------------------------+
+| RoBERTa-large       | ThresholdDecisionPolicy           | 68.2  | 67.8 | 69.7  | 68.6  | 33.3 | 3.6      | +0.3 (3.9 - 3.5)        |
++---------------------+-----------------------------------+-------+------+-------+-------+------+----------+-------------------------+
+| SpanBERT-large      | ThresholdDecisionPolicy           | 67.9  | 66.5 | 72.6  | 69.3  | 36.7 | 3.6      | +0.1 (4.9 - 4.8)        |
++---------------------+-----------------------------------+-------+------+-------+-------+------+----------+-------------------------+
+| Mistral 7B          | ThresholdDecisionPolicy           | 67.8  | 65.9 | 74.4  | 69.8  | 38.8 | 3.8      | +1.1 (5.1 - 4.0)        |
++---------------------+-----------------------------------+-------+------+-------+-------+------+----------+-------------------------+
+| DeBERTaV3-large     | ThresholdDecisionPolicy           | 67.8  | 66.9 | 70.9  | 68.7  | 35.3 | 3.7      | +0.8 (3.8 - 3.0)        |
++---------------------+-----------------------------------+-------+------+-------+-------+------+----------+-------------------------+
+| RoBERTa-base        | ThresholdDecisionPolicy           | 67.6  | 65.7 | 73.9  | 69.5  | 38.6 | 3.6      | +0.5 (3.4 - 2.8)        |
++---------------------+-----------------------------------+-------+------+-------+-------+------+----------+-------------------------+
+| DeBERTaV3-base      | ThresholdDecisionPolicy           | 67.5  | 67.0 | 69.2  | 68.0  | 34.3 | 3.6      | +0.5 (2.7 - 2.3)        |
++---------------------+-----------------------------------+-------+------+-------+-------+------+----------+-------------------------+
+| SpanBERT-base       | ThresholdDecisionPolicy           | 66.7  | 66.1 | 68.7  | 67.3  | 35.2 | 3.3      | -0.7 (4.5 - 5.2)        |
++---------------------+-----------------------------------+-------+------+-------+-------+------+----------+-------------------------+
+| BERT-base           | ThresholdDecisionPolicy           | 66.5  | 66.5 | 66.3  | 66.4  | 33.4 | 3.6      | -1.6 (5.6 - 7.2)        |
++---------------------+-----------------------------------+-------+------+-------+-------+------+----------+-------------------------+
+| BERT-large          | ThresholdDecisionPolicy           | 65.7  | 65.6 | 67.0  | 66.0  | 35.6 | 3.6      | +0.0 (5.6 - 5.6)        |
++---------------------+-----------------------------------+-------+------+-------+-------+------+----------+-------------------------+
+| CRAFT               | ThresholdDecisionPolicy           | 64.8  | 63.4 | 70.1  | 66.5  | 40.5 | 3.5      | +0.4 (3.7 - 2.9)        |
++---------------------+-----------------------------------+-------+------+-------+-------+------+----------+-------------------------+
 
 **Table 2: Forecasting derailment on CGA-Wikiconv conversations.**
 The performance is measured in accuracy (Acc), precision (P), recall (R), F1, false positive rate (FPR), mean horizon (Mean H), and Forecast Recovery (Recovery) along with the correct and incorrect recovery rates. Results are reported as averages over five runs with
 different random seeds.
 
-For more information on how to produce a leaderboard string here, see the `Run Transformer Fine-tuned Models.ipynb <https://github.com/CornellNLP/ConvoKit/blob/master/examples/forecaster/Run%20Transformer%20Fine-tuned%20Models.ipynb>`_ notebook. If you would like to include your model in the leaderboard, please make a pull request adding the respective ForecasterModel and the version of the demo generating the leaderboard line. Please contact us on `Discord <https://discord.gg/R2ej9Kyr3K>`_ for assistance.
+For more information on how to produce a leaderboard string here, see the `Run Transformer Fine-tuned Models.ipynb <https://github.com/CornellNLP/ConvoKit/blob/master/examples/forecaster/Run%20Transformer%20Fine-tuned%20Models.ipynb>`_ notebook. ``Forecaster.evaluate()`` prints a ``Leaderboard String`` via ``format_leaderboard_row()``; paste that row into table 1 above (model names up to 44 characters). If a name is longer, widen the first column separator in every row of table 1 to match. If you would like to include your model in the leaderboard, please make a pull request adding the respective ForecasterModel and the version of the demo generating the leaderboard line. Please contact us on `Discord <https://discord.gg/R2ej9Kyr3K>`_ for assistance.
