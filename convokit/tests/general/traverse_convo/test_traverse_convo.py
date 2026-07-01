@@ -5,6 +5,7 @@ from convokit.tests.general.traverse_convo.traverse_convo_helpers import (
     construct_tree_corpus,
     construct_nonexistent_reply_to_corpus,
     construct_multiple_convo_id_corpus,
+    construct_no_timestamp_tree_corpus,
 )
 from convokit.tests.test_utils import reload_corpus_in_db_mode
 
@@ -66,6 +67,12 @@ class CorpusTraversal(unittest.TestCase):
         self.assertEqual([utt.id for utt in convo.traverse("postorder")], ["other"])
         self.assertEqual([utt.id for utt in convo.traverse("preorder")], ["other"])
 
+    def traverse_no_timestamps(self):
+        # sibling utterances without timestamps must not crash tree traversal
+        convo = self.no_timestamp_corpus.get_conversation("0")
+        bfs_traversal = [utt.id for utt in convo.traverse("bfs", as_utterance=True)]
+        self.assertEqual(bfs_traversal, ["0", "1", "2"])
+
     def reindex_corpus(self):
         original_convo_meta = {
             k: v for k, v in self.corpus.get_conversation("0").meta.to_dict().items()
@@ -111,6 +118,9 @@ class TestWithDB(CorpusTraversal):
         self.nonexistent_reply_to_corpus = reload_corpus_in_db_mode(
             construct_nonexistent_reply_to_corpus()
         )
+        self.no_timestamp_corpus = reload_corpus_in_db_mode(
+            construct_no_timestamp_tree_corpus()
+        )
 
     def test_broken_convos(self):
         self.broken_convos()
@@ -135,6 +145,9 @@ class TestWithDB(CorpusTraversal):
 
     def test_one_utt_convo(self):
         self.one_utt_convo()
+
+    def test_traverse_no_timestamps(self):
+        self.traverse_no_timestamps()
 
     def test_reindex_corpus(self):
         self.reindex_corpus()
@@ -148,6 +161,7 @@ class TestWithMem(CorpusTraversal):
         self.corpus = construct_tree_corpus()
         self.multiple_convo_id_corpus = construct_multiple_convo_id_corpus()
         self.nonexistent_reply_to_corpus = construct_nonexistent_reply_to_corpus()
+        self.no_timestamp_corpus = construct_no_timestamp_tree_corpus()
 
     def test_broken_convos(self):
         self.broken_convos()
@@ -172,6 +186,9 @@ class TestWithMem(CorpusTraversal):
 
     def test_one_utt_convo(self):
         self.one_utt_convo()
+
+    def test_traverse_no_timestamps(self):
+        self.traverse_no_timestamps()
 
     def test_reindex_corpus(self):
         self.reindex_corpus()
