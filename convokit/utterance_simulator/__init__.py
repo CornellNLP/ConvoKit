@@ -16,7 +16,7 @@ except (ImportError, ModuleNotFoundError) as e:
         or "datasets" in str(e)
     ):
         raise ImportError(
-            "UnslothUtteranceSimulatorModel requires ML dependencies. Run 'pip install convokit[llm]' to install them."
+            "UnslothUtteranceSimulatorModel requires ML dependencies. Run 'pip install convokit[llm]' to install them (or 'pip install convokit[llm-mac]' if you are on macOS)."
         ) from e
     else:
         raise

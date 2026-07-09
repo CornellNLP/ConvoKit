@@ -25,7 +25,7 @@ except (ImportError, ModuleNotFoundError) as e:
         or "datasets" in str(e)
     ):
         raise ImportError(
-            "TransformerDecoderModel requires ML dependencies. Run 'pip install convokit[llm]' to install them."
+            "TransformerDecoderModel requires ML dependencies. Run 'pip install convokit[llm]' to install them (or 'pip install convokit[llm-mac]' if you are on macOS)."
         ) from e
     else:
         raise
@@ -40,7 +40,7 @@ except (ImportError, ModuleNotFoundError) as e:
         or "datasets" in str(e)
     ):
         raise ImportError(
-            "TransformerEncoderModel requires ML dependencies. Run 'pip install convokit[llm]' to install them."
+            "TransformerEncoderModel requires ML dependencies. Run 'pip install convokit[llm]' to install them (or 'pip install convokit[llm-mac]' if you are on macOS)."
         ) from e
     else:
         raise
