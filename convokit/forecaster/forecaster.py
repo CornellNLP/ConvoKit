@@ -12,6 +12,12 @@ from matplotlib import pyplot as plt
 ContextTuple = namedtuple(
     "ContextTuple", ["context", "current_utterance", "future_context", "conversation_id"]
 )
+ContextTuple.context.__doc__ = "Chronological utterances up to and including the current utterance."
+ContextTuple.current_utterance.__doc__ = "Most recent utterance when this context was generated."
+ContextTuple.future_context.__doc__ = (
+    "Later utterances during training, or None when future context is unavailable."
+)
+ContextTuple.conversation_id.__doc__ = "Identifier of the conversation that produced this context."
 
 
 class Forecaster(Transformer):
